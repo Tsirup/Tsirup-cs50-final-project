@@ -1,0 +1,27 @@
+TILEMAP KEYS:
+00 = Sea
+01 = Plain
+02 = Wood
+03 = Neutral City
+04 = Mountain
+05 = Road
+06 = Red City
+07 = Blue City
+08 = Red Base
+09 = Blue Base
+10 = Red Headquarters
+11 = Blue Headquarters
+12 = Neutral Base
+13 = Red Airport
+14 = Blue Airport
+15 = Shoal
+16 = Neutral Airport
+17 = Neutral Port
+18 = Red Port
+19 = Blue Port
+20 = Reef
+21 = Silo
+22 = Depleted Silo
+23 = Neutral Lab
+24 = Red Lab
+25 = Blue Lab
