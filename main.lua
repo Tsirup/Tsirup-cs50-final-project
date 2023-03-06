@@ -87,6 +87,15 @@ function InTable(table, value)
     return false
 end
 
+function AllInTable(table, values)
+    for i, v in ipairs(values) do
+        if not InTable(table, v) then
+            return false
+        end
+    end
+    return true
+end
+
 function Neighbors(i,j)
     local leftedge = false
     local rightedge = false
@@ -380,46 +389,12 @@ function MapTranslate(unmap)
                     transmap[i][j] = 6
                 end
             elseif tile == 02 then
+                -- forest squares outsourced to combine function
                 local matrix = MatrixTranslate(Neighbors(i,j),"wood")
-                if matrix.shadow == false and matrix.square == false then
+                if matrix.shadow == false then
                     transmap[i][j] = 2
-                elseif matrix.square == false then
+                else
                     transmap[i][j] = 3
-                elseif matrix.big_square == true then
-                    transmap[i][j] = 69
-                    transmap[i-1][j] = 47
-                    transmap[i-2][j] = 25
-                    transmap[i][j-1] = 68
-                    transmap[i-1][j-1] = 46
-                    transmap[i-2][j-1] = 24
-                    if transmap[i][j-2] == 3 then
-                        transmap[i][j-2] = 70
-                    else 
-                        transmap[i][j-2] = 67
-                    end
-                    if transmap[i-1][j-2] == 3 then
-                        transmap[i-1][j-2] = 48
-                    else
-                        transmap[i-1][j-2] = 45
-                    end
-                    if transmap[i-2][j-2] == 3 then
-                        transmap[i-2][j-2] = 26
-                    else
-                        transmap[i-2][j-2] = 23
-                    end
-                elseif matrix.square == true then
-                    transmap[i][j] = 69
-                    transmap[i-1][j] = 25
-                    if transmap[i][j-1] == 3 then
-                        transmap[i][j-1] = 70
-                    else
-                        transmap[i][j-1] = 67
-                    end
-                    if transmap[i-1][j-1] == 3 then
-                        transmap[i-1][j-1] = 26
-                    else
-                        transmap[i-1][j-1] = 23
-                    end
                 end
             elseif tile == 03 then
                 transmap[i][j] = 1096
@@ -664,7 +639,61 @@ function MapTranslate(unmap)
             end
         end
     end
+    transmap = Combine(transmap)
     return transmap
+end
+
+function Combine(uncmap)
+    local forest = {2,3}
+    for i, row in ipairs(uncmap) do
+        for j, tile in ipairs(row) do
+            if InTable(forest, tile) then
+                local matrix = MatrixTranslate(Neighbors(i,j), "wood")
+                -- mess around in testmap, change to check downstream instead of upstream(?)
+                if matrix.shadow == false and matrix.square == false then
+                    uncmap[i][j] = 2
+                elseif matrix.square == false then
+                    uncmap[i][j] = 3
+                elseif matrix.big_square == true then
+                    uncmap[i][j] = 69
+                    uncmap[i-1][j] = 47
+                    uncmap[i-2][j] = 25
+                    uncmap[i][j-1] = 68
+                    uncmap[i-1][j-1] = 46
+                    uncmap[i-2][j-1] = 24
+                    if uncmap[i][j-2] == 3 then
+                        uncmap[i][j-2] = 70
+                    else 
+                        uncmap[i][j-2] = 67
+                    end
+                    if uncmap[i-1][j-2] == 3 then
+                        uncmap[i-1][j-2] = 48
+                    else
+                        uncmap[i-1][j-2] = 45
+                    end
+                    if uncmap[i-2][j-2] == 3 then
+                        uncmap[i-2][j-2] = 26
+                    else
+                        uncmap[i-2][j-2] = 23
+                    end
+                elseif matrix.square == true then
+                    uncmap[i][j] = 69
+                    uncmap[i-1][j] = 25
+                    if uncmap[i][j-1] == 3 then
+                        uncmap[i][j-1] = 70
+                    else
+                        uncmap[i][j-1] = 67
+                    end
+                    if uncmap[i-1][j-1] == 3 then
+                        uncmap[i-1][j-1] = 26
+                    else
+                        uncmap[i-1][j-1] = 23
+                    end
+                end
+            end
+        end
+    end
+    return uncmap
 end
 
 function love.draw()
