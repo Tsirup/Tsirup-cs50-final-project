@@ -197,12 +197,13 @@ function MatrixTranslate(matrix,classification)
     elseif matrix.type == "wood" then
         matrix.square = true
         matrix.big_square = true
+        matrix.shadow = false
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
                 if mi == 2 and mj == 1 and InTable(shadow,mtile) then
                     matrix.shadow = true
                 end
-                if mtile ~= 02 and (mi < 3 or mj < 3) and matrix.square then
+                if mtile ~= 02 and (mi < 3 and mj < 3) and matrix.square then
                     matrix.square = false
                     matrix.big_square = false
                 elseif mtile ~= 02 and matrix.big_square then
@@ -655,39 +656,42 @@ function Combine(uncmap)
                 elseif matrix.square == false then
                     uncmap[i][j] = 3
                 elseif matrix.big_square == true then
-                    uncmap[i][j] = 69
-                    uncmap[i-1][j] = 47
-                    uncmap[i-2][j] = 25
-                    uncmap[i][j-1] = 68
-                    uncmap[i-1][j-1] = 46
-                    uncmap[i-2][j-1] = 24
-                    if uncmap[i][j-2] == 3 then
-                        uncmap[i][j-2] = 70
+                    uncmap[i+1][j+1] = 69
+                    uncmap[i][j+1] = 47
+                    uncmap[i-1][j+1] = 25
+                    uncmap[i+1][j] = 68
+                    uncmap[i][j] = 46
+                    uncmap[i-1][j] = 24
+                    if uncmap[i+1][j-1] == 3 then
+                        uncmap[i+1][j-1] = 70
                     else 
-                        uncmap[i][j-2] = 67
+                        uncmap[i+1][j-1] = 67
                     end
-                    if uncmap[i-1][j-2] == 3 then
-                        uncmap[i-1][j-2] = 48
-                    else
-                        uncmap[i-1][j-2] = 45
-                    end
-                    if uncmap[i-2][j-2] == 3 then
-                        uncmap[i-2][j-2] = 26
-                    else
-                        uncmap[i-2][j-2] = 23
-                    end
-                elseif matrix.square == true then
-                    uncmap[i][j] = 69
-                    uncmap[i-1][j] = 25
                     if uncmap[i][j-1] == 3 then
-                        uncmap[i][j-1] = 70
+                        uncmap[i][j-1] = 48
                     else
-                        uncmap[i][j-1] = 67
+                        uncmap[i][j-1] = 45
                     end
                     if uncmap[i-1][j-1] == 3 then
                         uncmap[i-1][j-1] = 26
                     else
                         uncmap[i-1][j-1] = 23
+                    end
+                elseif matrix.square == true then
+                    local square_neighbors = {uncmap[i-1][j], uncmap[i][j-1], uncmap[i-1][j-1]}
+                    if AllInTable(forest,square_neighbors) then
+                        uncmap[i][j] = 69
+                        uncmap[i-1][j] = 25
+                        if uncmap[i][j-1] == 3 then
+                            uncmap[i][j-1] = 70
+                        else
+                            uncmap[i][j-1] = 67
+                        end
+                        if uncmap[i-1][j-1] == 3 then
+                            uncmap[i-1][j-1] = 26
+                        else
+                            uncmap[i-1][j-1] = 23
+                        end
                     end
                 end
             end
