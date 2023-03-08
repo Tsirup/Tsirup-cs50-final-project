@@ -126,8 +126,20 @@ function love.keypressed(key)
         y = y + 1
     elseif key == "z" then
         -- check if cursor is on unit
+        for i, unit in ipairs(UnitList) do
+            if unit.x == x and unit.y == y and unit.team == Active_Player then
+                -- begin movement for that unit
+                -- when finished, return
+            end
+        end
         -- check if cursor is on base
         if InTable(Bases, Tilemap[y][x]) then
+            local locked = false
+            for i, unit in ipairs(UnitList) do
+                if unit.x == x and unit.y == y then
+                    return
+                end
+            end
             Infantry()
         end
     elseif key == "escape" then
