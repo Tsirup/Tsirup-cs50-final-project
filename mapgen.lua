@@ -623,3 +623,21 @@ function Combine(uncmap)
     end
     return uncmap
 end
+
+-- possible players and the starting player
+function PlayerGen()
+    local csvmap = {}
+    Players = {}
+    for i, row in ipairs(Tilemap) do
+        for j, tile in ipairs(row) do
+            table.insert(csvmap, tile)
+        end
+    end
+    if InTable(csvmap, 10) or InTable(csvmap, 24) then
+        table.insert(Players, "red")
+    end
+    if InTable(csvmap, 11) or InTable(csvmap, 25) then
+        table.insert(Players, "blue")
+    end
+    Active_Player = Players[1]
+end

@@ -11,6 +11,7 @@ function love.load()
     Prop_quads = {}
     Unit_quads = {}
     Icon_quads = {}
+    UnitList = {}
 
     -- I modified these tilemaps with microsoft paint from the great templates at spriters-resource.com
     Overworld = love.graphics.newImage("graphics/overworld2bordertransparent.png")
@@ -43,7 +44,7 @@ function love.load()
         end
     end
 
-    Units = love.graphics.newImage("graphics/units.png")
+    Units = love.graphics.newImage("graphics/units2bordertransparent.png")
     image_width = Units:getWidth()
     image_height = Units:getHeight()
 
@@ -73,12 +74,17 @@ function love.load()
         end
     end
 
-    -- map keys in keys.txt
+    -- tilemap keys in keys.txt
     -- map files in maps folder, put whatever map you want here
     require("maps/BeanIsland")
+    require("mapgen")
+    require("units")
 
     Transmap = MapTranslate(Tilemap)
-
+    -- currently only have support for 2 players but the easy ability to add more is there
+    -- I'd just need to add the relevant tilemap keys and spritemap index keys
+    PlayerGen()
+    UnitTypes = {"Infantry"}
     Cursor = {
         image = love.graphics.newImage("graphics/cursortransparent.png"),
         x = 1,
@@ -86,11 +92,29 @@ function love.load()
     }
 end
 
-require ("mapgen")
+function IsEmpty(x,y)
+    if x < 1 or y < 1 or x > #(Transmap[1]) or y > #(Transmap) then
+        return false
+    end
+    return true
+end
 
 function love.keypressed(key)
+    local valid = {"left", "right", "up", "down", "z", "x", "escape"}
+
+    if not InTable(valid, key) then
+        return
+    end
+
     local x = Cursor.x
     local y = Cursor.y
+
+    -- move this elsewhere when you implement End Turn
+    if Active_Player == "red" then
+        Bases = {08, 13, 18}
+    elseif Active_Player == "blue" then
+        Bases = {09, 14, 19}
+    end
 
     if key == "left" then
         x = x - 1
@@ -100,10 +124,20 @@ function love.keypressed(key)
         y = y - 1
     elseif key == "down" then
         y = y + 1
+    elseif key == "z" then
+        -- check if cursor is on unit
+        -- check if cursor is on base
+        if InTable(Bases, Tilemap[y][x]) then
+            Infantry()
+        end
+    elseif key == "escape" then
+        love.event.push("quit")
     end
 
-    Cursor.x = x
-    Cursor.y = y
+    if IsEmpty(x,y) then
+        Cursor.x = x
+        Cursor.y = y
+    end
 end
 
 function love.update(dt)
@@ -118,8 +152,8 @@ function love.draw()
 
     -- temporary scale for dev purposes
     love.graphics.scale(2,2)
-    for i,row in ipairs(Transmap) do
-        for j,tile in ipairs(row) do
+    for i, row in ipairs(Transmap) do
+        for j, tile in ipairs(row) do
             if tile > 0 then
                 if tile < 463 then
                     love.graphics.draw(Overworld, World_quads[tile], j * Width, i * Height)
@@ -134,6 +168,9 @@ function love.draw()
                 end
             end
         end
+    end
+    for i, unit in ipairs(UnitList) do
+        unit:draw()
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
 end
