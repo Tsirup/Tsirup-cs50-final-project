@@ -79,6 +79,7 @@ function love.load()
     require("maps/BeanIsland")
     require("mapgen")
     require("units")
+    require("movement")
 
     Transmap = MapTranslate(Tilemap)
     -- currently only have support for 2 players but the easy ability to add more is there
