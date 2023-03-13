@@ -1,32 +1,47 @@
 -- the most mathmatically intensive and overall challenging part of this project
--- this was extremely headache-inducing and i am dissapointed that
--- I had to settle on such a complicated algorithm
+-- this was extremely headache-inducing but i learned a lot about pathfinding alogrithms
 function Movement(unit)
-    local moved = 0
-    local validtiles = {}
-    FindPaths(unit.x, unit.y, Cursor.x, Cursor.Y, unit.move)
-end
-
-function FindPaths(startx, starty, goalx, goaly, capacity)
-    local queue = {{startx, starty, 0}}
-    local visited = {[{startx,starty}] = 0}
-    local currentx, currenty, moves
-    while #queue > 0 do
-        currentx, currenty, moves = unpack(table.remove(queue, 1))
-        if currentx == goalx and currenty == goaly then
-            break
-        end
-        if moves >= capacity then
-            break
-        end
-        for i, neighbor in ipairs(Adjacent(currenty, currentx)) do
-            -- statements
-        end
+    local validTiles = FindPaths(unit)
+    for _, element in ipairs(validTiles) do
+        print(element)
     end
 end
 
+function FindPaths(unit)
+    local start = {unit.y, unit.x}
+    local frontier = PriorityQueue:new()
+    frontier:push(table.concat(start,", "),0)
+    local cameFrom = {}
+    local costSoFar = {}
+    cameFrom[table.concat(start,", ")] = nil
+    costSoFar[table.concat(start,", ")] = 0
+    while #frontier > 0 do
+        local current = frontier:pop()
+        for _, neighbor in Adjacent(current[1], current[2]) do
+            local newCost = costSoFar[table.concat(current,", ")] + Movecost[unit.moveType][Tilemap[neighbor[1]][neighbor[2]]]
+            if (not KeyInTable(costSoFar, neighbor) or newCost < costSoFar[table.concat(neighbor,", ")]) and newCost <= unit.move then
+                costSoFar[table.concat(neighbor,", ")] = newCost
+                local priority = newCost
+                frontier:push(table.concat(neighbor,", ", priority))
+                cameFrom[table.concat(neighbor,", ")] = current
+            end
+        end
+    end
+    -- change if needed
+    return cameFrom
+end
+
+-- remove if not used
+function Reverse(inputTable)
+    local reversed = {}
+    for i = #inputTable, 1, -1 do
+        table.insert(reversed, inputTable[i])
+    end
+    return reversed
+end
+
 -- even though I already have the function Neighbors(i,j)
--- I needed another one to give me just the relevant adjacent tiles
+-- I needed another one to give me just the relevant adjacent tile indexes
 -- rather than the full adjacent matrix
 function Adjacent(i,j)
     local leftedge = false
@@ -45,31 +60,31 @@ function Adjacent(i,j)
     end
     if topedge then
         if leftedge then
-            return {Tilemap[i][j+1], Tilemap[i+1][j]}
+            return {{i,j+1},{i+1,j}}
         end
         if rightedge then
-            return {Tilemap[i][j-1],Tilemap[i+1][j-1]}
+            return {{i,j-1},{i+1,j-1}}
         end
         return 
-            {Tilemap[i][j-1],Tilemap[i][j+1],Tilemap[i+1][j]}
+            {{i,j-1},{i,j+1},{i+1,j}}
     end
     if botedge then
         if leftedge then
             return
-                {Tilemap[i-1][j],Tilemap[i][j+1]}
+                {{i-1,j},{i,j+1}}
         end
         if rightedge then
-            return {Tilemap[i-1][j],Tilemap[i][j-1]}
+            return {{i-1,j},{i,j-1}}
         end
-        return {Tilemap[i-1][j],Tilemap[i][j-1],Tilemap[i][j+1]}
+        return {{i-1,j},{i,j-1},{i,j+1}}
     end
     if leftedge then
-        return {Tilemap[i-1][j],Tilemap[i][j+1],Tilemap[i+1][j]}
+        return {{i-1,j},{i,j+1},{i+1,j}}
     end
     if rightedge then
-        return {Tilemap[i-1][j],Tilemap[i][j-1],Tilemap[i+1][j]}
+        return {{i-1,j},{i,j-1},{i+1,j}}
     end
-    return {Tilemap[i-1][j],Tilemap[i][j-1],Tilemap[i][j+1],Tilemap[i+1][j]}
+    return {{i-1,j},{i,j-1},{i,j+1},{i+1,j}}
 end
 
 -- units have different movement costs through different terrain

@@ -4,6 +4,7 @@ if arg[2] == "debug" then
 end
 function love.load()
 
+    PriorityQueue = require("priorityqueue")
     Object = require "libraries/classic"
     Width = 16
     Height = 16
@@ -184,6 +185,8 @@ function love.draw()
     end
     for i, unit in ipairs(UnitList) do
         unit:draw()
+        --remove this immeidately
+        Movement(unit)
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
 end

@@ -16,6 +16,10 @@ function AllInTable(table, values)
     return true
 end
 
+function KeyInTable(table, key)
+    return table[key] ~= nil
+end
+
 function Neighbors(i,j)
     local leftedge = false
     local rightedge = false
