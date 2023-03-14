@@ -85,12 +85,12 @@ function love.load()
     Scale = 2
     Camera = {x = 0, y = 0}
     MouseDown = false
+    MenuOpen = nil
     Transmap = MapTranslate(Tilemap)
     -- currently only have support for 2 players but the easy ability to add more is there
     -- I'd just need to add the relevant tilemap keys and spritemap index keys
     Turn = 1
     PlayerGen()
-    UnitTypes = {"Infantry"}
     Cursor = {
         image = love.graphics.newImage("graphics/cursortransparent.png"),
         x = 1,
@@ -127,6 +127,18 @@ function love.keypressed(key)
 
     if not InTable(valid, key) then
         return
+    end
+
+    if MenuOpen then
+        if key == "z" then
+            Menu:select()
+            MenuOpen = nil
+            return
+        end
+        if key == "x" then
+            MenuOpen = nil
+            return
+        end
     end
 
     local x = Cursor.x
@@ -173,7 +185,6 @@ function love.keypressed(key)
                         end
                     end
                 end
-                return
             end
         end
         -- check if cursor is on base
@@ -183,7 +194,7 @@ function love.keypressed(key)
                     return
                 end
             end
-            -- we only have functionality to build infantry right now
+            -- we only have functionality to build infantry right now, fix this later to incorperate menu
             if Active_Player.money >= 1000 then
                 Infantry()
             end

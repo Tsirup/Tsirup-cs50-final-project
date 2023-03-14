@@ -32,6 +32,12 @@ function CountInTable(table, values)
     return count
 end
 
+function CombineTable(table1,table2)
+    for _, v in ipairs(table2) do
+        table.insert(table1, v)
+    end
+end
+
 function Neighbors(i,j)
     local leftedge = false
     local rightedge = false
@@ -645,20 +651,24 @@ function PlayerGen()
     local csvmap = {}
     local income, bases
     Players = {}
-    for i, row in ipairs(Tilemap) do
-        for j, tile in ipairs(row) do
+    Property = {}
+    for _, row in ipairs(Tilemap) do
+        for _, tile in ipairs(row) do
             table.insert(csvmap, tile)
         end
     end
     if InTable(csvmap, 10) or InTable(csvmap, 24) then
         bases = {6, 8, 10, 13, 18, 24}
+        CombineTable(Property, bases)
         income = CountInTable(csvmap, bases) * 1000
-        table.insert(Players, {color = "red", money = income, income = income})
+        table.insert(Players, {color = "red", money = 0, income = income, bases = bases})
     end
     if InTable(csvmap, 11) or InTable(csvmap, 25) then
         bases = {7, 9, 11, 14, 19, 25}
+        CombineTable(Property, bases)
         income = CountInTable(csvmap, bases) * 1000
-        table.insert(Players, {color = "blue", money = income, income = income})
+        table.insert(Players, {color = "blue", money = 0, income = income, bases = bases})
     end
     Active_Player = Players[Turn]
+    Active_Player.money = income
 end

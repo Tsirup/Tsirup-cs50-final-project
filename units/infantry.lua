@@ -7,7 +7,7 @@ function Infantry:new()
     self.spec = "infantry"
     self.move = 3
     self.moveType = "infantry"
-    self.ready = true
+    self.ready = false
     self.vision = 2
     self.fuel = 99
     self.cost = 1000

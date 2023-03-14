@@ -1,4 +1,4 @@
--- the most mathmatically intensive and overall challenging part of this project
+-- one of the the most mathmatically intensive and overall challenging parts of this project
 -- this was extremely headache-inducing but i learned a lot about pathfinding alogrithms
 -- the alogrithm of choice is Djikstra's alogrithm since we need to look at ALL possible tiles to create the selection of valid tiles
 -- if we wanted to only consider one "goal" tile, we should instead use A* alogrithm since its faster on giving us the best possible route to that one tile
