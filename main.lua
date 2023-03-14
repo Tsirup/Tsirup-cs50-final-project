@@ -53,8 +53,8 @@ function love.load()
         for j=0,29 do
             table.insert(Unit_quads,
                 love.graphics.newQuad(
-                    1 + j * (Width + 1),
-                    1 + i * (Height + 1),
+                    1 + j * (Width + 2),
+                    1 + i * (Height + 2),
                     Width, Height,
                     image_width, image_height))
         end
@@ -68,8 +68,8 @@ function love.load()
         for j=0,27 do
             table.insert(Icon_quads,
                 love.graphics.newQuad(
-                    1 + j * (Width / 2 + 1),
-                    1 + i * (Height / 2 + 1),
+                    1 + j * (Width / 2 + 2),
+                    1 + i * (Height / 2 + 2),
                     Width / 2, Height / 2,
                     image_width, image_height))
         end
@@ -99,13 +99,20 @@ function love.load()
 end
 
 function EndTurn()
+    for _, unit in ipairs(UnitList) do
+        if unit.team == Active_Player.color then
+            if not unit.ready then
+                unit.ready = true
+            end
+        end
+    end
     Turn = Turn + 1
     local active = Turn
     while active > #Players do
         active = active - #Players
     end
     Active_Player = Players[active]
-    -- add an end turn button
+    Active_Player.money = Active_Player.money + Active_Player.income
 end
 
 function IsEmpty(x,y)
@@ -116,7 +123,7 @@ function IsEmpty(x,y)
 end
 
 function love.keypressed(key)
-    local valid = {"left", "right", "up", "down", "z", "x", "escape"}
+    local valid = {"left", "right", "up", "down", "z", "x", "escape", "space"}
 
     if not InTable(valid, key) then
         return
@@ -185,6 +192,9 @@ function love.keypressed(key)
     -- im not sure how to get it to not seg fault when I hit the exit button in the top right but it doesnt seem to mess anything up in the game so whatever
     elseif key == "escape" then
         love.event.push("quit")
+
+    elseif key == "space" then
+        EndTurn()
     end
 
     if IsEmpty(x,y) then
@@ -268,7 +278,8 @@ function love.draw()
         end
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
-    love.graphics.print("Money:" .. Active_Player.money, 20, 20)
+    love.graphics.print("Player: " .. Active_Player.color, 20, 20)
+    love.graphics.print("Money: " .. Active_Player.money, 20, 40)
 end
 
 ---@diagnostic disable-next-line: undefined-field
