@@ -3,15 +3,19 @@ Infantry = Object:extend()
 function Infantry:new()
     self.x = Cursor.x
     self.y = Cursor.y
-    self.team = Active_Player
+    self.team = Active_Player.color
     self.spec = "infantry"
     self.move = 3
     self.moveType = "infantry"
     self.ready = true
     self.vision = 2
     self.fuel = 99
+    self.cost = 1000
     self.combatType = "direct"
+    self.selected = false
+    self.movement = Movement(self)
     table.insert(UnitList, self)
+    Active_Player.money = Active_Player.money - self.cost
 end
 
 function Infantry:draw()

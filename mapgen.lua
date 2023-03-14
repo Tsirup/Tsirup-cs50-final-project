@@ -1,5 +1,5 @@
 function InTable(table, value)
-    for i, v in ipairs(table) do
+    for _, v in ipairs(table) do
       if v == value then
         return true
       end
@@ -8,7 +8,7 @@ function InTable(table, value)
 end
 
 function AllInTable(table, values)
-    for i, v in ipairs(values) do
+    for _, v in ipairs(values) do
         if not InTable(table, v) then
             return false
         end
@@ -18,6 +18,18 @@ end
 
 function KeyInTable(table, key)
     return table[key] ~= nil
+end
+
+function CountInTable(table, values)
+    local count = 0
+    for _, v in ipairs(table) do
+        for _, value in ipairs(values) do
+            if v == value then
+                count = count + 1
+            end
+        end
+    end
+    return count
 end
 
 function Neighbors(i,j)
@@ -631,6 +643,7 @@ end
 -- possible players and the starting player
 function PlayerGen()
     local csvmap = {}
+    local income, bases
     Players = {}
     for i, row in ipairs(Tilemap) do
         for j, tile in ipairs(row) do
@@ -638,10 +651,14 @@ function PlayerGen()
         end
     end
     if InTable(csvmap, 10) or InTable(csvmap, 24) then
-        table.insert(Players, "red")
+        bases = {6, 8, 10, 13, 18, 24}
+        income = CountInTable(csvmap, bases) * 1000
+        table.insert(Players, {color = "red", money = income, income = income})
     end
     if InTable(csvmap, 11) or InTable(csvmap, 25) then
-        table.insert(Players, "blue")
+        bases = {7, 9, 11, 14, 19, 25}
+        income = CountInTable(csvmap, bases) * 1000
+        table.insert(Players, {color = "blue", money = income, income = income})
     end
-    Active_Player = Players[1]
+    Active_Player = Players[Turn]
 end

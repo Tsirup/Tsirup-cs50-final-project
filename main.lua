@@ -82,9 +82,13 @@ function love.load()
     require("units")
     require("movement")
 
+    Scale = 2
+    Camera = {x = 0, y = 0}
+    MouseDown = false
     Transmap = MapTranslate(Tilemap)
     -- currently only have support for 2 players but the easy ability to add more is there
     -- I'd just need to add the relevant tilemap keys and spritemap index keys
+    Turn = 1
     PlayerGen()
     UnitTypes = {"Infantry"}
     Cursor = {
@@ -92,6 +96,16 @@ function love.load()
         x = 1,
         y = 1,
     }
+end
+
+function EndTurn()
+    Turn = Turn + 1
+    local active = Turn
+    while active > #Players do
+        active = active - #Players
+    end
+    Active_Player = Players[active]
+    -- add an end turn button
 end
 
 function IsEmpty(x,y)
@@ -111,10 +125,9 @@ function love.keypressed(key)
     local x = Cursor.x
     local y = Cursor.y
 
-    -- move this elsewhere when you implement End Turn
-    if Active_Player == "red" then
+    if Active_Player.color == "red" then
         Bases = {08, 13, 18}
-    elseif Active_Player == "blue" then
+    elseif Active_Player.color == "blue" then
         Bases = {09, 14, 19}
     end
 
@@ -128,22 +141,48 @@ function love.keypressed(key)
         y = y + 1
     elseif key == "z" then
         -- check if cursor is on unit
-        for i, unit in ipairs(UnitList) do
-            if unit.x == x and unit.y == y and unit.team == Active_Player then
+        for _, unit in ipairs(UnitList) do
+            if unit.team == Active_Player.color and unit.ready then
                 -- begin movement for that unit
-                -- when finished, return
+                if unit.x == Cursor.x and unit.y == Cursor.y then
+                    if unit.selected == false then
+                        unit.selected = true
+                    else
+                        unit.selected = false
+                    end
+                elseif unit.selected then
+                    for _, validTile in ipairs(unit.movement) do
+                        if validTile[1] == Cursor.y and validTile[2] == Cursor.x then
+                            for _, otherUnit in ipairs(UnitList) do
+                                if Cursor.x == otherUnit.x and Cursor.y == otherUnit.y then
+                                    return
+                                end
+                            end
+                            unit.x = Cursor.x
+                            unit.y = Cursor.y
+                            unit.movement = Movement(unit)
+                            unit.ready = false
+                            unit.selected = false
+                        end
+                    end
+                end
+                return
             end
         end
         -- check if cursor is on base
         if InTable(Bases, Tilemap[y][x]) then
-            local locked = false
-            for i, unit in ipairs(UnitList) do
+            for _, unit in ipairs(UnitList) do
                 if unit.x == x and unit.y == y then
                     return
                 end
             end
-            Infantry()
+            -- we only have functionality to build infantry right now
+            if Active_Player.money >= 1000 then
+                Infantry()
+            end
         end
+    -- for whatever reason if I quit the game without using a quit event, theres a segmentation fault
+    -- im not sure how to get it to not seg fault when I hit the exit button in the top right but it doesnt seem to mess anything up in the game so whatever
     elseif key == "escape" then
         love.event.push("quit")
     end
@@ -154,7 +193,36 @@ function love.keypressed(key)
     end
 end
 
+function love.mousepressed(x,y,button)
+    if button == 1 then
+        MouseDown = true
+    end
+end
+
+function love.mousereleased(x,y,button)
+    if button == 1 then
+        MouseDown = false
+    end
+end
+
+function love.wheelmoved(x,y)
+    if y > 0 then
+        Scale = Scale + 0.1
+    end
+    if y < 0 then
+        Scale = Scale - 0.1
+    end
+end
+
 function love.update(dt)
+    -- extremely jank camera controls
+    -- obviously unacceptable in its current state 
+    -- but ultimately it is low priority compared to all of the actual gameplay stuff that needs to be worked on
+    if MouseDown then
+        local mouseX, mouseY = love.mouse.getPosition()
+        Camera.x = -love.graphics.getWidth() / 2 + mouseX
+        Camera.y = -love.graphics.getHeight() / 2 + mouseY
+    end
 end
 
 function love.draw()
@@ -165,7 +233,8 @@ function love.draw()
     -- check it out at transparent.py
 
     -- temporary scale for dev purposes
-    love.graphics.scale(2,2)
+    love.graphics.scale(Scale,Scale)
+    love.graphics.translate(Camera.x, Camera.y)
     for i, row in ipairs(Transmap) do
         for j, tile in ipairs(row) do
             if tile > 0 then
@@ -184,11 +253,22 @@ function love.draw()
         end
     end
     for i, unit in ipairs(UnitList) do
+        if not unit.ready then
+            love.graphics.setColor(0.8,0.8,0.8,0.7)
+        end
         unit:draw()
-        --remove this immeidately
-        Movement(unit)
+        love.graphics.setColor(1,1,1,1)
+        if unit.selected then
+            -- arbitrary rgba value for selection tint
+            love.graphics.setColor(0.5,0.8,0.9,0.7)
+            for _, validTile in ipairs(unit.movement) do
+                love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
+            end
+            love.graphics.setColor(1,1,1,1)
+        end
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
+    love.graphics.print("Money:" .. Active_Player.money, 20, 20)
 end
 
 ---@diagnostic disable-next-line: undefined-field
