@@ -1,16 +1,16 @@
-Infantry = Object:extend()
+Tank = Object:extend()
 
-function Infantry:new()
-    self.cost = 1000
-    self.spec = "Infantry"
+function Tank:new()
+    self.cost = 7000
+    self.spec = "Tank"
     self.x = Cursor.x
     self.y = Cursor.y
     self.team = Active_Player.color
-    self.move = 3
-    self.moveType = "infantry"
+    self.move = 6
+    self.moveType = "tread"
     self.ready = false
-    self.vision = 2
-    self.fuel = 99
+    self.vision = 3
+    self.fuel = 70
     self.health = 100
     self.combatType = "direct"
     self.selected = false
@@ -19,12 +19,12 @@ function Infantry:new()
     Active_Player.money = Active_Player.money - self.cost
 end
 
-function Infantry:draw()
+function Tank:draw()
     local quad
     if self.team == "red" then
-        quad = 1
+        quad = 331
     elseif self.team == "blue" then
-        quad = 37
+        quad = 337
     end
     love.graphics.draw(Units, Unit_quads[quad], self.x * Width, self.y * Height)
 end

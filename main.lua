@@ -81,11 +81,13 @@ function love.load()
     require("mapgen")
     require("units")
     require("movement")
+    require("menu")
 
     Scale = 2
     Camera = {x = 0, y = 0}
     MouseDown = false
     MenuOpen = nil
+    Ground = {"Infantry", "Mech", "Tank"}
     Transmap = MapTranslate(Tilemap)
     -- currently only have support for 2 players but the easy ability to add more is there
     -- I'd just need to add the relevant tilemap keys and spritemap index keys
@@ -123,7 +125,7 @@ function IsEmpty(x,y)
 end
 
 function love.keypressed(key)
-    local valid = {"left", "right", "up", "down", "z", "x", "escape", "space"}
+    local valid = {"left", "right", "up", "down", "z", "x", "escape"}
 
     if not InTable(valid, key) then
         return
@@ -168,6 +170,7 @@ function love.keypressed(key)
                 if unit.x == Cursor.x and unit.y == Cursor.y then
                     if unit.selected == false then
                         unit.selected = true
+                        return
                     else
                         unit.selected = false
                     end
@@ -179,11 +182,8 @@ function love.keypressed(key)
                                     return
                                 end
                             end
-                            unit.x = Cursor.x
-                            unit.y = Cursor.y
-                            unit.movement = Movement(unit)
-                            unit.ready = false
-                            unit.selected = false
+                            Menu(unit)
+                            return
                         end
                     end
                 end
@@ -192,22 +192,19 @@ function love.keypressed(key)
         -- check if cursor is on base
         if InTable(Bases, Tilemap[y][x]) then
             for _, unit in ipairs(UnitList) do
-                if unit.x == x and unit.y == y then
+                if unit.x == x and unit.y == y and unit.ready == false then
+                    Menu()
                     return
                 end
             end
-            -- we only have functionality to build infantry right now, fix this later to incorperate menu
-            if Active_Player.money >= 1000 then
-                Infantry()
-            end
+            Menu("build")
+            return
         end
+        Menu()
     -- for whatever reason if I quit the game without using a quit event, theres a segmentation fault
     -- im not sure how to get it to not seg fault when I hit the exit button in the top right but it doesnt seem to mess anything up in the game so whatever
     elseif key == "escape" then
         love.event.push("quit")
-
-    elseif key == "space" then
-        EndTurn()
     end
 
     if IsEmpty(x,y) then
