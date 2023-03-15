@@ -29,7 +29,7 @@ function Menu:new(unit)
 end
 
 function Menu:select()
-    --statements
+    local selection = self.options[self.cursor]
 end
 
 function Menu:draw()

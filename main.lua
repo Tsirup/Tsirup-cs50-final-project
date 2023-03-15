@@ -133,12 +133,14 @@ function love.keypressed(key)
         if key == "z" then
             Menu:select()
             MenuOpen = nil
-            return
-        end
-        if key == "x" then
+        elseif key == "x" then
             MenuOpen = nil
-            return
+        elseif key == "up" and MenuOpen.cursor > 1 then
+            MenuOpen.cursor = MenuOpen.cursor - 1
+        elseif key == "down" and MenuOpen.cursor < #(MenuOpen.options) then
+            MenuOpen.cursor = MenuOpen.cursor + 1
         end
+        return
     end
 
     local x = Cursor.x
@@ -287,6 +289,9 @@ function love.draw()
             end
             love.graphics.setColor(1,1,1,1)
         end
+    end
+    if MenuOpen then
+        Menu:draw()
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
     love.graphics.print("Player: " .. Active_Player.color, 20, 20)
