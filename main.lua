@@ -168,19 +168,18 @@ function love.keypressed(key)
             if unit.team == Active_Player.color and unit.ready then
                 -- begin movement for that unit
                 if unit.x == Cursor.x and unit.y == Cursor.y then
-                    if unit.selected == false then
+                    if not unit.selected then
                         unit.selected = true
                         return
                     else
                         unit.selected = false
+                        Menu(unit)
+                        return
                     end
                 elseif unit.selected then
                     for _, validTile in ipairs(unit.movement) do
                         if validTile[1] == Cursor.y and validTile[2] == Cursor.x then
                             for _, otherUnit in ipairs(UnitList) do
-                                -- TODO: exit movement with x
-                                -- TODO: allow waiting/capturing/etc without moving(this elseif is ignored in that case so putting unit ~= otherUnit doesnt work)
-                                -- TODO: stop telepathic capture
                                 -- TODO: render captured property
                                 if Cursor.x == otherUnit.x and Cursor.y == otherUnit.y then
                                     return
@@ -205,6 +204,12 @@ function love.keypressed(key)
             return
         end
         Menu()
+    elseif key == "x" then
+        for _, unit in ipairs(UnitList) do
+            if unit.selected then
+                unit.selected = false
+            end
+        end
     -- for whatever reason if I quit the game without using a quit event, theres a segmentation fault
     -- im not sure how to get it to not seg fault when I hit the exit button in the top right but it doesnt seem to mess anything up in the game so whatever
     elseif key == "escape" then
@@ -238,6 +243,61 @@ function love.wheelmoved(x,y)
     end
 end
 
+function TileTranslate(tile, i, j)
+    local transmap = Transmap
+    -- copy pasted code snippets from MapTranslate
+    if tile == 06 then
+        transmap[i][j] = 1006
+    elseif tile == 07 then
+        transmap[i][j] = 1024
+    elseif tile == 08 then
+        transmap[i][j] = 463
+    elseif tile == 09 then
+        transmap[i][j] = 465
+    elseif tile == 13 then
+        transmap[i][j] = 1007
+    elseif tile == 14 then
+        transmap[i][j] = 1025
+    elseif tile == 18 then
+        transmap[i][j] = 1008
+    elseif tile == 19 then
+        transmap[i][j] = 1026
+    elseif tile == 24 then
+        transmap[i][j] = 1109
+    elseif tile == 25 then
+        transmap[i][j] = 1027
+    end
+    Transmap = transmap
+end
+
+function MapUpdate(unit)
+    local loser, winner = nil, nil
+    winner = Active_Player
+    for _, player in ipairs(Players) do
+        if InTable(player.bases, Tilemap[unit.y][unit.x]) then
+            loser = player
+        end
+    end 
+    if InTable(City, Tilemap[unit.y][unit.x]) then
+        Tilemap[unit.y][unit.x] = winner.bases[1]
+    elseif InTable(Base, Tilemap[unit.y][unit.x]) then
+        Tilemap[unit.y][unit.x] = winner.bases[2]
+    elseif InTable(HQ, Tilemap[unit.y][unit.x]) then
+        Tilemap[unit.y][unit.x] = winner.bases[1]
+        -- TODO: add victory flag
+    elseif InTable(Airport, Tilemap[unit.y][unit.x]) then
+        Tilemap[unit.y][unit.x] = winner.bases[4]
+    elseif InTable(Port, Tilemap[unit.y][unit.x]) then
+        Tilemap[unit.y][unit.x] = winner.bases[5]
+    elseif InTable(Lab, Tilemap[unit.y][unit.x]) then
+        Tilemap[unit.y][unit.x] = winner.bases[6]
+    end
+    TileTranslate(Tilemap[unit.y][unit.x], unit.y, unit.x)
+    winner.income = winner.income + 1000
+    if loser then
+        loser.income = loser.income - 1000
+    end
+end
 function love.update(dt)
     -- extremely jank camera controls
     -- obviously unacceptable in its current state 
