@@ -651,7 +651,7 @@ function PlayerGen()
     local csvmap = {}
     local income, bases
     Players = {}
-    Property = {}
+    Property = {3, 12, 16, 17, 23}
     for _, row in ipairs(Tilemap) do
         for _, tile in ipairs(row) do
             table.insert(csvmap, tile)

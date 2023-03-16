@@ -178,6 +178,10 @@ function love.keypressed(key)
                     for _, validTile in ipairs(unit.movement) do
                         if validTile[1] == Cursor.y and validTile[2] == Cursor.x then
                             for _, otherUnit in ipairs(UnitList) do
+                                -- TODO: exit movement with x
+                                -- TODO: allow waiting/capturing/etc without moving(this elseif is ignored in that case so putting unit ~= otherUnit doesnt work)
+                                -- TODO: stop telepathic capture
+                                -- TODO: render captured property
                                 if Cursor.x == otherUnit.x and Cursor.y == otherUnit.y then
                                     return
                                 end

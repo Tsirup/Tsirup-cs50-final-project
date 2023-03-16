@@ -10,13 +10,13 @@ function Menu:new(unit)
             self.unit = unit
             for _, neighbor in ipairs(Adjacent(unit.y, unit.x)) do
                 for _, otherUnit in ipairs(UnitList) do
-                    if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and not InTable(self.options, "Attack") then
+                    if otherUnit.team ~= Active_Player.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and not InTable(self.options, "Attack") then
                         table.insert(self.options, "Attack")
                         break
                     end
                 end
             end
-            if InTable(Property, Tilemap[unit.y][unit.x]) and not InTable(Active_Player.bases, Tilemap[unit.y][unit.x]) then
+            if unit.capture and InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(Active_Player.bases, Tilemap[Cursor.y][Cursor.x]) then
                 table.insert(self.options, "Capture")
             end
             table.insert(self.options, "Wait")
@@ -32,15 +32,42 @@ function Menu:new(unit)
 end
 
 function Menu:select()
+    local unit = MenuOpen.unit
     local selection = MenuOpen.options[MenuOpen.cursor]
     if selection == "Wait" then
-        MenuOpen.unit.x = Cursor.x
-        MenuOpen.unit.y = Cursor.y
-        MenuOpen.unit.movement = Movement(MenuOpen.unit)
-        MenuOpen.unit.ready = false
-        MenuOpen.unit.selected = false
+        unit.x = Cursor.x
+        unit.y = Cursor.y
+        unit.movement = Movement(unit)
+        unit.ready = false
+        unit.selected = false
     elseif selection  == "Attack" then
     elseif selection == "Capture" then
+        if unit.x ~= Cursor.x and unit.y ~= Cursor.y then
+            unit.x = Cursor.x
+            unit.y = Cursor.y
+            unit.movement = Movement(unit)
+            unit.capture = 20
+        end
+        unit.ready = false
+        unit.selected = false
+        unit.capture = MenuOpen.unit.capture - math.ceil(unit.health / 10)
+        if unit.capture <= 0 then
+            if InTable({3,6,7},Tilemap[unit.y][unit.x]) then
+                Tilemap[unit.y][unit.x] = Active_Player.bases[1]
+            elseif InTable({8,9,12},Tilemap[unit.y][unit.x]) then
+                Tilemap[unit.y][unit.x] = Active_Player.bases[2]
+            elseif InTable({10,11}, Tilemap[unit.y][unit.x]) then
+                Tilemap[unit.y][unit.x] = Active_Player.bases[3]
+                -- TODO: add victory flag
+            elseif InTable({13,14,16}, Tilemap[unit.y][unit.x]) then
+                Tilemap[unit.y][unit.x] = Active_Player.bases[4]
+            elseif InTable({17,18,19}, Tilemap[unit.y][unit.x]) then
+                Tilemap[unit.y][unit.x] = Active_Player.bases[5]
+            elseif InTable({23,24,25}, Tilemap[unit.y][unit.x]) then
+                Tilemap[unit.y][unit.x] = Active_Player.bases[6]
+            end
+            unit.capture = 20
+        end
     elseif selection == "End Turn" then
         EndTurn()
     elseif selection == "Infantry" and Active_Player.money >= 1000 then

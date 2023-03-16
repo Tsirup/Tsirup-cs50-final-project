@@ -15,6 +15,7 @@ function Mech:new()
     self.combatType = "direct"
     self.selected = false
     self.movement = Movement(self)
+    self.capture = 20
     table.insert(UnitList, self)
     Active_Player.money = Active_Player.money - self.cost
 end
