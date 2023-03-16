@@ -12,7 +12,7 @@ function Mech:new()
     self.vision = 2
     self.fuel = 70
     self.health = 100
-    self.combatType = "direct"
+    self.range = {1}
     self.selected = false
     self.movement = Movement(self)
     self.capture = 20

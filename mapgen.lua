@@ -7,6 +7,14 @@ function InTable(table, value)
     return false
 end
 
+function Index(table, value)
+    for i, v in ipairs(table) do
+        if v == value then
+            return i
+        end
+    end
+end
+
 function AllInTable(table, values)
     for _, v in ipairs(values) do
         if not InTable(table, v) then
@@ -649,8 +657,10 @@ end
 -- possible players and the starting player
 function PlayerGen()
     local csvmap = {}
-    local income, bases
+    local income
+    local bases = {}
     Players = {}
+    City, Base, HQ, Airport, Port, Lab = {3}, {12}, {nil}, {16}, {17}, {23}
     Property = {3, 12, 16, 17, 23}
     for _, row in ipairs(Tilemap) do
         for _, tile in ipairs(row) do
@@ -668,6 +678,14 @@ function PlayerGen()
         CombineTable(Property, bases)
         income = CountInTable(csvmap, bases) * 1000
         table.insert(Players, {color = "blue", money = 0, income = income, bases = bases})
+    end
+    for _, player in ipairs(Players) do
+        table.insert(City, player.bases[1])
+        table.insert(Base, player.bases[2])
+        table.insert(HQ, player.bases[3])
+        table.insert(Airport, player.bases[4])
+        table.insert(Port, player.bases[5])
+        table.insert(Lab, player.bases[6])
     end
     Active_Player = Players[Turn]
     Active_Player.money = income

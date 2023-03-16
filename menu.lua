@@ -42,7 +42,7 @@ function Menu:select()
         unit.selected = false
     elseif selection  == "Attack" then
     elseif selection == "Capture" then
-        if unit.x ~= Cursor.x and unit.y ~= Cursor.y then
+        if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             unit.x = Cursor.x
             unit.y = Cursor.y
             unit.movement = Movement(unit)
@@ -52,20 +52,7 @@ function Menu:select()
         unit.selected = false
         unit.capture = MenuOpen.unit.capture - math.ceil(unit.health / 10)
         if unit.capture <= 0 then
-            if InTable({3,6,7},Tilemap[unit.y][unit.x]) then
-                Tilemap[unit.y][unit.x] = Active_Player.bases[1]
-            elseif InTable({8,9,12},Tilemap[unit.y][unit.x]) then
-                Tilemap[unit.y][unit.x] = Active_Player.bases[2]
-            elseif InTable({10,11}, Tilemap[unit.y][unit.x]) then
-                Tilemap[unit.y][unit.x] = Active_Player.bases[3]
-                -- TODO: add victory flag
-            elseif InTable({13,14,16}, Tilemap[unit.y][unit.x]) then
-                Tilemap[unit.y][unit.x] = Active_Player.bases[4]
-            elseif InTable({17,18,19}, Tilemap[unit.y][unit.x]) then
-                Tilemap[unit.y][unit.x] = Active_Player.bases[5]
-            elseif InTable({23,24,25}, Tilemap[unit.y][unit.x]) then
-                Tilemap[unit.y][unit.x] = Active_Player.bases[6]
-            end
+            MapUpdate(unit)
             unit.capture = 20
         end
     elseif selection == "End Turn" then

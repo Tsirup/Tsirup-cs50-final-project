@@ -12,7 +12,7 @@ function Tank:new()
     self.vision = 3
     self.fuel = 70
     self.health = 100
-    self.combatType = "direct"
+    self.range = {1}
     self.selected = false
     self.movement = Movement(self)
     table.insert(UnitList, self)
