@@ -1,3 +1,1 @@
 -- BUGS:
--- You can build on a base while someone is capturing it
--- You can pass through enemy units as if they're not there

@@ -8,7 +8,7 @@ function Menu:new(unit)
     if unit then
         if type(unit) ~= "string" then
             self.unit = unit
-            for _, neighbor in ipairs(Adjacent(unit.y, unit.x)) do
+            for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
                 for _, otherUnit in ipairs(UnitList) do
                     if otherUnit.team ~= Active_Player.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and not InTable(self.options, "Attack") then
                         table.insert(self.options, "Attack")
@@ -37,15 +37,14 @@ function Menu:select()
     if selection == "Wait" then
         unit.x = Cursor.x
         unit.y = Cursor.y
-        unit.movement = Movement(unit)
         unit.ready = false
         unit.selected = false
+        unit.capture = 20
     elseif selection  == "Attack" then
     elseif selection == "Capture" then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             unit.x = Cursor.x
             unit.y = Cursor.y
-            unit.movement = Movement(unit)
             unit.capture = 20
         end
         unit.ready = false
@@ -63,6 +62,10 @@ function Menu:select()
         Mech()
     elseif selection == "Tank" and Active_Player.money >= 7000 then
         Tank()
+    elseif selection == "Apc" and Active_Player.money >= 5000 then
+        Apc()
+    elseif selection == "Artillery" and Active_Player.money >= 6000 then
+        Artillery()
     end
 end
 

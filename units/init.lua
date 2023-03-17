@@ -1,3 +1,5 @@
 require("units/infantry")
 require("units/mech")
 require("units/tank")
+require("units/apc")
+require("units/artillery")

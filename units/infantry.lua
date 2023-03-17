@@ -14,7 +14,7 @@ function Infantry:new()
     self.health = 100
     self.range = {1}
     self.selected = false
-    self.movement = Movement(self)
+    self.movement = nil
     self.capture = 20
     table.insert(UnitList, self)
     Active_Player.money = Active_Player.money - self.cost

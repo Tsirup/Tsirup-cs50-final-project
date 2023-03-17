@@ -88,7 +88,7 @@ function love.load()
     MouseDown = false
     MenuOpen = nil
     GameOver = nil
-    Ground = {"Infantry", "Mech", "Tank"}
+    Ground = {"Infantry", "Mech", "Tank", "Apc", "Artillery"}
     Transmap = MapTranslate(Tilemap)
     -- currently only have support for 2 players but the easy ability to add more is there
     -- I'd just need to add the relevant tilemap keys and spritemap index keys
@@ -116,6 +116,11 @@ function EndTurn()
     end
     Active_Player = Players[active]
     Active_Player.money = Active_Player.money + Active_Player.income
+    for _, unit in ipairs(UnitList) do
+        if unit.team == Active_Player.color then
+            unit.movement = Movement(unit)
+        end
+    end
 end
 
 function IsEmpty(x,y)
@@ -203,7 +208,7 @@ function love.keypressed(key)
         -- check if cursor is on base
         if InTable(Bases, Tilemap[y][x]) then
             for _, unit in ipairs(UnitList) do
-                if unit.x == x and unit.y == y and unit.ready == false then
+                if unit.x == x and unit.y == y and (unit.ready == false or unit.team ~= Active_Player.color) then
                     Menu()
                     return
                 end

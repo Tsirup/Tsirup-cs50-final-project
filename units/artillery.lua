@@ -1,18 +1,18 @@
-Tank = Object:extend()
+Artillery = Object:extend()
 
-function Tank:new()
-    self.cost = 7000
-    self.spec = "Tank"
+function Artillery:new()
+    self.cost = 6000
+    self.spec = "Artillery"
     self.x = Cursor.x
     self.y = Cursor.y
     self.team = Active_Player.color
-    self.move = 6
+    self.move = 5
     self.moveType = "tread"
     self.ready = false
-    self.vision = 3
-    self.fuel = 70
+    self.vision = 1
+    self.fuel = 50
     self.health = 100
-    self.range = {1}
+    self.range = {2,3}
     self.selected = false
     self.movement = nil
     self.ammo = 9
@@ -20,12 +20,12 @@ function Tank:new()
     Active_Player.money = Active_Player.money - self.cost
 end
 
-function Tank:draw()
+function Artillery:draw()
     local quad
     if self.team == "red" then
-        quad = 331
+        quad = 481
     elseif self.team == "blue" then
-        quad = 337
+        quad = 487
     end
     love.graphics.draw(Units, Unit_quads[quad], self.x * Width, self.y * Height)
 end
