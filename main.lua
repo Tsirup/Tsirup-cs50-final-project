@@ -60,7 +60,7 @@ function love.load()
         end
     end
 
-    Icons = love.graphics.newImage("graphics/icons.png")
+    Icons = love.graphics.newImage("graphics/icons2bordertransparent.png")
     image_width = Icons:getWidth()
     image_height = Icons:getHeight()
 
@@ -338,7 +338,8 @@ function love.draw()
     end
     for i, unit in ipairs(UnitList) do
         if not unit.ready then
-            love.graphics.setColor(0.8,0.8,0.8,0.7)
+            -- arbitrary rgba value for "unready" tint
+            love.graphics.setColor(0.7,0.7,0.7,0.8)
         end
         unit:draw()
         love.graphics.setColor(1,1,1,1)

@@ -21,11 +21,19 @@ function Mech:new()
 end
 
 function Mech:draw()
-    local quad
+    local quad, iconQuad
     if self.team == "red" then
         quad = 151
     elseif self.team == "blue" then
         quad = 187
     end
     love.graphics.draw(Units, Unit_quads[quad], self.x * Width, self.y * Height)
+    if self.capture < 20 then
+        if self.team == "red" then
+            iconQuad = 16
+        elseif self.team == "blue" then
+            iconQuad = 44
+        end
+        love.graphics.draw(Icons, Icon_quads[iconQuad], self.x * Width, self.y * Height + Height / 2)
+    end
 end
