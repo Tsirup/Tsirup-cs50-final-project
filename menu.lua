@@ -52,7 +52,7 @@ function Menu:select()
         unit.selected = false
         unit.capture = MenuOpen.unit.capture - math.ceil(unit.health / 10)
         if unit.capture <= 0 then
-            MapUpdate(unit)
+            MapUpdate(unit.x, unit.y)
             unit.capture = 20
         end
     elseif selection == "End Turn" then

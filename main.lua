@@ -87,6 +87,7 @@ function love.load()
     Camera = {x = 0, y = 0}
     MouseDown = false
     MenuOpen = nil
+    GameOver = nil
     Ground = {"Infantry", "Mech", "Tank"}
     Transmap = MapTranslate(Tilemap)
     -- currently only have support for 2 players but the easy ability to add more is there
@@ -128,6 +129,13 @@ function love.keypressed(key)
     local valid = {"left", "right", "up", "down", "z", "x", "escape"}
 
     if not InTable(valid, key) then
+        return
+    end
+
+    if GameOver then
+        if key == "escape" then
+            love.event.push("quit")
+        end
         return
     end
 
@@ -270,34 +278,65 @@ function TileTranslate(tile, i, j)
     Transmap = transmap
 end
 
-function MapUpdate(unit)
+function MapUpdate(x,y)
     local loser, winner = nil, nil
     winner = Active_Player
     for _, player in ipairs(Players) do
-        if InTable(player.bases, Tilemap[unit.y][unit.x]) then
+        if InTable(player.bases, Tilemap[y][x]) then
             loser = player
         end
     end 
-    if InTable(City, Tilemap[unit.y][unit.x]) then
-        Tilemap[unit.y][unit.x] = winner.bases[1]
-    elseif InTable(Base, Tilemap[unit.y][unit.x]) then
-        Tilemap[unit.y][unit.x] = winner.bases[2]
-    elseif InTable(HQ, Tilemap[unit.y][unit.x]) then
-        Tilemap[unit.y][unit.x] = winner.bases[1]
-        -- TODO: add victory flag
-    elseif InTable(Airport, Tilemap[unit.y][unit.x]) then
-        Tilemap[unit.y][unit.x] = winner.bases[4]
-    elseif InTable(Port, Tilemap[unit.y][unit.x]) then
-        Tilemap[unit.y][unit.x] = winner.bases[5]
-    elseif InTable(Lab, Tilemap[unit.y][unit.x]) then
-        Tilemap[unit.y][unit.x] = winner.bases[6]
+    if InTable(City, Tilemap[y][x]) then
+        Tilemap[y][x] = winner.bases[1]
+    elseif InTable(Base, Tilemap[y][x]) then
+        Tilemap[y][x] = winner.bases[2]
+    elseif InTable(HQ, Tilemap[y][x]) then
+        Tilemap[y][x] = winner.bases[1]
+        for i = #Players, 1, -1 do
+            if loser == Players[i] then
+                -- delete all of the loser's units
+                for j = #UnitList, 1, -1 do
+                    if UnitList[j].team == loser.color then
+                        table.remove(UnitList, j)
+                    end
+                end
+                -- transfer over all of the loser's properties
+                for i, row in ipairs(Tilemap) do
+                    for j, tile in ipairs(row) do
+                        if InTable(loser.bases, tile) then
+                            MapUpdate(j,i)
+                        end
+                    end
+                end
+                -- remove the loser
+                table.remove(Players, i)
+            end
+        end
+    elseif InTable(Airport, Tilemap[y][x]) then
+        Tilemap[y][x] = winner.bases[4]
+    elseif InTable(Port, Tilemap[y][x]) then
+        Tilemap[y][x] = winner.bases[5]
+    elseif InTable(Lab, Tilemap[y][x]) then
+        Tilemap[y][x] = winner.bases[6]
     end
-    TileTranslate(Tilemap[unit.y][unit.x], unit.y, unit.x)
+    TileTranslate(Tilemap[y][x], y, x)
     winner.income = winner.income + 1000
     if loser then
         loser.income = loser.income - 1000
     end
 end
+
+function EndGame()
+    local mWidth = #(Tilemap[1]) * Width
+    local mHeight = #Tilemap * Height
+    GameOver = true
+    love.graphics.rectangle("fill", mWidth / 4, mHeight / 4, mWidth / 2, mHeight / 2)
+    love.graphics.setColor(0,0,0,1)
+    love.graphics.print(string.format("%s is the winner!", Active_Player.color), mWidth * (5/16), mHeight * (5/16))
+    love.graphics.print("Press Esc to exit.", mWidth * (5/16), mHeight * (9/16))
+    love.graphics.setColor(1,1,1,1)
+end
+
 function love.update(dt)
     -- extremely jank camera controls
     -- obviously unacceptable in its current state 
@@ -356,8 +395,14 @@ function love.draw()
         Menu:draw()
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
+    love.graphics.setColor(0,0,0,1)
     love.graphics.print("Player: " .. Active_Player.color, 20, 20)
     love.graphics.print("Money: " .. Active_Player.money, 20, 40)
+    love.graphics.setColor(1,1,1,1)
+    -- check for victory
+    if #Players == 1 then
+        EndGame()
+    end
 end
 
 ---@diagnostic disable-next-line: undefined-field
