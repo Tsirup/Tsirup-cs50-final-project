@@ -207,6 +207,9 @@ function MapTranslate(unmap)
     -- to help with the complicated tile translation algorithm, I wrote a Python script (indexer.py) that can take a tilemap with 1 pixel border 
     -- and index them by writing big fat numbers on them, its pretty cool imo
 
+    -- if you are cringing at how long and filled with elseif's this code is, there is no switch statement in lua
+    -- but if im still really dumb and theres a better way of doing this, let me know
+
     -- create a new map and fill it with zeroes
     local transmap = {}
     for i, row in ipairs(unmap) do
