@@ -86,10 +86,9 @@ function love.load()
     Scale = 2
     Camera = {x = 0, y = 0}
     MouseDown = false
-    MenuOpen = nil
-    GameOver = nil
     Ground = {"Infantry", "Mech", "Tank", "Apc", "Artillery"}
     Transmap = MapTranslate(Tilemap)
+    Selection = false
     -- currently only have support for 2 players but the easy ability to add more is there
     -- I'd just need to add the relevant tilemap keys and spritemap index keys
     Turn = 1
@@ -181,19 +180,21 @@ function love.keypressed(key)
             if unit.team == Active_Player.color and unit.ready then
                 -- begin movement for that unit
                 if unit.x == Cursor.x and unit.y == Cursor.y then
-                    if not unit.selected then
+                    if not unit.selected and not Selection then
                         unit.selected = true
+                        Selection = true
                         return
-                    else
+                    elseif not Selection then
                         unit.selected = false
                         Menu(unit)
+                        return
+                    else
                         return
                     end
                 elseif unit.selected then
                     for _, validTile in ipairs(unit.movement) do
                         if validTile[1] == Cursor.y and validTile[2] == Cursor.x then
                             for _, otherUnit in ipairs(UnitList) do
-                                -- TODO: render captured property
                                 if Cursor.x == otherUnit.x and Cursor.y == otherUnit.y then
                                     return
                                 end
@@ -218,10 +219,11 @@ function love.keypressed(key)
         end
         Menu()
     elseif key == "x" then
-        for _, unit in ipairs(UnitList) do
-            if unit.selected then
+        if Selection then 
+            for _, unit in ipairs(UnitList) do
                 unit.selected = false
             end
+            Selection = false
         end
     -- for whatever reason if I quit the game without using a quit event, theres a segmentation fault
     -- im not sure how to get it to not seg fault when I hit the exit button in the top right but it doesnt seem to mess anything up in the game so whatever

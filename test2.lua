@@ -1,1 +1,5 @@
--- BUGS:
+-- TODO:
+-- add the rest of the unit roster
+-- add combat
+-- add fuel consumption
+-- add mouse support

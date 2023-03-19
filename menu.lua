@@ -39,6 +39,7 @@ function Menu:select()
         unit.y = Cursor.y
         unit.ready = false
         unit.selected = false
+        Selection = false
         unit.capture = 20
     elseif selection  == "Attack" then
     elseif selection == "Capture" then
@@ -49,6 +50,7 @@ function Menu:select()
         end
         unit.ready = false
         unit.selected = false
+        Selection = false
         unit.capture = MenuOpen.unit.capture - math.ceil(unit.health / 10)
         if unit.capture <= 0 then
             MapUpdate(unit.x, unit.y)
