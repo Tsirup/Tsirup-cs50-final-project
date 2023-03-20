@@ -10,20 +10,37 @@ function Menu:new(unit)
             self.unit = unit
             for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
                 for _, otherUnit in ipairs(UnitList) do
-                    if otherUnit.team ~= Active_Player.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and not InTable(self.options, "Attack") then
+                    if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and not InTable(self.options, "Attack") then
                         table.insert(self.options, "Attack")
                         break
                     end
                 end
             end
-            if unit.capture and InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(Active_Player.bases, Tilemap[Cursor.y][Cursor.x]) then
+            if unit.capture and InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(ActivePlayer.props, Tilemap[Cursor.y][Cursor.x]) then
                 table.insert(self.options, "Capture")
             end
             table.insert(self.options, "Wait")
-        elseif InTable(Bases, Tilemap[Cursor.y][Cursor.x]) then
-            self.options = Ground
+        elseif ActivePlayer.production[1] == Tilemap[Cursor.y][Cursor.x] then
+            for _, groundUnit in ipairs(Ground) do
+                if Cost[groundUnit] <= ActivePlayer.money then
+                    table.insert(self.options, groundUnit)
+                end
+            end
+        elseif ActivePlayer.production[2] == Tilemap[Cursor.y][Cursor.x] then
+            for _, airUnit in ipairs(Air) do
+                if Cost[airUnit] <= ActivePlayer.money then
+                    table.insert(self.options, airUnit)
+                end
+            end
+        elseif ActivePlayer.production[3] == Tilemap[Cursor.y][Cursor.x] then
+            for _, navalUnit in ipairs(Naval) do
+                if Cost[navalUnit] <= ActivePlayer.money then
+                    table.insert(self.options, navalUnit)
+                end
+            end
         end
-    else
+    end
+    if #self.options == 0 then
         self.options = {"End Turn"}
     end
     self.cursor = 1
@@ -58,16 +75,12 @@ function Menu:select()
         end
     elseif selection == "End Turn" then
         EndTurn()
-    elseif selection == "Infantry" and Active_Player.money >= 1000 then
-        Infantry()
-    elseif selection == "Mech" and Active_Player.money >= 3000 then
-        Mech()
-    elseif selection == "Tank" and Active_Player.money >= 7000 then
-        Tank()
-    elseif selection == "Apc" and Active_Player.money >= 5000 then
-        Apc()
-    elseif selection == "Artillery" and Active_Player.money >= 6000 then
-        Artillery()
+    else
+        -- loads the selection string into a function and calls it if the selection exists
+        local func = load(selection .. "()")
+        if func then
+            func()
+        end
     end
 end
 

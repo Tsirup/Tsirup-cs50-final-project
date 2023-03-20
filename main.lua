@@ -2,8 +2,7 @@
 if arg[2] == "debug" then
     require("lldebugger").start()
 end
-function love.load()
-
+function love.load(args)
     PriorityQueue = require("priorityqueue")
     Object = require "libraries/classic"
     Width = 16
@@ -76,8 +75,8 @@ function love.load()
     end
 
     -- tilemap keys in keys.txt
-    -- map files in maps folder, put whatever map you want here
-    require("maps/BeanIsland")
+    -- map files in maps folder
+    require("maps/CoralLagoon")
     require("mapgen")
     require("units")
     require("movement")
@@ -86,7 +85,13 @@ function love.load()
     Scale = 2
     Camera = {x = 0, y = 0}
     MouseDown = false
-    Ground = {"Infantry", "Mech", "Tank", "Apc", "Artillery"}
+    Ground = {"Infantry", "Mech", "Recon", "Tank", "MediumTank", "NeoTank", "APC", "Artillery", "Rockets", "AntiAir", "Missles"}
+    Air = {"Fighter", "Bomber", "Bcopter", "Tcopter"}
+    Naval = {"Battleship", "Cruiser", "Lander", "Submarine"}
+    Cost = {Infantry = 1000, Mech = 3000, Recon = 4000, Tank = 7000, MediumTank = 16000,
+            NeoTank = 22000, APC = 5000, Artillery = 6000, Rockets = 15000, AntiAir = 8000,
+            Missles = 12000, Fighter = 20000, Bomber = 22000, Bcopter = 9000, Tcopter = 5000,
+            Battleship = 28000, Cruiser = 18000, Lander = 12000, Submarine = 20000}
     Transmap = MapTranslate(Tilemap)
     Selection = false
     -- currently only have support for 2 players but the easy ability to add more is there
@@ -102,7 +107,7 @@ end
 
 function EndTurn()
     for _, unit in ipairs(UnitList) do
-        if unit.team == Active_Player.color then
+        if unit.team == ActivePlayer.color then
             if not unit.ready then
                 unit.ready = true
             end
@@ -113,10 +118,10 @@ function EndTurn()
     while active > #Players do
         active = active - #Players
     end
-    Active_Player = Players[active]
-    Active_Player.money = Active_Player.money + Active_Player.income
+    ActivePlayer = Players[active]
+    ActivePlayer.money = ActivePlayer.money + ActivePlayer.income
     for _, unit in ipairs(UnitList) do
-        if unit.team == Active_Player.color then
+        if unit.team == ActivePlayer.color then
             unit.movement = Movement(unit)
         end
     end
@@ -160,12 +165,6 @@ function love.keypressed(key)
     local x = Cursor.x
     local y = Cursor.y
 
-    if Active_Player.color == "red" then
-        Bases = {08, 13, 18}
-    elseif Active_Player.color == "blue" then
-        Bases = {09, 14, 19}
-    end
-
     if key == "left" then
         x = x - 1
     elseif key == "right" then
@@ -177,7 +176,7 @@ function love.keypressed(key)
     elseif key == "z" then
         -- check if cursor is on unit
         for _, unit in ipairs(UnitList) do
-            if unit.team == Active_Player.color and unit.ready then
+            if unit.team == ActivePlayer.color and unit.ready then
                 -- begin movement for that unit
                 if unit.x == Cursor.x and unit.y == Cursor.y then
                     if not unit.selected and not Selection then
@@ -207,9 +206,9 @@ function love.keypressed(key)
             end
         end
         -- check if cursor is on base
-        if InTable(Bases, Tilemap[y][x]) then
+        if InTable(ActivePlayer.production, Tilemap[y][x]) then
             for _, unit in ipairs(UnitList) do
-                if unit.x == x and unit.y == y and (unit.ready == false or unit.team ~= Active_Player.color) then
+                if unit.x == x and unit.y == y and (unit.ready == false or unit.team ~= ActivePlayer.color) then
                     Menu()
                     return
                 end
@@ -287,18 +286,18 @@ end
 
 function MapUpdate(x,y)
     local loser, winner = nil, nil
-    winner = Active_Player
+    winner = ActivePlayer
     for _, player in ipairs(Players) do
-        if InTable(player.bases, Tilemap[y][x]) then
+        if InTable(player.props, Tilemap[y][x]) then
             loser = player
         end
     end 
     if InTable(City, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.bases[1]
+        Tilemap[y][x] = winner.props[1]
     elseif InTable(Base, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.bases[2]
+        Tilemap[y][x] = winner.props[2]
     elseif InTable(HQ, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.bases[1]
+        Tilemap[y][x] = winner.props[1]
         for i = #Players, 1, -1 do
             if loser == Players[i] then
                 -- delete all of the loser's units
@@ -310,7 +309,7 @@ function MapUpdate(x,y)
                 -- transfer over all of the loser's properties
                 for i, row in ipairs(Tilemap) do
                     for j, tile in ipairs(row) do
-                        if InTable(loser.bases, tile) then
+                        if InTable(loser.props, tile) then
                             MapUpdate(j,i)
                         end
                     end
@@ -320,11 +319,11 @@ function MapUpdate(x,y)
             end
         end
     elseif InTable(Airport, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.bases[4]
+        Tilemap[y][x] = winner.props[4]
     elseif InTable(Port, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.bases[5]
+        Tilemap[y][x] = winner.props[5]
     elseif InTable(Lab, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.bases[6]
+        Tilemap[y][x] = winner.props[6]
     end
     TileTranslate(Tilemap[y][x], y, x)
     winner.income = winner.income + 1000
@@ -339,7 +338,7 @@ function EndGame()
     GameOver = true
     love.graphics.rectangle("fill", mWidth / 4, mHeight / 4, mWidth / 2, mHeight / 2)
     love.graphics.setColor(0,0,0,1)
-    love.graphics.print(string.format("%s is the winner!", Active_Player.color), mWidth * (5/16), mHeight * (5/16))
+    love.graphics.print(string.format("%s is the winner!", ActivePlayer.color), mWidth * (5/16), mHeight * (5/16))
     love.graphics.print("Press Esc to exit.", mWidth * (5/16), mHeight * (9/16))
     love.graphics.setColor(1,1,1,1)
 end
@@ -403,8 +402,8 @@ function love.draw()
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
     love.graphics.setColor(0,0,0,1)
-    love.graphics.print("Player: " .. Active_Player.color, 20, 20)
-    love.graphics.print("Money: " .. Active_Player.money, 20, 40)
+    love.graphics.print("Player: " .. ActivePlayer.color, 20, 20)
+    love.graphics.print("Money: " .. ActivePlayer.money, 20, 40)
     love.graphics.setColor(1,1,1,1)
     -- check for victory
     if #Players == 1 then

@@ -1,8 +1,7 @@
 Bcopter = Unit:extend()
 
 function Bcopter:new()
-    self.cost = 9000
-    self.spec = "Battle Copter"
+    self.spec = "copter"
     self.move = 6
     self.moveType = "air"
     self.vision = 3
@@ -11,9 +10,10 @@ function Bcopter:new()
     self.ammo = 6
     Bcopter.super.new(self)
     if self.team == "red" then
-        self.quad = 431
+        self.quad = 631
     elseif self.team == "blue" then
-        self.quad = 437
+        self.quad = 637
     end
     table.insert(UnitList, self)
+    ActivePlayer.money = ActivePlayer.money - Cost.Bcopter
 end

@@ -1,19 +1,19 @@
-AntiAir = Unit:extend()
+NeoTank = Unit:extend()
 
-function AntiAir:new()
+function NeoTank:new()
     self.spec = "vehicle"
     self.move = 6
     self.moveType = "tread"
-    self.vision = 2
-    self.fuel = 60
+    self.vision = 1
+    self.fuel = 99
     self.range = {1}
     self.ammo = 9
-    AntiAir.super.new(self)
+    NeoTank.super.new(self)
     if self.team == "red" then
-        self.quad = 451
+        self.quad = 391
     elseif self.team == "blue" then
-        self.quad = 457
+        self.quad = 397
     end
     table.insert(UnitList, self)
-    ActivePlayer.money = ActivePlayer.money - Cost.AntiAir
+    ActivePlayer.money = ActivePlayer.money - Cost.NeoTank
 end

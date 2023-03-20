@@ -120,6 +120,7 @@ function MatrixTranslate(matrix,classification)
     -- not on their relationship to eachother, so past around 15 it gets a little random how they are classified
     local land = {01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25}
     local shadow = {02, 03, 04, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25}
+    local urban = {03, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25}
     matrix.type = classification
     if matrix.type == "sea" then
         -- for sea tiles and only sea tiles, ports are not considered land tiles
@@ -182,6 +183,9 @@ function MatrixTranslate(matrix,classification)
         matrix.shadow = false
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
+                if InTable(urban, mtile) then
+                    matrix[mi][mj] = 5
+                end
                 if mi == 2 and mj == 1 and InTable(shadow,mtile) then
                     matrix.shadow = true
                 end
@@ -661,7 +665,7 @@ end
 function PlayerGen()
     local csvmap = {}
     local income
-    local bases = {}
+    local props = {}
     Players = {}
     City, Base, HQ, Airport, Port, Lab = {3}, {12}, {nil}, {16}, {17}, {23}
     Property = {3, 12, 16, 17, 23}
@@ -671,25 +675,25 @@ function PlayerGen()
         end
     end
     if InTable(csvmap, 10) or InTable(csvmap, 24) then
-        bases = {6, 8, 10, 13, 18, 24}
-        CombineTable(Property, bases)
-        income = CountInTable(csvmap, bases) * 1000
-        table.insert(Players, {color = "red", money = 0, income = income, bases = bases})
+        props = {6, 8, 10, 13, 18, 24}
+        CombineTable(Property, props)
+        income = CountInTable(csvmap, props) * 1000
+        table.insert(Players, {color = "red", money = 0, income = income, props = props, production = {08,13,18}})
     end
     if InTable(csvmap, 11) or InTable(csvmap, 25) then
-        bases = {7, 9, 11, 14, 19, 25}
-        CombineTable(Property, bases)
-        income = CountInTable(csvmap, bases) * 1000
-        table.insert(Players, {color = "blue", money = 0, income = income, bases = bases})
+        props = {7, 9, 11, 14, 19, 25}
+        CombineTable(Property, props)
+        income = CountInTable(csvmap, props) * 1000
+        table.insert(Players, {color = "blue", money = 0, income = income, props = props, production = {09,14,19}})
     end
     for _, player in ipairs(Players) do
-        table.insert(City, player.bases[1])
-        table.insert(Base, player.bases[2])
-        table.insert(HQ, player.bases[3])
-        table.insert(Airport, player.bases[4])
-        table.insert(Port, player.bases[5])
-        table.insert(Lab, player.bases[6])
+        table.insert(City, player.props[1])
+        table.insert(Base, player.props[2])
+        table.insert(HQ, player.props[3])
+        table.insert(Airport, player.props[4])
+        table.insert(Port, player.props[5])
+        table.insert(Lab, player.props[6])
     end
-    Active_Player = Players[Turn]
-    Active_Player.money = income
+    ActivePlayer = Players[1]
+    ActivePlayer.money = income
 end

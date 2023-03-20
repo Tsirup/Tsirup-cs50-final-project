@@ -1,8 +1,7 @@
 Tank = Unit:extend()
 
 function Tank:new()
-    self.cost = 7000
-    self.spec = "Tank"
+    self.spec = "vehicle"
     self.move = 6
     self.moveType = "tread"
     self.vision = 3
@@ -16,4 +15,5 @@ function Tank:new()
         self.quad = 337
     end
     table.insert(UnitList, self)
+    ActivePlayer.money = ActivePlayer.money - Cost.Tank
 end

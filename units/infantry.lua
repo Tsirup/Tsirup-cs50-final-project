@@ -1,8 +1,7 @@
 Infantry = Unit:extend()
 
 function Infantry:new()
-    self.cost = 1000
-    self.spec = "Infantry"
+    self.spec = "infantry"
     self.move = 3
     self.moveType = "infantry"
     self.vision = 2
@@ -16,6 +15,7 @@ function Infantry:new()
         self.quad = 37
     end
     table.insert(UnitList, self)
+    ActivePlayer.money = ActivePlayer.money - Cost.Infantry
 end
 
 function Infantry:draw()

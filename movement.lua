@@ -16,6 +16,11 @@ function Movement(unit)
 end
 
 function FindPaths(unit)
+    -- TODO:
+    -- Get rid of all the Concatenation nonsense and replace bracket indexing with dot indexing
+    -- Document every part of this algorithm
+    -- Possible solution could be to only approve to check neighbors that we haven't already approved
+    -- get rid of the priority queue, priority is useless
     local start = {unit.y, unit.x}
     local frontier = PriorityQueue:new()
     frontier:push(start,0)
@@ -28,7 +33,7 @@ function FindPaths(unit)
         for _, neighbor in ipairs(Adjacent(current[1], current[2])) do
             local newCost = costSoFar[table.concat(current,", ")] + Movecost[unit.moveType][Tilemap[neighbor[1]][neighbor[2]] + 1]
             for _, otherUnit in ipairs(UnitList) do
-                if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit.team ~= Active_Player.color then
+                if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit.team ~= ActivePlayer.color then
                     newCost = newCost + 99
                 end
             end

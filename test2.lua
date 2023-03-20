@@ -1,5 +1,7 @@
 -- TODO:
--- add the rest of the unit roster
+-- fix djikstra algorithm (fighters make it lag)
+-- implement fuel
+-- implement special unit abilities (i.e. transporting, diving, etc.)
 -- add combat
--- add fuel consumption
+-- add music
 -- add mouse support

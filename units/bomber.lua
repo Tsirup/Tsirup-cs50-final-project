@@ -1,8 +1,7 @@
 Bomber = Unit:extend()
 
 function Bomber:new()
-    self.cost = 22000
-    self.spec = "Bomber"
+    self.spec = "plane"
     self.move = 7
     self.moveType = "air"
     self.vision = 2
@@ -16,4 +15,5 @@ function Bomber:new()
         self.quad = 607
     end
     table.insert(UnitList, self)
+    ActivePlayer.money = ActivePlayer.money - Cost.Bomber
 end

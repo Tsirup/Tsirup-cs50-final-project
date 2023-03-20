@@ -1,8 +1,7 @@
 Artillery = Unit:extend()
 
 function Artillery:new()
-    self.cost = 6000
-    self.spec = "Artillery"
+    self.spec = "vehicle"
     self.move = 5
     self.moveType = "tread"
     self.vision = 1
@@ -16,4 +15,5 @@ function Artillery:new()
         self.quad = 487
     end
     table.insert(UnitList, self)
+    ActivePlayer.money = ActivePlayer.money - Cost.Artillery
 end

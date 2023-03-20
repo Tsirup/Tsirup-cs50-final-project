@@ -1,8 +1,7 @@
 Mech = Unit:extend()
 
 function Mech:new()
-    self.cost = 3000
-    self.spec = "Mech"
+    self.spec = "infantry"
     self.move = 2
     self.moveType = "mech"
     self.vision = 2
@@ -16,6 +15,7 @@ function Mech:new()
         self.quad = 187
     end
     table.insert(UnitList, self)
+    ActivePlayer.money = ActivePlayer.money - Cost.Mech
 end
 
 function Mech:draw()

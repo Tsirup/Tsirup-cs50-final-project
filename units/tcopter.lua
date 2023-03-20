@@ -1,8 +1,7 @@
 Tcopter = Unit:extend()
 
 function Tcopter:new()
-    self.cost = 5000
-    self.spec = "Transport Copter"
+    self.spec = "copter"
     self.move = 6
     self.moveType = "air"
     self.vision = 2
@@ -14,4 +13,5 @@ function Tcopter:new()
         self.quad = 667
     end
     table.insert(UnitList, self)
+    ActivePlayer.money = ActivePlayer.money - Cost.Tcopter
 end
