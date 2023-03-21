@@ -65,8 +65,8 @@ end
 
 function Menu:select()
     local unit = MenuOpen.unit
-    local selection = MenuOpen.options[MenuOpen.cursor]
-    if selection == "Wait" then
+    local selected = MenuOpen.options[MenuOpen.cursor]
+    if selected == "Wait" then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             unit.x = Cursor.x
             unit.y = Cursor.y
@@ -78,8 +78,8 @@ function Menu:select()
         if unit.capture then
             unit.capture = 20
         end
-    elseif selection  == "Attack" then
-    elseif selection == "Capture" then
+    elseif selected  == "Attack" then
+    elseif selected == "Capture" then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             unit.x = Cursor.x
             unit.y = Cursor.y
@@ -94,9 +94,9 @@ function Menu:select()
             MapUpdate(unit.x, unit.y)
             unit.capture = 20
         end
-    elseif selection == "End Turn" then
+    elseif selected == "End Turn" then
         EndTurn()
-    elseif selection == "Load" then
+    elseif selected == "Load" then
         for _, otherUnit in ipairs(UnitList) do
             if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y then
                 table.insert(otherUnit.cargo, unit)
@@ -107,7 +107,7 @@ function Menu:select()
         end
     else
         -- loads the selection string into a function and calls it if the selection exists
-        local func = load(selection .. "()")
+        local func = load(selected .. "()")
         if func then
             func()
         end

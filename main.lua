@@ -199,11 +199,6 @@ function love.keypressed(key)
                         unit.selected = true
                         Selection = true
                         return
-                    -- how does this even happen
-                    elseif not Selection then
-                        unit.selected = false
-                        Menu(unit)
-                        return
                     elseif unit.selected then
                         Menu(unit)
                         return
