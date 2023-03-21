@@ -8,6 +8,21 @@ function Menu:new(unit)
     if unit then
         if type(unit) ~= "string" then
             self.unit = unit
+            -- we must avoid overlapping units
+            for _, otherUnit in ipairs(UnitList) do
+                if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y and otherUnit ~= unit then
+                    if otherUnit.carry then
+                        if InTable(otherUnit.carry, unit.spec) then
+                            table.insert(self.options, "Load")
+                            self.cursor = 1
+                            self.cursorimage = love.graphics.newImage("graphics/menucursortransparent.png")
+                            MenuOpen = self
+                            return
+                        end
+                    end
+                    return
+                end
+            end
             for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
                 for _, otherUnit in ipairs(UnitList) do
                     if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and not InTable(self.options, "Attack") then
@@ -52,9 +67,11 @@ function Menu:select()
     local unit = MenuOpen.unit
     local selection = MenuOpen.options[MenuOpen.cursor]
     if selection == "Wait" then
-        unit.x = Cursor.x
-        unit.y = Cursor.y
-        unit.fuel = unit.fuel - Cursor.fuel
+        if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
+            unit.x = Cursor.x
+            unit.y = Cursor.y
+            unit.fuel = unit.fuel - Cursor.fuel
+        end
         unit.ready = false
         unit.selected = false
         Selection = false
@@ -79,6 +96,15 @@ function Menu:select()
         end
     elseif selection == "End Turn" then
         EndTurn()
+    elseif selection == "Load" then
+        for _, otherUnit in ipairs(UnitList) do
+            if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y then
+                otherUnit.cargo = unit
+                table.remove(UnitList, Index(UnitList, unit))
+                -- dont forget this
+                Selection = false
+            end
+        end
     else
         -- loads the selection string into a function and calls it if the selection exists
         local func = load(selection .. "()")

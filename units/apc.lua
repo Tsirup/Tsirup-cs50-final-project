@@ -6,6 +6,7 @@ function APC:new()
     self.moveType = "tread"
     self.vision = 1
     self.fuel = 70
+    self.carry = {"infantry"}
     APC.super.new(self)
     if self.team == "red" then
         self.quad = 421

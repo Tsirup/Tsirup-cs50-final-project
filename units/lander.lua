@@ -6,6 +6,7 @@ function Lander:new()
     self.moveType = "transport"
     self.vision = 1
     self.fuel = 99
+    self.carry = {"infantry", "vehicle"}
     Lander.super.new(self)
     if self.team == "red" then
         self.quad = 751

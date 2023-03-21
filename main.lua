@@ -199,22 +199,18 @@ function love.keypressed(key)
                         unit.selected = true
                         Selection = true
                         return
+                    -- how does this even happen
                     elseif not Selection then
                         unit.selected = false
                         Menu(unit)
                         return
-                    else
+                    elseif unit.selected then
                         Menu(unit)
                         return
                     end
                 elseif unit.selected then
                     for _, validTile in ipairs(unit.movement) do
                         if validTile[1] == Cursor.y and validTile[2] == Cursor.x then
-                            for _, otherUnit in ipairs(UnitList) do
-                                if Cursor.x == otherUnit.x and Cursor.y == otherUnit.y then
-                                    return
-                                end
-                            end
                             Cursor.fuel = validTile[3]
                             Menu(unit)
                             return
