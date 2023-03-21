@@ -7,6 +7,8 @@ function APC:new()
     self.vision = 1
     self.fuel = 70
     self.carry = {"infantry"}
+    self.cargo = {}
+    self.capacity = 1
     APC.super.new(self)
     if self.team == "red" then
         self.quad = 421

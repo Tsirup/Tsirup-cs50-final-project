@@ -7,6 +7,8 @@ function Lander:new()
     self.vision = 1
     self.fuel = 99
     self.carry = {"infantry", "vehicle"}
+    self.cargo = {}
+    self.capacity = 2
     Lander.super.new(self)
     if self.team == "red" then
         self.quad = 751

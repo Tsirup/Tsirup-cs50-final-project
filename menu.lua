@@ -12,7 +12,7 @@ function Menu:new(unit)
             for _, otherUnit in ipairs(UnitList) do
                 if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y and otherUnit ~= unit then
                     if otherUnit.carry then
-                        if InTable(otherUnit.carry, unit.spec) then
+                        if InTable(otherUnit.carry, unit.spec) and #otherUnit.cargo < otherUnit.capacity then
                             table.insert(self.options, "Load")
                             self.cursor = 1
                             self.cursorimage = love.graphics.newImage("graphics/menucursortransparent.png")
@@ -99,7 +99,7 @@ function Menu:select()
     elseif selection == "Load" then
         for _, otherUnit in ipairs(UnitList) do
             if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y then
-                otherUnit.cargo = unit
+                table.insert(otherUnit.cargo, unit)
                 table.remove(UnitList, Index(UnitList, unit))
                 -- dont forget this
                 Selection = false

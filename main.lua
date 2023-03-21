@@ -109,11 +109,11 @@ function EndTurn()
     -- potentially move this into the next for loop for optimization? but make sure it does this for the previous player then
     for _, unit in ipairs(UnitList) do
         if unit.team == ActivePlayer.color then
-            if not unit.ready then
-                unit.ready = true
-            end
+            unit.ready = true
+            unit.selected = false
         end
     end
+    Selection = false
     Turn = Turn + 1
     local active = Turn
     while active > #Players do

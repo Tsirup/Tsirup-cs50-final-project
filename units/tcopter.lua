@@ -7,6 +7,8 @@ function Tcopter:new()
     self.vision = 2
     self.fuel = 99
     self.carry = {"infantry"}
+    self.cargo = {}
+    self.capacity = 1
     Tcopter.super.new(self)
     if self.team == "red" then
         self.quad = 661
