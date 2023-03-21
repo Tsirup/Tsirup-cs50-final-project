@@ -76,7 +76,7 @@ function love.load(args)
 
     -- tilemap keys in keys.txt
     -- map files in maps folder
-    require("maps/CoralLagoon")
+    require("maps/Triangles")
     require("mapgen")
     require("units")
     require("movement")
@@ -101,11 +101,12 @@ function love.load(args)
     Cursor = {
         image = love.graphics.newImage("graphics/cursortransparent.png"),
         x = 1,
-        y = 1,
+        y = 1
     }
 end
 
 function EndTurn()
+    -- potentially move this into the next for loop for optimization? but make sure it does this for the previous player then
     for _, unit in ipairs(UnitList) do
         if unit.team == ActivePlayer.color then
             if not unit.ready then
@@ -120,9 +121,23 @@ function EndTurn()
     end
     ActivePlayer = Players[active]
     ActivePlayer.money = ActivePlayer.money + ActivePlayer.income
-    for _, unit in ipairs(UnitList) do
+    for i, unit in ipairs(UnitList) do
         if unit.team == ActivePlayer.color then
             unit.movement = Movement(unit)
+            if unit.spec ~= "infantry" and unit.spec ~= "vehicle" then
+                if unit.spec == "ship" or unit.spec == "transport" then
+                    unit.fuel = unit.fuel - 1
+                elseif unit.spec == "copter" then
+                    unit.fuel = unit.fuel - 2
+                elseif unit.spec == "ship" or unit.spec == "transport" then
+                    unit.fuel = unit.fuel - 1
+                elseif unit.spec == "plane" or unit.spec == "sub" then
+                    unit.fuel = unit.fuel - 5
+                end
+                if unit.fuel <= 0 then
+                    table.remove(UnitList, i)
+                end
+            end
         end
     end
 end
@@ -179,6 +194,7 @@ function love.keypressed(key)
             if unit.team == ActivePlayer.color and unit.ready then
                 -- begin movement for that unit
                 if unit.x == Cursor.x and unit.y == Cursor.y then
+                    -- what the hell is going on here
                     if not unit.selected and not Selection then
                         unit.selected = true
                         Selection = true
@@ -188,6 +204,7 @@ function love.keypressed(key)
                         Menu(unit)
                         return
                     else
+                        Menu(unit)
                         return
                     end
                 elseif unit.selected then
@@ -198,6 +215,7 @@ function love.keypressed(key)
                                     return
                                 end
                             end
+                            Cursor.fuel = validTile[3]
                             Menu(unit)
                             return
                         end

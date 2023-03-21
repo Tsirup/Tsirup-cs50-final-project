@@ -54,15 +54,19 @@ function Menu:select()
     if selection == "Wait" then
         unit.x = Cursor.x
         unit.y = Cursor.y
+        unit.fuel = unit.fuel - Cursor.fuel
         unit.ready = false
         unit.selected = false
         Selection = false
-        unit.capture = 20
+        if unit.capture then
+            unit.capture = 20
+        end
     elseif selection  == "Attack" then
     elseif selection == "Capture" then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             unit.x = Cursor.x
             unit.y = Cursor.y
+            unit.fuel = unit.fuel - Cursor.fuel
             unit.capture = 20
         end
         unit.ready = false

@@ -1,6 +1,4 @@
 -- TODO:
--- fix djikstra algorithm (fighters make it lag)
--- implement fuel
 -- implement special unit abilities (i.e. transporting, diving, etc.)
 -- add combat
 -- add music
