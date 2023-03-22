@@ -34,6 +34,11 @@ function Menu:new(unit)
             if unit.capture and InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(ActivePlayer.props, Tilemap[Cursor.y][Cursor.x]) then
                 table.insert(self.options, "Capture")
             end
+            if unit.carry then
+                if #unit.cargo > 0 then
+                    table.insert(self.options, "Unload")
+                end
+            end
             table.insert(self.options, "Wait")
         elseif ActivePlayer.production[1] == Tilemap[Cursor.y][Cursor.x] then
             for _, groundUnit in ipairs(Ground) do

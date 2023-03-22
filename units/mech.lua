@@ -7,6 +7,7 @@ function Mech:new()
     self.vision = 2
     self.fuel = 70
     self.range = {1}
+    self.ammo = 3
     self.capture = 20
     Mech.super.new(self)
     if self.team == "red" then

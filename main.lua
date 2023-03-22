@@ -44,11 +44,11 @@ function love.load(args)
         end
     end
 
-    Units = love.graphics.newImage("graphics/units2bordertransparent.png")
+    Units = love.graphics.newImage("graphics/units3bordertransparent.png")
     image_width = Units:getWidth()
     image_height = Units:getHeight()
 
-    for i=0,26 do
+    for i=0,32 do
         for j=0,29 do
             table.insert(Unit_quads,
                 love.graphics.newQuad(
@@ -76,7 +76,7 @@ function love.load(args)
 
     -- tilemap keys in keys.txt
     -- map files in maps folder
-    require("maps/Triangles")
+    require("maps/test")
     require("mapgen")
     require("units")
     require("movement")

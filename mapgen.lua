@@ -118,7 +118,7 @@ end
 function MatrixTranslate(matrix,classification)
     -- these are written explicitly because i have keyed the values by their prevelence as can be seen in keys.txt,
     -- not on their relationship to eachother, so past around 15 it gets a little random how they are classified
-    local land = {01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25}
+    local land = {01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27}
     local shadow = {02, 03, 04, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25}
     local urban = {03, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25}
     matrix.type = classification
@@ -200,6 +200,16 @@ function MatrixTranslate(matrix,classification)
                     matrix[mi][mj] = 0
                 else
                     matrix[mi][mj] = 2
+                end
+            end
+        end
+    elseif matrix.type == "pipe" then
+        for mi, mrow in ipairs(matrix) do
+            for mj, mtile in ipairs(mrow) do
+                if mtile == 26 or mtile == 27 then
+                    matrix[mi][mj] = 1
+                else
+                    matrix[mi][mj] = 0
                 end
             end
         end
@@ -596,6 +606,49 @@ function MapTranslate(unmap)
                 transmap[i][j] = 1109
             elseif tile == 25 then
                 transmap[i][j] = 1027
+            elseif tile == 26 then
+                local matrix = MatrixTranslate(Neighbors(i,j),"pipe")
+                if matrix[2][1] == 1 and matrix[2][3] == 1 then
+                    transmap[i][j] = 8
+                elseif matrix[1][2] == 1 and matrix[2][1] == 1 then
+                    transmap[i][j] = 72
+                elseif matrix[1][2] == 1 and matrix[2][3] == 1 then
+                    transmap[i][j] = 71
+                elseif matrix[1][2] == 1 and matrix[3][2] == 1 then
+                    transmap[i][j] = 9
+                elseif matrix[2][1] == 1 and matrix[3][2] == 1 then
+                    transmap[i][j] = 50
+                elseif matrix[2][3] == 1 and matrix[3][2] == 1 then
+                    transmap[i][j] = 49
+                elseif matrix[1][2] == 1 then
+                    transmap[i][j] = 73
+                elseif matrix[2][1] == 1 then
+                    transmap[i][j] = 75
+                elseif matrix[2][3] == 1 then
+                    transmap[i][j] = 74
+                elseif matrix[3][2] == 1 then
+                    transmap[i][j] = 51
+                else
+                    transmap[i][j] = 8
+                end
+            elseif tile == 27 then
+                local matrix = MatrixTranslate(Neighbors(i,j),"pipe")
+                if matrix[2][1] == 1 and matrix[2][3] == 1 then
+                    transmap[i][j] = 30
+                elseif matrix[1][2] == 1 and matrix[3][2] == 1 then
+                    transmap[i][j] = 31
+                else
+                    transmap[i][j] = 30
+                end
+            elseif tile == 28 then
+                local matrix = MatrixTranslate(Neighbors(i,j), "pipe")
+                if matrix[2][1] == 1 and matrix[2][3] == 1 then
+                    transmap[i][j] = 52
+                elseif matrix[1][2] == 1 and matrix[3][2] == 1 then
+                    transmap[i][j] = 53
+                else
+                    transmap[i][j] = 52
+                end
             else
                 transmap[i][j] = 0
             end

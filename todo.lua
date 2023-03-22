@@ -1,5 +1,7 @@
 -- TODO:
--- implement special unit abilities (i.e. transporting, diving, etc.)
+-- add dual strike units
+-- finish unloading
+-- implement special unit abilities (diving, exploding, etc.)
 -- add combat
 -- add music
 -- add mouse support

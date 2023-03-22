@@ -25,3 +25,6 @@ TILEMAP KEYS:
 23 = Neutral Lab
 24 = Red Lab
 25 = Blue Lab
+26 = Pipe
+27 = Pipe Seam
+28 = Broken Pipe Seam
