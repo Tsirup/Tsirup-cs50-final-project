@@ -17,7 +17,6 @@ function Cruiser:new()
     elseif self.team == "blue" then
         self.quad = 727
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.Cruiser
 end
 

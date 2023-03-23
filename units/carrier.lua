@@ -1,25 +1,27 @@
-Lander = Unit:extend()
+AircraftCarrier = Unit:extend()
 
-function Lander:new()
+function AircraftCarrier:new()
     self.spec = "ship"
-    self.move = 6
-    self.moveType = "transport"
-    self.vision = 1
+    self.move = 5
+    self.moveType = "ship"
+    self.vision = 4
     self.fuel = 99
-    self.carry = {"infantry", "vehicle"}
+    self.range = {3,4,5,6,7,8}
+    self.ammo = 9
+    self.carry = {"copter", "plane"}
     self.cargo = {}
     self.capacity = 2
-    Lander.super.new(self)
+    AircraftCarrier.super.new(self)
     if self.team == "red" then
-        self.quad = 751
+        self.quad = 961
     elseif self.team == "blue" then
-        self.quad = 757
+        self.quad = 967
     end
-    ActivePlayer.money = ActivePlayer.money - Cost.Lander
+    ActivePlayer.money = ActivePlayer.money - Cost.AircraftCarrier
 end
 
-function Lander:draw()
-    Lander.super.draw(self)
+function AircraftCarrier:draw()
+    AircraftCarrier.super.draw(self)
     if #self.cargo > 0 then
         if self.team == "red" then
             self.iconQuad = 15

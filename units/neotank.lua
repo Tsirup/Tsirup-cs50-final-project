@@ -14,6 +14,5 @@ function NeoTank:new()
     elseif self.team == "blue" then
         self.quad = 397
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.NeoTank
 end

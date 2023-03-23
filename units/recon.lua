@@ -13,6 +13,5 @@ function Recon:new()
     elseif self.team == "blue" then
         self.quad = 307
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.Recon
 end

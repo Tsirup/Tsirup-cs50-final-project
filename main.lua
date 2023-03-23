@@ -76,7 +76,7 @@ function love.load(args)
 
     -- tilemap keys in keys.txt
     -- map files in maps folder
-    require("maps/test")
+    require("maps/BallIslands")
     require("mapgen")
     require("units")
     require("movement")
@@ -85,13 +85,14 @@ function love.load(args)
     Scale = 2
     Camera = {x = 0, y = 0}
     MouseDown = false
-    Ground = {"Infantry", "Mech", "Recon", "Tank", "MediumTank", "NeoTank", "APC", "Artillery", "Rockets", "AntiAir", "Missles"}
-    Air = {"Fighter", "Bomber", "Bcopter", "Tcopter"}
-    Naval = {"Battleship", "Cruiser", "Lander", "Submarine"}
+    Ground = {"Infantry", "Mech", "Recon", "Tank", "MediumTank", "NeoTank", "MegaTank", "APC", "Artillery", "Rockets", "AntiAir", "Missles", "PipeRunner"}
+    Air = {"Fighter", "Bomber", "Bcopter", "Tcopter", "StealthFighter", "BlackBomb"}
+    Naval = {"Battleship", "Cruiser", "Lander", "Submarine", "BlackBoat", "AircraftCarrier"}
     Cost = {Infantry = 1000, Mech = 3000, Recon = 4000, Tank = 7000, MediumTank = 16000,
-            NeoTank = 22000, APC = 5000, Artillery = 6000, Rockets = 15000, AntiAir = 8000,
-            Missles = 12000, Fighter = 20000, Bomber = 22000, Bcopter = 9000, Tcopter = 5000,
-            Battleship = 28000, Cruiser = 18000, Lander = 12000, Submarine = 20000}
+            NeoTank = 22000, MegaTank = 28000, APC = 5000, Artillery = 6000, Rockets = 15000,
+            AntiAir = 8000, Missles = 12000, PipeRunner = 20000, Fighter = 20000, Bomber = 22000,
+            Bcopter = 9000, Tcopter = 5000, StealthFighter = 24000, BlackBomb = 25000, Battleship = 28000,
+            Cruiser = 18000, Lander = 12000, Submarine = 20000, BlackBoat = 7500, AircraftCarrier = 30000}
     Transmap = MapTranslate(Tilemap)
     Selection = false
     -- currently only have support for 2 players but the easy ability to add more is there
@@ -125,12 +126,10 @@ function EndTurn()
         if unit.team == ActivePlayer.color then
             unit.movement = Movement(unit)
             if unit.spec ~= "infantry" and unit.spec ~= "vehicle" then
-                if unit.spec == "ship" or unit.spec == "transport" then
+                if unit.spec == "ship" then
                     unit.fuel = unit.fuel - 1
                 elseif unit.spec == "copter" then
                     unit.fuel = unit.fuel - 2
-                elseif unit.spec == "ship" or unit.spec == "transport" then
-                    unit.fuel = unit.fuel - 1
                 elseif unit.spec == "plane" or unit.spec == "sub" then
                     unit.fuel = unit.fuel - 5
                 end

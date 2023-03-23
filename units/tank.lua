@@ -14,6 +14,5 @@ function Tank:new()
     elseif self.team == "blue" then
         self.quad = 337
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.Tank
 end

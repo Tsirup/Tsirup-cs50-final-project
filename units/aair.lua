@@ -14,6 +14,5 @@ function AntiAir:new()
     elseif self.team == "blue" then
         self.quad = 457
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.AntiAir
 end

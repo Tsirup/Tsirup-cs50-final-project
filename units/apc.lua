@@ -15,7 +15,6 @@ function APC:new()
     elseif self.team == "blue" then
         self.quad = 427
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.APC
 end
 
@@ -29,4 +28,4 @@ function APC:draw()
         end
         love.graphics.draw(Icons, Icon_quads[self.iconQuad], self.x * Width, self.y * Height + Height / 2)
     end
-end   
+end

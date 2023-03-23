@@ -8,6 +8,7 @@ function Unit:new()
     self.health = 100
     self.selected = false
     self.fuelCapacity = self.fuel
+    table.insert(UnitList, self)
 end
 
 function Unit:draw()

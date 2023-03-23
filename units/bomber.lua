@@ -14,6 +14,5 @@ function Bomber:new()
     elseif self.team == "blue" then
         self.quad = 607
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.Bomber
 end

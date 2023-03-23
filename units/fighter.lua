@@ -14,6 +14,5 @@ function Fighter:new()
     elseif self.team == "blue" then
         self.quad = 577
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.Fighter
 end

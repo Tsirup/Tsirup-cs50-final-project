@@ -15,6 +15,5 @@ function Submarine:new()
     elseif self.team == "blue" then
         self.quad = 787
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.Submarine
 end

@@ -14,6 +14,5 @@ function Missles:new()
     elseif self.team == "blue" then
         self.quad = 547
     end
-    table.insert(UnitList, self)
     ActivePlayer.money = ActivePlayer.money - Cost.Missles
 end
