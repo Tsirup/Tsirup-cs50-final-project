@@ -126,10 +126,16 @@ function Menu:draw()
             menuWidth = #(option) / 2
         end
     end
-    love.graphics.rectangle("fill", Cursor.x * Width + Width, Cursor.y * Height, menuWidth * Width, Height * #(MenuOpen.options))
+    if Cost[MenuOpen.options[1]] then
+        menuWidth = menuWidth * 1.5
+    end
+    love.graphics.rectangle("fill", Cursor.x * Width + Width, Cursor.y * Height, (menuWidth + 1) * Width, Height * #(MenuOpen.options))
     love.graphics.setColor(0,0,0,1)
     for i, option in ipairs(MenuOpen.options) do
         love.graphics.print(option, Cursor.x * Width + Width * 1.25, Cursor.y * Height + Height * (i-1))
+        if Cost[option] then
+            love.graphics.print(tostring(Cost[option]), Cursor.x * Width + Width * (menuWidth - 1), Cursor.y * Height + Height * (i-1))
+        end
     end
     love.graphics.setColor(1,1,1,1)
     love.graphics.draw(MenuOpen.cursorimage, Cursor.x * Width + Width, Cursor.y * Height + (3 * Height / 4) * (MenuOpen.cursor-1) + (Height / 4) * MenuOpen.cursor)

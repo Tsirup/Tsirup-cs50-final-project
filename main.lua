@@ -76,7 +76,7 @@ function love.load(args)
 
     -- tilemap keys in keys.txt
     -- map files in maps folder
-    require("maps/Triangles")
+    require("maps/BallIslands")
     require("mapgen")
     require("units")
     require("movement")

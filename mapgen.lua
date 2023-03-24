@@ -118,18 +118,17 @@ end
 function MatrixTranslate(matrix,classification)
     -- these are written explicitly because i have keyed the values by their prevelence as can be seen in keys.txt,
     -- not on their relationship to eachother, so past around 15 it gets a little random how they are classified
-    local land = {01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27}
-    local shadow = {02, 03, 04, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25}
-    local urban = {03, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25}
+    -- also because about half of the tiles are urban land tiles with shadows, listing what tiles AREN'T these things seems a bit easier
+    local notLand = {00, 15, 20}
+    local notShadow = {00, 01, 05, 15, 20, 26, 27, 47}
+    local notUrban = {00, 01, 02, 04, 20, 26, 27, 28, 47}
     matrix.type = classification
     if matrix.type == "sea" then
         -- for sea tiles and only sea tiles, ports are not considered land tiles
-        table.remove(land, 18)
-        table.remove(land, 17)
-        table.remove(land, 16)
+        notLand = {00, 15, 17, 18, 19, 20, 33, 39, 45}
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
-                if InTable(land,mtile) then
+                if not InTable(notLand,mtile) then
                     matrix[mi][mj] = 1
                 else
                     matrix[mi][mj] = 0
@@ -141,7 +140,7 @@ function MatrixTranslate(matrix,classification)
         matrix.mountain = false
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
-                if mi == 2 and mj == 1 and InTable(shadow,mtile) then
+                if mi == 2 and mj == 1 and not InTable(notShadow,mtile) then
                     matrix.shadow = true
                 end
                 if mi == 3 and mj == 2 and mtile == 04 then
@@ -155,7 +154,7 @@ function MatrixTranslate(matrix,classification)
         matrix.shadow = false
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
-                if mi == 2 and mj == 1 and InTable(shadow,mtile) then
+                if mi == 2 and mj == 1 and not InTable(notShadow,mtile) then
                     matrix.shadow = true
                 end
                 if mtile ~= 02 and (mi < 3 and mj < 3) and matrix.square then
@@ -183,10 +182,10 @@ function MatrixTranslate(matrix,classification)
         matrix.shadow = false
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
-                if InTable(urban, mtile) then
+                if not InTable(notUrban, mtile) then
                     matrix[mi][mj] = 5
                 end
-                if mi == 2 and mj == 1 and InTable(shadow,mtile) then
+                if mi == 2 and mj == 1 and not InTable(notShadow,mtile) then
                     matrix.shadow = true
                 end
             end
@@ -194,7 +193,7 @@ function MatrixTranslate(matrix,classification)
     elseif matrix.type == "shoal" then
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
-                if InTable(land, mtile) then
+                if not InTable(notLand, mtile) then
                     matrix[mi][mj] = 1
                 elseif mtile ~= 15 then
                     matrix[mi][mj] = 0
@@ -207,6 +206,17 @@ function MatrixTranslate(matrix,classification)
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
                 if mtile == 26 or mtile == 27 then
+                    matrix[mi][mj] = 1
+                else
+                    matrix[mi][mj] = 0
+                end
+            end
+        end
+    -- same as sea check except no exception for ports
+    elseif matrix.type == "bridge" then
+        for mi, mrow in ipairs(matrix) do
+            for mj, mtile in ipairs(mrow) do
+                if not InTable(notLand, mtile) then
                     matrix[mi][mj] = 1
                 else
                     matrix[mi][mj] = 0
@@ -685,6 +695,19 @@ function MapTranslate(unmap)
                 transmap[i][j] = 1080
             elseif tile == 46 then
                 transmap[i][j] = 1081
+            elseif tile == 47 then
+                local matrix = MatrixTranslate(Neighbors(i,j), "bridge")
+                if matrix[2][1] == 1 and matrix[2][3] == 1 then
+                    transmap[i][j] = 78
+                elseif matrix[1][2] == 1 and matrix[3][2] == 1 then
+                    transmap[i][j] = 79
+                elseif matrix[2][1] == 1 or matrix[2][3] == 1 then
+                    transmap[i][j] = 78
+                elseif matrix[1][2] == 1 or matrix[3][2] == 1 then
+                    transmap[i][j] = 79
+                else
+                    transmap[i][j] = 78
+                end
             else
                 transmap[i][j] = 0
             end
@@ -779,19 +802,19 @@ function PlayerGen()
         props = {29, 30, 31, 32, 33, 34}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {order = 2, color = "yellow", money = 0, income = income, props = props})
+        table.insert(Players, {order = 2, color = "yellow", money = 0, income = income, props = props, production = {30,32,33}})
     end
     if InTable(csvmap, 37) or InTable(csvmap, 40) then
         props = {35, 36, 37, 38, 39, 40}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {order = 3, color = "green", money = 0, income = income, props = props})
+        table.insert(Players, {order = 3, color = "green", money = 0, income = income, props = props, production = {36,38,39}})
     end
     if InTable(csvmap, 43) or InTable(csvmap, 46) then
         props = {41, 42, 43, 44, 45, 46}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {order = 4, color = "black", money = 0, income = income, props = props})
+        table.insert(Players, {order = 4, color = "black", money = 0, income = income, props = props, production = {42,44,45}})
     end
     for _, player in ipairs(Players) do
         table.insert(City, player.props[1])

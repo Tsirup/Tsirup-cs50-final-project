@@ -8,6 +8,9 @@ function Unit:new()
     self.health = 100
     self.selected = false
     self.fuelCapacity = self.fuel
+    if self.ammo then
+        self.ammoCapacity = self.ammo
+    end
     table.insert(UnitList, self)
 end
 
