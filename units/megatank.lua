@@ -9,10 +9,6 @@ function MegaTank:new()
     self.range = {1}
     self.ammo = 3
     MegaTank.super.new(self)
-    if self.team == "red" then
-        self.quad = 811
-    elseif self.team == "blue" then
-        self.quad = 817
-    end
+    self.quad = 811 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.MegaTank
 end

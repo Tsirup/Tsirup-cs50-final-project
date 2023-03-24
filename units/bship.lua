@@ -9,10 +9,6 @@ function Battleship:new()
     self.range = {2,3,4,5,6}
     self.ammo = 9
     Battleship.super.new(self)
-    if self.team == "red" then
-        self.quad = 691
-    elseif self.team == "blue" then
-        self.quad = 697
-    end
+    self.quad = 691 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Battleship
 end

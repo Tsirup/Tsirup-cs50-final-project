@@ -10,10 +10,6 @@ function Submarine:new()
     self.range = {1}
     self.ammo = 6
     Submarine.super.new(self)
-    if self.team == "red" then
-        self.quad = 781
-    elseif self.team == "blue" then
-        self.quad = 787
-    end
+    self.quad = 781 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Submarine
 end

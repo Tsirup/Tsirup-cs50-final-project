@@ -9,10 +9,6 @@ function Missles:new()
     self.range = {3,4,5}
     self.ammo = 6
     Missles.super.new(self)
-    if self.team == "red" then
-        self.quad = 541
-    elseif self.team == "blue" then
-        self.quad = 547
-    end
+    self.quad = 541 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Missles
 end

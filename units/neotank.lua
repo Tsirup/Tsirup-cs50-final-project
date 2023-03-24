@@ -9,10 +9,6 @@ function NeoTank:new()
     self.range = {1}
     self.ammo = 9
     NeoTank.super.new(self)
-    if self.team == "red" then
-        self.quad = 391
-    elseif self.team == "blue" then
-        self.quad = 397
-    end
+    self.quad = 391 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.NeoTank
 end

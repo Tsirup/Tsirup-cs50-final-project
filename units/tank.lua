@@ -9,10 +9,6 @@ function Tank:new()
     self.range = {1}
     self.ammo = 9
     Tank.super.new(self)
-    if self.team == "red" then
-        self.quad = 331
-    elseif self.team == "blue" then
-        self.quad = 337
-    end
+    self.quad = 331 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Tank
 end

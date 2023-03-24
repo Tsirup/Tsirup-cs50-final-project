@@ -9,10 +9,6 @@ function Rockets:new()
     self.range = {3,4,5}
     self.ammo = 6
     Rockets.super.new(self)
-    if self.team == "red" then
-        self.quad = 511
-    elseif self.team == "blue" then
-        self.quad = 517
-    end
+    self.quad = 511 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Rockets
 end

@@ -9,10 +9,6 @@ function PipeRunner:new()
     self.range = {2,3,4,5}
     self.ammo = 9
     PipeRunner.super.new(self)
-    if self.team == "red" then
-        self.quad = 841
-    elseif self.team == "blue" then
-        self.quad = 847
-    end
+    self.quad = 841 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.PipeRunner
 end

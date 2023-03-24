@@ -9,10 +9,6 @@ function StealthFighter:new()
     self.range = {1}
     self.ammo = 6
     StealthFighter.super.new(self)
-    if self.team == "red" then
-        self.quad = 901
-    elseif self.team == "blue" then
-        self.quad = 907
-    end
+    self.quad = 901 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.StealthFighter
 end

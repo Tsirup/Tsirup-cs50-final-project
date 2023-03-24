@@ -1,6 +1,6 @@
-Bcopter = Unit:extend()
+BattleCopter = Unit:extend()
 
-function Bcopter:new()
+function BattleCopter:new()
     self.spec = "copter"
     self.move = 6
     self.moveType = "air"
@@ -8,11 +8,7 @@ function Bcopter:new()
     self.fuel = 99
     self.range = {1}
     self.ammo = 6
-    Bcopter.super.new(self)
-    if self.team == "red" then
-        self.quad = 631
-    elseif self.team == "blue" then
-        self.quad = 637
-    end
-    ActivePlayer.money = ActivePlayer.money - Cost.Bcopter
+    BattleCopter.super.new(self)
+    self.quad = 631 + (ActivePlayer.order * 6)
+    ActivePlayer.money = ActivePlayer.money - Cost.BattleCopter
 end

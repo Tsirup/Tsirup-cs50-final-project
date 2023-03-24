@@ -7,10 +7,6 @@ function BlackBomb:new()
     self.vision = 1
     self.fuel = 45
     BlackBomb.super.new(self)
-    if self.team == "red" then
-        self.quad = 871
-    elseif self.team == "blue" then
-        self.quad = 877
-    end
+    self.quad = 871 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.BlackBomb
 end

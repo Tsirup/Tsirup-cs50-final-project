@@ -9,10 +9,6 @@ function AntiAir:new()
     self.range = {1}
     self.ammo = 9
     AntiAir.super.new(self)
-    if self.team == "red" then
-        self.quad = 451
-    elseif self.team == "blue" then
-        self.quad = 457
-    end
+    self.quad = 451 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.AntiAir
 end

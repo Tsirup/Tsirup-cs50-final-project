@@ -8,10 +8,6 @@ function Recon:new()
     self.fuel = 80
     self.range = {1}
     Recon.super.new(self)
-    if self.team == "red" then
-        self.quad = 301
-    elseif self.team == "blue" then
-        self.quad = 307
-    end
+    self.quad = 301 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Recon
 end
