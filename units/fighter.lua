@@ -9,10 +9,6 @@ function Fighter:new()
     self.range = {1}
     self.ammo = 9
     Fighter.super.new(self)
-    if self.team == "red" then
-        self.quad = 571
-    elseif self.team == "blue" then
-        self.quad = 577
-    end
+    self.quad = 571 + (ActivePlayer.order * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Fighter
 end

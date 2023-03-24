@@ -76,7 +76,7 @@ function love.load(args)
 
     -- tilemap keys in keys.txt
     -- map files in maps folder
-    require("maps/BallIslands")
+    require("maps/Triangles")
     require("mapgen")
     require("units")
     require("movement")
@@ -86,17 +86,15 @@ function love.load(args)
     Camera = {x = 0, y = 0}
     MouseDown = false
     Ground = {"Infantry", "Mech", "Recon", "Tank", "MediumTank", "NeoTank", "MegaTank", "APC", "Artillery", "Rockets", "AntiAir", "Missles", "PipeRunner"}
-    Air = {"Fighter", "Bomber", "Bcopter", "Tcopter", "StealthFighter", "BlackBomb"}
+    Air = {"Fighter", "Bomber", "BattleCopter", "TransportCopter", "StealthFighter", "BlackBomb"}
     Naval = {"Battleship", "Cruiser", "Lander", "Submarine", "BlackBoat", "AircraftCarrier"}
     Cost = {Infantry = 1000, Mech = 3000, Recon = 4000, Tank = 7000, MediumTank = 16000,
             NeoTank = 22000, MegaTank = 28000, APC = 5000, Artillery = 6000, Rockets = 15000,
             AntiAir = 8000, Missles = 12000, PipeRunner = 20000, Fighter = 20000, Bomber = 22000,
-            Bcopter = 9000, Tcopter = 5000, StealthFighter = 24000, BlackBomb = 25000, Battleship = 28000,
+            BattleCopter = 9000, TransportCopter = 5000, StealthFighter = 24000, BlackBomb = 25000, Battleship = 28000,
             Cruiser = 18000, Lander = 12000, Submarine = 20000, BlackBoat = 7500, AircraftCarrier = 30000}
     Transmap = MapTranslate(Tilemap)
     Selection = false
-    -- currently only have support for 2 players but the easy ability to add more is there
-    -- I'd just need to add the relevant tilemap keys and spritemap index keys
     Turn = 1
     PlayerGen()
     Cursor = {

@@ -649,6 +649,42 @@ function MapTranslate(unmap)
                 else
                     transmap[i][j] = 52
                 end
+            elseif tile == 29 then
+                transmap[i][j] = 1042
+            elseif tile == 30 then
+                transmap[i][j] = 467
+            elseif tile == 31 then
+                transmap[i][j] = 1039
+            elseif tile == 32 then
+                transmap[i][j] = 1043
+            elseif tile == 33 then
+                transmap[i][j] = 1044
+            elseif tile == 34 then
+                transmap[i][j] = 1045
+            elseif tile == 35 then
+                transmap[i][j] = 1060
+            elseif tile == 36 then
+                transmap[i][j] = 469
+            elseif tile == 37 then
+                transmap[i][j] = 1058
+            elseif tile == 38 then
+                transmap[i][j] = 1061
+            elseif tile == 39 then
+                transmap[i][j] = 1062
+            elseif tile == 40 then
+                transmap[i][j] = 1063
+            elseif tile == 41 then
+                transmap[i][j] = 1078
+            elseif tile == 42 then
+                transmap[i][j] = 471
+            elseif tile == 43 then
+                transmap[i][j] = 1077
+            elseif tile == 44 then
+                transmap[i][j] = 1079
+            elseif tile == 45 then
+                transmap[i][j] = 1080
+            elseif tile == 46 then
+                transmap[i][j] = 1081
             else
                 transmap[i][j] = 0
             end
@@ -731,13 +767,31 @@ function PlayerGen()
         props = {6, 8, 10, 13, 18, 24}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {color = "red", money = 0, income = income, props = props, production = {08,13,18}})
+        table.insert(Players, {order = 0, color = "red", money = 0, income = income, props = props, production = {08,13,18}})
     end
     if InTable(csvmap, 11) or InTable(csvmap, 25) then
         props = {7, 9, 11, 14, 19, 25}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {color = "blue", money = 0, income = income, props = props, production = {09,14,19}})
+        table.insert(Players, {order = 1, color = "blue", money = 0, income = income, props = props, production = {09,14,19}})
+    end
+    if InTable(csvmap, 31) or InTable(csvmap, 34) then
+        props = {29, 30, 31, 32, 33, 34}
+        CombineTable(Property, props)
+        income = CountInTable(csvmap, props) * 1000
+        table.insert(Players, {order = 2, color = "yellow", money = 0, income = income, props = props})
+    end
+    if InTable(csvmap, 37) or InTable(csvmap, 40) then
+        props = {35, 36, 37, 38, 39, 40}
+        CombineTable(Property, props)
+        income = CountInTable(csvmap, props) * 1000
+        table.insert(Players, {order = 3, color = "green", money = 0, income = income, props = props})
+    end
+    if InTable(csvmap, 43) or InTable(csvmap, 46) then
+        props = {41, 42, 43, 44, 45, 46}
+        CombineTable(Property, props)
+        income = CountInTable(csvmap, props) * 1000
+        table.insert(Players, {order = 4, color = "black", money = 0, income = income, props = props})
     end
     for _, player in ipairs(Players) do
         table.insert(City, player.props[1])
