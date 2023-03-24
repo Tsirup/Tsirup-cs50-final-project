@@ -1,6 +1,7 @@
 Lander = Unit:extend()
 
 function Lander:new()
+    self.name = "Lander"
     self.spec = "ship"
     self.move = 6
     self.moveType = "transport"

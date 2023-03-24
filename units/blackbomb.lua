@@ -1,6 +1,7 @@
 BlackBomb = Unit:extend()
 
 function BlackBomb:new()
+    self.name = "BlackBomb"
     self.spec = "plane"
     self.move = 9
     self.moveType = "air"

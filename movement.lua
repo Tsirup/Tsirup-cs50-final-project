@@ -102,7 +102,7 @@ function Adjacent(i,j)
     end
     if j == 1 then
         leftedge = true
-    elseif j == #(Tilemap[i]) then
+    elseif j == #(Tilemap[1]) then
         rightedge = true
     end
     if topedge then
@@ -134,6 +134,25 @@ function Adjacent(i,j)
     return {{i-1,j},{i,j-1},{i,j+1},{i+1,j}}
 end
 
+function Range(i,j,range)
+    -- likewise i needed this function to give tiles that are "range" distance away for a point (i,j),
+    -- the reason that I still use Adjacent(i,j) when Range(i,j,1) would return the same table is because 
+    -- just directly returning the table (no for-loops involved at all) is just slightly faster and since FindPaths(unit) is most computationally intensive parts of the program,
+    -- I think I need as much optimization for that part as possible, however for other parts like combat where this function is only called once,
+    -- not directly returning a table is just fine, it is certain less ugly thats for sure!
+    local solutions = {}
+    for y = -range, range do
+        for x = -range, range do
+            if math.abs(y) + math.abs(x) == range then
+                if i+y >= 1 and i+y <= #Tilemap and j+x >= 1 and j+x <= #(Tilemap[1]) then
+                    table.insert(solutions, {i+y,j+x})
+                end
+            end
+        end
+    end
+    return solutions
+end
+
 function Unconcatenate(str, delimiter)
     local function isNumeric(substr)
       return tonumber(substr) ~= nil
@@ -152,11 +171,11 @@ end
 -- units have different movement costs through different terrain
 -- "impossible" movement such as land units through seas are set to 99 move, a number that will never be reached in gameplay
 Movecost = {}
-Movecost["ship"] =      {01,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,02,99,99,99,99,99,99,99,99}
-Movecost["transport"] = {01,99,99,99,99,99,99,99,99,99,99,99,99,99,99,01,99,99,99,99,02,99,99,99,99,99,99,99,99}
-Movecost["air"] =       {01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,99,01}
-Movecost["infantry"] =  {99,01,01,01,02,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,01,01,01,01,01,99,99,01}
-Movecost["mech"] =      {99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,01,01,01,01,01,99,99,01}
-Movecost["tire"] =      {99,02,03,01,99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,01,01,01,01,01,99,99,02}
-Movecost["tread"] =     {99,01,02,01,99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,01,01,01,01,01,99,99,01}
-Movecost["pipe"] =      {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,01,01,99}
+Movecost["ship"] =      {01,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,02,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99}
+Movecost["transport"] = {01,99,99,99,99,99,99,99,99,99,99,99,99,99,99,01,99,99,99,99,02,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99}
+Movecost["air"] =       {01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01}
+Movecost["infantry"] =  {99,01,01,01,02,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,01,01,01,01,01,99,99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01}
+Movecost["mech"] =      {99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,01,01,01,01,01,99,99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01}
+Movecost["tire"] =      {99,02,03,01,99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,01,01,01,01,01,99,99,02,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01}
+Movecost["tread"] =     {99,01,02,01,99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,99,01,01,01,01,01,99,99,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01}
+Movecost["pipe"] =      {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,01,01,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99}

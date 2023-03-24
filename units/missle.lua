@@ -1,6 +1,7 @@
 Missles = Unit:extend()
 
 function Missles:new()
+    self.name = "Missles"
     self.spec = "vehicle"
     self.move = 4
     self.moveType = "tire"

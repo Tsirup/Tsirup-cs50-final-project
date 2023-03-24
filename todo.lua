@@ -1,8 +1,7 @@
 -- TODO:
--- restore fuel and ammo of loaded units
 -- finish unloading
 -- implement special unit abilities (diving, exploding, etc.)
--- add combat (for ranges, try a modified version of Adjacent(i,j) that takes a certain range input value, have it give all solutions of |i| + |j| = inputRange)
+-- add combat (use range(i,j,range))
 -- add music
 -- add mouse support
 -- fix camera

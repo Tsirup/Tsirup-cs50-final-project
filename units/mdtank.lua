@@ -1,6 +1,7 @@
 MediumTank = Unit:extend()
 
 function MediumTank:new()
+    self.name = "MediumTank"
     self.spec = "vehicle"
     self.move = 5
     self.moveType = "tread"

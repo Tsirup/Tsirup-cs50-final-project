@@ -1,6 +1,7 @@
 Rockets = Unit:extend()
 
 function Rockets:new()
+    self.name = "Rockets"
     self.spec = "vehicle"
     self.move = 5
     self.moveType = "tire"

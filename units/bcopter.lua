@@ -1,6 +1,7 @@
 BattleCopter = Unit:extend()
 
 function BattleCopter:new()
+    self.name = "BattleCopter"
     self.spec = "copter"
     self.move = 6
     self.moveType = "air"

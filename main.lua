@@ -131,6 +131,21 @@ function EndTurn()
                 elseif unit.spec == "plane" or unit.spec == "sub" then
                     unit.fuel = unit.fuel - 5
                 end
+            end
+            -- this should be okay??? definitely doesnt look okay i'll admit
+            if unit.name == "APC" then
+                for _, neighbor in ipairs(Adjacent(unit.y, unit.x)) do
+                    for _, otherUnit in ipairs(UnitList) do
+                        if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
+                            otherUnit.fuel = otherUnit.fuelCapacity
+                            if otherUnit.ammo then
+                                otherUnit.ammo = otherUnit.ammoCapacity
+                            end
+                        end
+                    end
+                end
+            end
+            if unit.spec ~= "infantry" and unit.spec ~= "vehicle" then
                 if unit.fuel <= 0 then
                     table.remove(UnitList, i)
                 end

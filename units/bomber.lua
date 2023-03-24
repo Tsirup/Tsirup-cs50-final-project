@@ -1,6 +1,7 @@
 Bomber = Unit:extend()
 
 function Bomber:new()
+    self.name = "Bomber"
     self.spec = "plane"
     self.move = 7
     self.moveType = "air"

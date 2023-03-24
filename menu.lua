@@ -69,6 +69,9 @@ function Menu:new(unit)
 end
 
 function Menu:select()
+    -- I thought it would be better to turn all these if statements into local functions in here so that func() could load them, 
+    -- it should work perfectly fine and avoid some if checks but it seems that the lua debugger doesn't like it so i guess ill leave it as is...
+    -- i have not really used local functions at all in this project and it seems like a massive blunder? oh well lol
     local unit = MenuOpen.unit
     local selected = MenuOpen.options[MenuOpen.cursor]
     if selected == "Wait" then
@@ -104,11 +107,19 @@ function Menu:select()
     elseif selected == "Load" then
         for _, otherUnit in ipairs(UnitList) do
             if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y then
+                unit.fuel = unit.fuelCapacity
+                if unit.ammo then
+                    unit.ammo = unit.ammoCapacity
+                end
                 table.insert(otherUnit.cargo, unit)
                 table.remove(UnitList, Index(UnitList, unit))
                 -- dont forget this
                 Selection = false
             end
+        end
+    elseif selected == "Unload" then
+        for _, neighbor in ipairs(Adjacent(unit.y,unit.x)) do
+            -- statements
         end
     else
         -- loads the selection string into a function and calls it if the selection exists

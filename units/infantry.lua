@@ -1,6 +1,7 @@
 Infantry = Unit:extend()
 
 function Infantry:new()
+    self.name = "Infantry"
     self.spec = "infantry"
     self.move = 3
     self.moveType = "infantry"

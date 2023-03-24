@@ -1,6 +1,7 @@
 StealthFighter = Unit:extend()
 
 function StealthFighter:new()
+    self.name = "StealthFighter"
     self.spec = "plane"
     self.move = 6
     self.moveType = "air"
