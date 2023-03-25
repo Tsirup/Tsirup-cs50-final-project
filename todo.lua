@@ -1,5 +1,5 @@
 -- TODO:
--- finish unloading
+-- fix unload softlock potential
 -- implement special unit abilities (diving, exploding, etc.)
 -- add combat (use range(i,j,range))
 -- add music

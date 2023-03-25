@@ -204,8 +204,17 @@ function love.keypressed(key)
         -- check if cursor is on unit
         for _, unit in ipairs(UnitList) do
             if unit.team == ActivePlayer.color and unit.ready then
+                if unit.action then
+                    for _, actionTile in ipairs(unit.action) do
+                        if actionTile[1] == y and actionTile[2] == x then
+                            Action(unit, unit.actionType)
+                            return
+                        end
+                    end
+                    return
+                end
                 -- begin movement for that unit
-                if unit.x == Cursor.x and unit.y == Cursor.y then
+                if unit.x == x and unit.y == y then
                     -- what the hell is going on here
                     if not unit.selected and not Selection then
                         unit.selected = true
@@ -217,7 +226,7 @@ function love.keypressed(key)
                     end
                 elseif unit.selected then
                     for _, validTile in ipairs(unit.movement) do
-                        if validTile[1] == Cursor.y and validTile[2] == Cursor.x then
+                        if validTile[1] == y and validTile[2] == x then
                             Cursor.fuel = validTile[3]
                             Menu(unit)
                             return
@@ -241,9 +250,10 @@ function love.keypressed(key)
     elseif key == "x" then
         if Selection then 
             for _, unit in ipairs(UnitList) do
-                unit.selected = false
+                if not unit.action then
+                    unit.selected, Selection = false, false
+                end
             end
-            Selection = false
         end
     -- for whatever reason if I quit the game without using a quit event, theres a segmentation fault
     -- im not sure how to get it to not seg fault when I hit the exit button in the top right but it doesnt seem to mess anything up in the game so whatever
@@ -410,10 +420,18 @@ function love.draw()
         unit:draw()
         love.graphics.setColor(1,1,1,1)
         if unit.selected then
-            -- arbitrary rgba value for selection tint
-            love.graphics.setColor(0.5,0.8,0.9,0.7)
-            for _, validTile in ipairs(unit.movement) do
-                love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
+            if not unit.action then
+                -- arbitrary rgba value for movement tint
+                love.graphics.setColor(0.5,0.8,0.9,0.7)
+                for _, validTile in ipairs(unit.movement) do
+                    love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
+                end
+            else
+                -- arbitrary rgba value for action tint
+                love.graphics.setColor(1,0.8,0.8,0.7)
+                for _, validTile in ipairs(unit.action) do
+                    love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
+                end
             end
             love.graphics.setColor(1,1,1,1)
         end

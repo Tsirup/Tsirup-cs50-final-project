@@ -80,9 +80,7 @@ function Menu:select()
             unit.y = Cursor.y
             unit.fuel = unit.fuel - Cursor.fuel
         end
-        unit.ready = false
-        unit.selected = false
-        Selection = false
+        unit.ready, unit.selected, Selection = false, false, false
         if unit.capture then
             unit.capture = 20
         end
@@ -94,9 +92,7 @@ function Menu:select()
             unit.fuel = unit.fuel - Cursor.fuel
             unit.capture = 20
         end
-        unit.ready = false
-        unit.selected = false
-        Selection = false
+        unit.ready, unit.selected, Selection = false, false, false
         unit.capture = MenuOpen.unit.capture - math.ceil(unit.health / 10)
         if unit.capture <= 0 then
             MapUpdate(unit.x, unit.y)
@@ -107,6 +103,7 @@ function Menu:select()
     elseif selected == "Load" then
         for _, otherUnit in ipairs(UnitList) do
             if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y then
+                unit.selected = false
                 unit.fuel = unit.fuelCapacity
                 if unit.ammo then
                     unit.ammo = unit.ammoCapacity
@@ -118,9 +115,11 @@ function Menu:select()
             end
         end
     elseif selected == "Unload" then
-        for _, neighbor in ipairs(Adjacent(unit.y,unit.x)) do
-            -- statements
-        end
+        unit.x = Cursor.x
+        unit.y = Cursor.y
+        unit.fuel = unit.fuel - Cursor.fuel
+        unit.action = Adjacent(unit.y, unit.x)
+        unit.actionType = selected
     else
         -- loads the selection string into a function and calls it if the selection exists
         local func = load(selected .. "()")
@@ -128,6 +127,24 @@ function Menu:select()
             func()
         end
     end
+end
+
+function Action(unit,actionType)
+    if actionType == "Attack" then
+    elseif actionType == "Unload" then
+        for _, otherUnit in ipairs(UnitList) do
+            if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y then
+                return
+            end
+        end
+        unit.cargo[1].x = Cursor.x
+        unit.cargo[1].y = Cursor.y
+        unit.cargo[1].ready = false
+        table.insert(UnitList, unit.cargo[1])
+        table.remove(unit.cargo, 1)
+    end
+    unit.action, unit.actionType = nil, nil
+    unit.ready, unit.selected, Selection = false, false, false
 end
 
 function Menu:draw()
