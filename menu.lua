@@ -132,16 +132,27 @@ end
 function Action(unit,actionType)
     if actionType == "Attack" then
     elseif actionType == "Unload" then
+        local validCargo
         for _, otherUnit in ipairs(UnitList) do
             if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y then
                 return
             end
         end
-        unit.cargo[1].x = Cursor.x
-        unit.cargo[1].y = Cursor.y
-        unit.cargo[1].ready = false
-        table.insert(UnitList, unit.cargo[1])
-        table.remove(unit.cargo, 1)
+        -- this crazy-looking chunk of code just makes sure if the first unit cant exist on the unloading zone, then check for any other units that can
+        -- otherwise prevent all unloading
+        for i=1,#unit.cargo do
+            if Movecost[unit.cargo[i].moveType][Tilemap[Cursor.y][Cursor.x] + 1] ~= 99 then
+                validCargo = i
+                break
+            else
+                return
+            end
+        end
+        unit.cargo[validCargo].x = Cursor.x
+        unit.cargo[validCargo].y = Cursor.y
+        unit.cargo[validCargo].ready = false
+        table.insert(UnitList, unit.cargo[validCargo])
+        table.remove(unit.cargo, validCargo)
     end
     unit.action, unit.actionType = nil, nil
     unit.ready, unit.selected, Selection = false, false, false

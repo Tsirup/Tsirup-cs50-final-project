@@ -1,6 +1,8 @@
 -- TODO:
--- fix unload softlock potential
--- implement special unit abilities (diving, exploding, etc.)
+-- implement stealthing
+-- implement supplying (black boat and apc)
+-- implement healing (black boat and properties)
+-- implement exploding
 -- add combat (use range(i,j,range))
 -- add music
 -- add mouse support

@@ -248,11 +248,13 @@ function love.keypressed(key)
         end
         Menu()
     elseif key == "x" then
-        if Selection then 
+        if Selection then
             for _, unit in ipairs(UnitList) do
-                if not unit.action then
-                    unit.selected, Selection = false, false
+                if unit.action then
+                    unit.action, unit.actionType = nil, nil
+                    unit.ready = false
                 end
+                unit.selected, Selection = false, false
             end
         end
     -- for whatever reason if I quit the game without using a quit event, theres a segmentation fault
