@@ -1,10 +1,15 @@
 -- TODO:
--- fix color changing icons
+-- implement rivers
 -- implement stealthing
+-- port 5 pre-deployed maps
 -- implement supplying (black boat and apc)
+-- port 5 3-player maps
 -- implement healing (black boat and properties)
+-- port 5 4-player maps
 -- implement exploding
+-- port 5 war-room maps
 -- add combat (use range(i,j,range))
+-- add destroying pipe seams
 -- add music
 -- add mouse support
 -- fix camera

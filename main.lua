@@ -76,7 +76,12 @@ function love.load(args)
 
     -- tilemap keys in keys.txt
     -- map files in maps folder
-    require("maps/BallIslands")
+    -- if you give it a command line argument it will load the map given, otherwise it will give the default debugging map
+    if #args ~= 1 or args[1] == "debug" then
+        require("maps/BallIslands")
+    else
+        require("maps/" .. args[1])
+    end
     require("mapgen")
     require("units")
     require("movement")

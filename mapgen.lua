@@ -119,13 +119,11 @@ function MatrixTranslate(matrix,classification)
     -- these are written explicitly because i have keyed the values by their prevelence as can be seen in keys.txt,
     -- not on their relationship to eachother, so past around 15 it gets a little random how they are classified
     -- also because about half of the tiles are urban land tiles with shadows, listing what tiles AREN'T these things seems a bit easier
-    local notLand = {00, 15, 20}
+    local notLand = {00, 15, 20, 47}
     local notShadow = {00, 01, 05, 15, 20, 26, 27, 47}
-    local notUrban = {00, 01, 02, 04, 20, 26, 27, 28, 47}
+    local notUrban = {00, 01, 02, 04, 20, 26, 27, 28}
     matrix.type = classification
     if matrix.type == "sea" then
-        -- for sea tiles and only sea tiles, ports are not considered land tiles
-        notLand = {00, 15, 17, 18, 19, 20, 33, 39, 45}
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
                 if not InTable(notLand,mtile) then
@@ -212,11 +210,11 @@ function MatrixTranslate(matrix,classification)
                 end
             end
         end
-    -- same as sea check except no exception for ports
+    -- same as sea check except no extra exception for other bridges
     elseif matrix.type == "bridge" then
         for mi, mrow in ipairs(matrix) do
             for mj, mtile in ipairs(mrow) do
-                if not InTable(notLand, mtile) then
+                if not InTable(notLand, mtile) or mtile == 47 then
                     matrix[mi][mj] = 1
                 else
                     matrix[mi][mj] = 0
