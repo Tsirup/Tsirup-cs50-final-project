@@ -10,6 +10,6 @@ function BattleCopter:new()
     self.range = {1}
     self.ammo = 6
     BattleCopter.super.new(self)
-    self.quad = 631 + (ActivePlayer.order * 6)
+    self.quad = 631 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.BattleCopter
 end

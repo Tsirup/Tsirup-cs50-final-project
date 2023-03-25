@@ -11,14 +11,14 @@ function Mech:new()
     self.ammo = 3
     self.capture = 20
     Mech.super.new(self)
-    self.quad = 151 + (ActivePlayer.order * 6)
+    self.quad = 151 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Mech
 end
 
 function Mech:draw()
     Mech.super.draw(self)
     if self.capture < 20 then
-        self.iconQuad = 16 + (ActivePlayer.order * 28)
+        self.iconQuad = 16 + (self.teamOrder * 28)
         love.graphics.draw(Icons, Icon_quads[self.iconQuad], self.x * Width, self.y * Height + Height / 2)
     end
 end

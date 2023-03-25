@@ -1,4 +1,5 @@
 -- TODO:
+-- fix color changing icons
 -- implement stealthing
 -- implement supplying (black boat and apc)
 -- implement healing (black boat and properties)

@@ -10,6 +10,6 @@ function MegaTank:new()
     self.range = {1}
     self.ammo = 3
     MegaTank.super.new(self)
-    self.quad = 811 + (ActivePlayer.order * 6)
+    self.quad = 811 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.MegaTank
 end

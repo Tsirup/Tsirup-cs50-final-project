@@ -10,6 +10,6 @@ function MediumTank:new()
     self.range = {1}
     self.ammo = 8
     MediumTank.super.new(self)
-    self.quad = 361 + (ActivePlayer.order * 6)
+    self.quad = 361 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.MediumTank
 end

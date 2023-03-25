@@ -10,6 +10,6 @@ function StealthFighter:new()
     self.range = {1}
     self.ammo = 6
     StealthFighter.super.new(self)
-    self.quad = 901 + (ActivePlayer.order * 6)
+    self.quad = 901 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.StealthFighter
 end

@@ -10,6 +10,6 @@ function Rockets:new()
     self.range = {3,4,5}
     self.ammo = 6
     Rockets.super.new(self)
-    self.quad = 511 + (ActivePlayer.order * 6)
+    self.quad = 511 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Rockets
 end

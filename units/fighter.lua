@@ -10,6 +10,6 @@ function Fighter:new()
     self.range = {1}
     self.ammo = 9
     Fighter.super.new(self)
-    self.quad = 571 + (ActivePlayer.order * 6)
+    self.quad = 571 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Fighter
 end

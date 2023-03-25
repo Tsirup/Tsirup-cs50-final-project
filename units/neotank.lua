@@ -10,6 +10,6 @@ function NeoTank:new()
     self.range = {1}
     self.ammo = 9
     NeoTank.super.new(self)
-    self.quad = 391 + (ActivePlayer.order * 6)
+    self.quad = 391 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.NeoTank
 end

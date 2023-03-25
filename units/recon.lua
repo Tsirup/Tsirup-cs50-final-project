@@ -9,6 +9,6 @@ function Recon:new()
     self.fuel = 80
     self.range = {1}
     Recon.super.new(self)
-    self.quad = 301 + (ActivePlayer.order * 6)
+    self.quad = 301 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Recon
 end

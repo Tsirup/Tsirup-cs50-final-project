@@ -4,6 +4,7 @@ function Unit:new()
     self.x = Cursor.x
     self.y = Cursor.y
     self.team = ActivePlayer.color
+    self.teamOrder = ActivePlayer.order
     self.ready = false
     self.health = 100
     self.selected = false

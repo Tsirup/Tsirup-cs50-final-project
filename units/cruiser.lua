@@ -13,14 +13,14 @@ function Cruiser:new()
     self.cargo = {}
     self.capacity = 2
     Cruiser.super.new(self)
-    self.quad = 721 + (ActivePlayer.order * 6)
+    self.quad = 721 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Cruiser
 end
 
 function Cruiser:draw()
     Cruiser.super.draw(self)
     if #self.cargo > 0 then
-        self.iconQuad = 15 + (ActivePlayer.order * 28)
+        self.iconQuad = 15 + (self.teamOrder * 28)
         love.graphics.draw(Icons, Icon_quads[self.iconQuad], self.x * Width, self.y * Height + Height / 2)
     end
 end

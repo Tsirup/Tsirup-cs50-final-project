@@ -10,6 +10,6 @@ function AntiAir:new()
     self.range = {1}
     self.ammo = 9
     AntiAir.super.new(self)
-    self.quad = 451 + (ActivePlayer.order * 6)
+    self.quad = 451 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.AntiAir
 end

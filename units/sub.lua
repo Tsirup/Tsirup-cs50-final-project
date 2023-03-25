@@ -11,6 +11,6 @@ function Submarine:new()
     self.range = {1}
     self.ammo = 6
     Submarine.super.new(self)
-    self.quad = 781 + (ActivePlayer.order * 6)
+    self.quad = 781 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Submarine
 end

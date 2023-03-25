@@ -11,14 +11,14 @@ function APC:new()
     self.cargo = {}
     self.capacity = 1
     APC.super.new(self)
-    self.quad = 421 + (ActivePlayer.order * 6)
+    self.quad = 421 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.APC
 end
 
 function APC:draw()
     APC.super.draw(self)
     if #self.cargo > 0 then
-        self.iconQuad = 15 + (ActivePlayer.order * 28)
+        self.iconQuad = 15 + (self.teamOrder * 28)
         love.graphics.draw(Icons, Icon_quads[self.iconQuad], self.x * Width, self.y * Height + Height / 2)
     end
 end
