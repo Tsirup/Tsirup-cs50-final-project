@@ -1,4 +1,5 @@
 -- TODO:
+-- change properties from 10xx to 20xx
 -- implement rivers
 -- implement stealthing
 -- port 5 pre-deployed maps

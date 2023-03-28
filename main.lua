@@ -14,11 +14,11 @@ function love.load(args)
     UnitList = {}
 
     -- I modified these tilemaps with microsoft paint from the great templates at spriters-resource.com
-    Overworld = love.graphics.newImage("graphics/overworld2bordertransparent.png")
+    Overworld = love.graphics.newImage("graphics/overworld3bordertransparent.png")
     local image_width = Overworld:getWidth()
     local image_height = Overworld:getHeight()
 
-    for i=0,21 do
+    for i=0,57 do
         for j=0,21 do
             table.insert(World_quads,
                 love.graphics.newQuad(
@@ -299,25 +299,25 @@ function TileTranslate(tile, i, j)
     local transmap = Transmap
     -- copy pasted code snippets from MapTranslate
     if tile == 06 then
-        transmap[i][j] = 1006
+        transmap[i][j] = 2006
     elseif tile == 07 then
-        transmap[i][j] = 1024
+        transmap[i][j] = 2024
     elseif tile == 08 then
         transmap[i][j] = 463
     elseif tile == 09 then
         transmap[i][j] = 465
     elseif tile == 13 then
-        transmap[i][j] = 1007
+        transmap[i][j] = 2007
     elseif tile == 14 then
-        transmap[i][j] = 1025
+        transmap[i][j] = 2025
     elseif tile == 18 then
-        transmap[i][j] = 1008
+        transmap[i][j] = 2008
     elseif tile == 19 then
-        transmap[i][j] = 1026
+        transmap[i][j] = 2026
     elseif tile == 24 then
-        transmap[i][j] = 1109
+        transmap[i][j] = 2109
     elseif tile == 25 then
-        transmap[i][j] = 1027
+        transmap[i][j] = 2027
     end
     Transmap = transmap
 end
@@ -404,17 +404,19 @@ function love.draw()
     love.graphics.translate(Camera.x, Camera.y)
     for i, row in ipairs(Transmap) do
         for j, tile in ipairs(row) do
+            -- the > 0 check just prevents it from crashing, you can remove this when not debugging
             if tile > 0 then
-                if tile < 463 then
-                    love.graphics.draw(Overworld, World_quads[tile], j * Width, i * Height)
-                elseif tile < 2001 then
-                    love.graphics.draw(Overworld, World_quads[1], j * Width, i * Height)
-                    if tile < 485 then
+                if tile < 2001 then
+                    if tile > 462 and tile < 506 then
+                        love.graphics.draw(Overworld, World_quads[1], j * Width, i * Height)
                         love.graphics.draw(Overworld, World_quads[tile], j * Width, i * Height)
                         love.graphics.draw(Overworld, World_quads[473], j * Width, (i-1) * Height)
                     else
-                        love.graphics.draw(Properties, Prop_quads[tile-1000], j * Width, (i-1) * Height)
+                        love.graphics.draw(Overworld, World_quads[tile], j * Width, i * Height)
                     end
+                else
+                    love.graphics.draw(Overworld, World_quads[1], j * Width, i * Height)
+                    love.graphics.draw(Properties, Prop_quads[tile-2000], j * Width, (i-1) * Height)
                 end
             end
         end

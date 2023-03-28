@@ -119,7 +119,7 @@ function MatrixTranslate(matrix,classification)
     -- these are written explicitly because i have keyed the values by their prevelence as can be seen in keys.txt,
     -- not on their relationship to eachother, so past around 15 it gets a little random how they are classified
     -- also because about half of the tiles are urban land tiles with shadows, listing what tiles AREN'T these things seems a bit easier
-    local notLand = {00, 15, 20, 47}
+    local notLand = {00, 15, 20, 47, 48}
     local notShadow = {00, 01, 05, 15, 20, 26, 27, 47}
     local notUrban = {00, 01, 02, 04, 20, 26, 27, 28}
     matrix.type = classification
@@ -128,6 +128,8 @@ function MatrixTranslate(matrix,classification)
             for mj, mtile in ipairs(mrow) do
                 if not InTable(notLand,mtile) then
                     matrix[mi][mj] = 1
+                elseif mtile == 48 then
+                    matrix[mi][mj] = 2
                 else
                     matrix[mi][mj] = 0
                 end
@@ -221,6 +223,17 @@ function MatrixTranslate(matrix,classification)
                 end
             end
         end
+    elseif matrix.type == "river" then
+        -- if i add animations, I need to change this to incorporate "river chains"
+        for mi, mrow in ipairs(matrix) do
+            for mj, mtile in ipairs(mrow) do
+                if mtile == 48 or mtile == 47 then
+                    matrix[mi][mj] = 1
+                else
+                    matrix[mi][mj] = 0
+                end
+            end
+        end
     end
 
     return matrix
@@ -229,7 +242,7 @@ function MapTranslate(unmap)
     -- to help with the complicated tile translation algorithm, I wrote a Python script (indexer.py) that can take a tilemap with 1 pixel border 
     -- and index them by writing big fat numbers on them, its pretty cool imo
 
-    -- if you are cringing at how long and filled with elseif's this code is, there is no switch statement in lua
+    -- if you are cringing at how long and filled with elseif's this function is, there is no switch statement in lua
     -- but if im still really dumb and theres a better way of doing this, let me know
 
     -- create a new map and fill it with zeroes
@@ -280,7 +293,11 @@ function MapTranslate(unmap)
                     end
                 elseif matrix[2][1] == 0 and matrix[2][3] == 0 and matrix[3][2] == 0 then
                     if matrix[3][1] == 0 and matrix[3][3] == 0 then
-                        transmap[i][j] = 112
+                        if matrix[1][2] == 2 then
+                            transmap[i][j] = 1109
+                        else
+                            transmap[i][j] = 112
+                        end
                     elseif matrix[3][3] == 0 then
                         transmap[i][j] = 165
                     elseif matrix[3][1] == 0 then
@@ -290,7 +307,11 @@ function MapTranslate(unmap)
                     end
                 elseif matrix[1][2] == 0 and matrix[2][3] == 0 and matrix[3][2] == 0 then
                     if matrix[1][3] == 0 and matrix[3][3] == 0 then
-                        transmap[i][j] = 133
+                        if matrix[2][1] == 2 then
+                            transmap[i][j] = 911
+                        else
+                            transmap[i][j] = 133
+                        end
                     elseif matrix[3][3] == 0 then
                         transmap[i][j] = 161
                     elseif matrix[1][3] == 0 then
@@ -300,7 +321,11 @@ function MapTranslate(unmap)
                     end
                 elseif matrix[1][2] == 0 and matrix[2][1] == 0 and matrix[3][2] == 0 then
                     if matrix[1][1] == 0 and matrix[3][1] == 0 then
-                        transmap[i][j] = 135
+                        if matrix[2][3] == 2 then
+                            transmap[i][j] = 1108
+                        else
+                            transmap[i][j] = 135
+                        end
                     elseif matrix[3][1] == 0 then
                         transmap[i][j] = 162
                     elseif matrix[1][1] == 0 then
@@ -310,7 +335,11 @@ function MapTranslate(unmap)
                     end
                 elseif matrix[1][2] == 0 and matrix[2][1] == 0 and matrix[2][3] == 0 then
                     if matrix[1][1] == 0 and matrix[1][3] == 0 then
-                        transmap[i][j] = 156
+                        if matrix[3][2] == 2 then
+                            transmap[i][j] = 910
+                        else
+                            transmap[i][j] = 156
+                        end
                     elseif matrix[1][3] == 0 then
                         transmap[i][j] = 187
                     elseif matrix[1][1] == 0 then
@@ -377,7 +406,7 @@ function MapTranslate(unmap)
                     transmap[i][j] = 3
                 end
             elseif tile == 03 then
-                transmap[i][j] = 1096
+                transmap[i][j] = 2096
             elseif tile == 04 then
                 local matrix = MatrixTranslate(Neighbors(i,j),"mtn")
                 if matrix.mountain == false and matrix.big == false then
@@ -481,23 +510,23 @@ function MapTranslate(unmap)
                     end
                 end
             elseif tile == 06 then
-                transmap[i][j] = 1006
+                transmap[i][j] = 2006
             elseif tile == 07 then
-                transmap[i][j] = 1024
+                transmap[i][j] = 2024
             elseif tile == 08 then
                 transmap[i][j] = 463
             elseif tile == 09 then
                 transmap[i][j] = 465
             elseif tile == 10 then
-                transmap[i][j] = 1001
+                transmap[i][j] = 2001
             elseif tile == 11 then
-                transmap[i][j] = 1020
+                transmap[i][j] = 2020
             elseif tile == 12 then
-                transmap[i][j] = 1097
+                transmap[i][j] = 2097
             elseif tile == 13 then
-                transmap[i][j] = 1007
+                transmap[i][j] = 2007
             elseif tile == 14 then
-                transmap[i][j] = 1025
+                transmap[i][j] = 2025
             elseif tile == 15 then
                 local matrix = MatrixTranslate(Neighbors(i,j),"shoal")
                 if matrix[1][2] == 1 and matrix[2][1] ~= 1 and matrix[2][3] ~= 1 and matrix[3][2] ~= 1 then
@@ -595,25 +624,25 @@ function MapTranslate(unmap)
                     transmap[i][j] = 0
                 end
             elseif tile == 16 then
-                transmap[i][j] = 1098
+                transmap[i][j] = 2098
             elseif tile == 17 then
-                transmap[i][j] = 1099
+                transmap[i][j] = 2099
             elseif tile == 18 then
-                transmap[i][j] = 1008
+                transmap[i][j] = 2008
             elseif tile == 19 then
-                transmap[i][j] = 1026
+                transmap[i][j] = 2026
             elseif tile == 20 then
                 transmap[i][j] = 168
             elseif tile == 21 then
-                transmap[i][j] = 1101
+                transmap[i][j] = 2101
             elseif tile == 22 then
-                transmap[i][j] = 1102
+                transmap[i][j] = 2102
             elseif tile == 23 then
-                transmap[i][j] = 1100
+                transmap[i][j] = 2100
             elseif tile == 24 then
-                transmap[i][j] = 1109
+                transmap[i][j] = 2109
             elseif tile == 25 then
-                transmap[i][j] = 1027
+                transmap[i][j] = 2027
             elseif tile == 26 then
                 local matrix = MatrixTranslate(Neighbors(i,j),"pipe")
                 if matrix[2][1] == 1 and matrix[2][3] == 1 then
@@ -658,41 +687,41 @@ function MapTranslate(unmap)
                     transmap[i][j] = 52
                 end
             elseif tile == 29 then
-                transmap[i][j] = 1042
+                transmap[i][j] = 2042
             elseif tile == 30 then
                 transmap[i][j] = 467
             elseif tile == 31 then
-                transmap[i][j] = 1039
+                transmap[i][j] = 2039
             elseif tile == 32 then
-                transmap[i][j] = 1043
+                transmap[i][j] = 2043
             elseif tile == 33 then
-                transmap[i][j] = 1044
+                transmap[i][j] = 2044
             elseif tile == 34 then
-                transmap[i][j] = 1045
+                transmap[i][j] = 2045
             elseif tile == 35 then
-                transmap[i][j] = 1060
+                transmap[i][j] = 2060
             elseif tile == 36 then
                 transmap[i][j] = 469
             elseif tile == 37 then
-                transmap[i][j] = 1058
+                transmap[i][j] = 2058
             elseif tile == 38 then
-                transmap[i][j] = 1061
+                transmap[i][j] = 2061
             elseif tile == 39 then
-                transmap[i][j] = 1062
+                transmap[i][j] = 2062
             elseif tile == 40 then
-                transmap[i][j] = 1063
+                transmap[i][j] = 2063
             elseif tile == 41 then
-                transmap[i][j] = 1078
+                transmap[i][j] = 2078
             elseif tile == 42 then
                 transmap[i][j] = 471
             elseif tile == 43 then
-                transmap[i][j] = 1077
+                transmap[i][j] = 2077
             elseif tile == 44 then
-                transmap[i][j] = 1079
+                transmap[i][j] = 2079
             elseif tile == 45 then
-                transmap[i][j] = 1080
+                transmap[i][j] = 2080
             elseif tile == 46 then
-                transmap[i][j] = 1081
+                transmap[i][j] = 2081
             elseif tile == 47 then
                 local matrix = MatrixTranslate(Neighbors(i,j), "bridge")
                 if matrix[2][1] == 1 and matrix[2][3] == 1 then
@@ -706,22 +735,60 @@ function MapTranslate(unmap)
                 else
                     transmap[i][j] = 78
                 end
+            elseif tile == 48 then
+                -- structure borrowed from roads
+                -- ALL rivers flow south or west right now
+                -- if i add map animations later, I MUST CHANGE THIS, preferably in another function after map translation similar to ForestCombine()
+                -- expect it to be HARD, i've noticed that some tiles of river tiles that should exist just don't
+                -- for instance there is only one type of 4-way junction (all streams merging south) and even stranger,
+                -- there are tiles that exist that i have never seen in the game before, like a river tile that meets the sea without a waterfall but only facing north
+                -- no other tile is this weird and difficult to understand, i am very lucky that i am not implementing world animations or i would be really screwed
+                -- with my current configuration of only flowing south or west, two specific tiles, (north-to-east corner tile and 4-way junction) are not compatible
+                -- there is really nothing i can do about it without adding the flow system which i would just really really not like to do, 
+                -- i think perhaps i could make a custom tile that fixes it, even that would be preferable,
+                -- it is definitely one of the first things i will consider when working on version 2 of this game if i get to it
+                local matrix = MatrixTranslate(Neighbors(i,j), "river")
+                if matrix[1][2] ~= 1 and matrix[3][2] ~= 1 then
+                    transmap[i][j] = 708
+                elseif matrix[2][1] ~= 1 and matrix[2][3] ~= 1 then
+                    transmap[i][j] = 507
+                elseif matrix[2][3] ~= 1 and matrix[3][2] ~= 1 then
+                    transmap[i][j] = 1104
+                elseif matrix[2][1] ~= 1 and matrix[3][2] ~= 1 then
+                    -- the bad corner tile mentioned above, i am sending it up instead of right arbitrarily, they both look bad
+                    transmap[i][j] = 709
+                elseif matrix[1][2] ~= 1 and matrix[2][3] ~= 1 then
+                    transmap[i][j] = 920
+                elseif matrix[1][2] ~= 1 and matrix[2][1] ~= 1 then
+                    transmap[i][j] = 525
+                elseif matrix[3][2] ~= 1 then
+                    transmap[i][j] = 1112
+                elseif matrix[2][3] ~= 1 then
+                    transmap[i][j] = 913
+                elseif matrix[2][1] ~= 1 then
+                    transmap[i][j] = 712
+                elseif matrix[1][2] ~= 1 then
+                    transmap[i][j] = 917
+                else
+                    -- the bad 4 way junction
+                    -- it looks bad from the west because it only takes rivers flowing east from that side, which we are not considering at this time
+                    transmap[i][j] = 711
+                end
             else
                 transmap[i][j] = 0
             end
         end
     end
-    transmap = Combine(transmap)
+    transmap = ForestCombine(transmap)
     return transmap
 end
 
-function Combine(uncmap)
+function ForestCombine(uncmap)
     local forest = {2,3}
     for i, row in ipairs(uncmap) do
         for j, tile in ipairs(row) do
             if InTable(forest, tile) then
                 local matrix = MatrixTranslate(Neighbors(i,j), "wood")
-                -- mess around in testmap, change to check downstream instead of upstream(?)
                 if matrix.shadow == false and matrix.square == false then
                     uncmap[i][j] = 2
                 elseif matrix.square == false then
