@@ -7,6 +7,22 @@ function InTable(table, value)
     return false
 end
 
+function TableInTable(table, values)
+    for _, t in ipairs(table) do
+        local match = true
+        for i, v in ipairs(values) do
+            if t[i] ~= v then
+                match = false
+                break
+            end
+        end
+        if match then
+            return true
+        end
+    end
+    return false
+end
+
 function Index(table, value)
     for i, v in ipairs(table) do
         if v == value then

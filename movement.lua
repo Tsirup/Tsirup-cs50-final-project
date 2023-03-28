@@ -87,51 +87,55 @@ function FindPaths(unit)
 end
 
 function FindPath(cameFrom, current)
-    local totalPath = current
-    while InTable(cameFrom.keys, current) do
-        current = cameFrom[current]
+    local totalPath = {current}
+    while KeyInTable(cameFrom, table.concat(current, ", ")) do
+        current = cameFrom[table.concat(current, ", ")]
         table.insert(totalPath, 1, current)
     end
     return totalPath
 end
 
 function Astar(unit)
-    -- this entire BS algorithm is only here because of two niche units that will rarely ever be built
-    -- sigh at least its similar to the algorithm above and i can reuse this if i ever add fog
+    -- feels wrong to have a function that is so similar to the FindPaths above, i strained my brain so hard trying to find a way to implement this inside of that
+    -- but for now I guess I will have to run it twice
+    -- this function is required for dealing with stealthed units, fog, and displaying the arrow of motion
     -- heuristic is manhattan distance
-    -- start and goal should be 2 tables of format {y,x}
-    local start = {unit.y, unit.x}
+    -- root and goal should be 2 tables of format {y,x}
+    local root = {unit.y, unit.x}
     local goal = {Cursor.y, Cursor.x}
     local function heuristic(a, b)
         return math.abs(a[1] - b[1]) + math.abs(a[2] - b[2])
     end
     local frontier = PriorityQueue:new()
-    frontier:push(start)
     local cameFrom = {}
     local gScore = {}
-    gScore[start] = 0
+    gScore[table.concat(root, ", ")] = 0
     local fScore = {}
-    fScore[start] = heuristic(start,goal)
+    fScore[table.concat(root, ", ")] = heuristic(root,goal)
+    frontier:push(root, fScore[table.concat(root, ", ")])
 
     while frontier.size > 0 do
         local current = frontier:peek()
-        if current == goal then
+        if current[1] == goal[1] and current[2] == goal[2] then
             return FindPath(cameFrom, current)
         end
-        frontier:pop()
+        current = frontier:pop()
         for _, neighbor in ipairs(Adjacent(current[1], current[2])) do
-            local tentative_gScore = gScore[current] + Movecost[unit.moveType][Tilemap[neighbor[1]][neighbor[2]] + 1]
-            if tentative_gScore < gScore[neighbor] then
-                cameFrom[neighbor] = current
-                gScore[neighbor] = tentative_gScore
-                fScore[neighbor] = tentative_gScore + heuristic(neighbor,goal)
-                if InTable(frontier, neighbor) then
-                    frontier:push(neighbor)
+            local tentative_gScore = gScore[table.concat(current, ", ")] + Movecost[unit.moveType][Tilemap[neighbor[1]][neighbor[2]] + 1]
+            if not gScore[table.concat(neighbor, ", ")] then
+                gScore[table.concat(neighbor, ", ")] = math.huge
+            end
+            if tentative_gScore < gScore[table.concat(neighbor, ", ")] then
+                cameFrom[table.concat(neighbor, ", ")] = current
+                gScore[table.concat(neighbor, ", ")] = tentative_gScore
+                fScore[table.concat(neighbor, ", ")] = tentative_gScore + heuristic(neighbor,goal)
+                if not TableInTable(frontier.heap, neighbor) then
+                    frontier:push(neighbor, fScore[table.concat(neighbor, ", ")])
                 end
             end
         end
     end
-    return "failure"
+    return
 end
 
 -- even though I already have the function Neighbors(i,j)
