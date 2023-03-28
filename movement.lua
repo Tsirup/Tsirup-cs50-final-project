@@ -86,6 +86,53 @@ function FindPaths(unit)
     return explored
 end
 
+function FindPath(cameFrom, current)
+    local totalPath = current
+    while InTable(cameFrom.keys, current) do
+        current = cameFrom[current]
+        table.insert(totalPath, 1, current)
+    end
+    return totalPath
+end
+
+function Astar(unit)
+    -- this entire BS algorithm is only here because of two niche units that will rarely ever be built
+    -- sigh at least its similar to the algorithm above and i can reuse this if i ever add fog
+    -- heuristic is manhattan distance
+    -- start and goal should be 2 tables of format {y,x}
+    local start = {unit.y, unit.x}
+    local goal = {Cursor.y, Cursor.x}
+    local function heuristic(a, b)
+        return math.abs(a[1] - b[1]) + math.abs(a[2] - b[2])
+    end
+    local frontier = PriorityQueue:new()
+    frontier:push(start)
+    local cameFrom = {}
+    local gScore = {}
+    gScore[start] = 0
+    local fScore = {}
+    fScore[start] = heuristic(start,goal)
+
+    while frontier.size > 0 do
+        local current = frontier:peek()
+        if current == goal then
+            return FindPath(cameFrom, current)
+        end
+        frontier:pop()
+        for _, neighbor in ipairs(Adjacent(current[1], current[2])) do
+            local tentative_gScore = gScore[current] + Movecost[unit.moveType][Tilemap[neighbor[1]][neighbor[2]] + 1]
+            if tentative_gScore < gScore[neighbor] then
+                cameFrom[neighbor] = current
+                gScore[neighbor] = tentative_gScore
+                fScore[neighbor] = tentative_gScore + heuristic(neighbor,goal)
+                if InTable(frontier, neighbor) then
+                    frontier:push(neighbor)
+                end
+            end
+        end
+    end
+    return "failure"
+end
 
 -- even though I already have the function Neighbors(i,j)
 -- I needed another one to give me just the relevant adjacent tile indexes

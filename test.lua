@@ -1,36 +1,3 @@
-function FindPaths(unit)
-    -- TODO:
-    -- Get rid of all the Concatenation nonsense and replace bracket indexing with dot indexing
-    -- Document every part of this algorithm
-    -- Possible solution could be to only approve to check neighbors that we haven't already approved
-    -- get rid of the priority queue, priority is useless
-    local start = {unit.y, unit.x}
-    local frontier = PriorityQueue:new()
-    frontier:push(start,0)
-    local cameFrom = {}
-    local costSoFar = {}
-    cameFrom[table.concat(start,", ")] = nil
-    costSoFar[table.concat(start,", ")] = 0
-    while frontier.size > 0 do
-        local current = frontier:pop()
-        for _, neighbor in ipairs(Adjacent(current[1], current[2])) do
-            local newCost = costSoFar[table.concat(current,", ")] + Movecost[unit.moveType][Tilemap[neighbor[1]][neighbor[2]] + 1]
-            for _, otherUnit in ipairs(UnitList) do
-                if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit.team ~= ActivePlayer.color then
-                    newCost = newCost + 99
-                end
-            end
-            if (not KeyInTable(costSoFar, neighbor) or newCost < costSoFar[table.concat(neighbor,", ")]) and newCost <= unit.move then
-                costSoFar[table.concat(neighbor,", ")] = newCost
-                local priority = newCost
-                frontier:push(neighbor, priority)
-                cameFrom[table.concat(neighbor,", ")] = current
-            end
-        end
-    end
-    return cameFrom
-end
-
 --[[  1  procedure BFS(G, root) is
  2      let Q be a queue
  3      label root as explored
@@ -45,8 +12,52 @@ end
 12                  w.parent := v
 13                  Q.enqueue(w) ]]
 
-print(nil == false)
+--[[ function reconstruct_path(cameFrom, current)
+    total_path := {current}
+    while current in cameFrom.Keys:
+        current := cameFrom[current]
+        total_path.prepend(current)
+    return total_path
 
-print(#({01,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,02,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99}))
-local weed = 420
-print(412 < weed < 424)
+// A* finds a path from start to goal.
+// h is the heuristic function. h(n) estimates the cost to reach goal from node n.
+function A_Star(start, goal, h)
+    // The set of discovered nodes that may need to be (re-)expanded.
+    // Initially, only the start node is known.
+    // This is usually implemented as a min-heap or priority queue rather than a hash-set.
+    openSet := {start}
+
+    // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from the start
+    // to n currently known.
+    cameFrom := an empty map
+
+    // For node n, gScore[n] is the cost of the cheapest path from start to n currently known.
+    gScore := map with default value of Infinity
+    gScore[start] := 0
+
+    // For node n, fScore[n] := gScore[n] + h(n). fScore[n] represents our current best guess as to
+    // how cheap a path could be from start to finish if it goes through n.
+    fScore := map with default value of Infinity
+    fScore[start] := h(start)
+
+    while openSet is not empty
+        // This operation can occur in O(Log(N)) time if openSet is a min-heap or a priority queue
+        current := the node in openSet having the lowest fScore[] value
+        if current = goal
+            return reconstruct_path(cameFrom, current)
+
+        openSet.Remove(current)
+        for each neighbor of current
+            // d(current,neighbor) is the weight of the edge from current to neighbor
+            // tentative_gScore is the distance from start to the neighbor through current
+            tentative_gScore := gScore[current] + d(current, neighbor)
+            if tentative_gScore < gScore[neighbor]
+                // This path to neighbor is better than any previous one. Record it!
+                cameFrom[neighbor] := current
+                gScore[neighbor] := tentative_gScore
+                fScore[neighbor] := tentative_gScore + h(neighbor)
+                if neighbor not in openSet
+                    openSet.add(neighbor)
+
+    // Open set is empty but goal was never reached
+    return failure ]]
