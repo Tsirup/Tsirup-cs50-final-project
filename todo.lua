@@ -1,7 +1,6 @@
 -- TODO:
--- change properties from 10xx to 20xx
--- implement rivers
--- implement stealthing
+-- show duration of capture remaining
+-- implement trapping
 -- port 5 pre-deployed maps
 -- implement supplying (black boat and apc)
 -- port 5 3-player maps
@@ -14,3 +13,4 @@
 -- add music
 -- add mouse support
 -- fix camera
+-- implement fog, including minus icon and fuel cost for fog checking

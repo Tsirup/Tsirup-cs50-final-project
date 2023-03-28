@@ -13,3 +13,11 @@ function StealthFighter:new()
     self.quad = 901 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.StealthFighter
 end
+
+function StealthFighter:draw()
+    StealthFighter.super.draw(self)
+    if self.stealth then
+        self.iconQuad = 17 + (self.teamOrder * 28)
+        love.graphics.draw(Icons, Icon_quads[self.iconQuad], self.x * Width, self.y * Height + Height / 2)
+    end
+end

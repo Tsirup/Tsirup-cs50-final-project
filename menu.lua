@@ -23,6 +23,19 @@ function Menu:new(unit)
                     return
                 end
             end
+            if (unit.name == "Submarine" or unit.name == "StealthFighter") then
+                if not unit.stealth then
+                    if unit.name == "Submarine" then
+                        table.insert(self.options, "Dive")
+                    else
+                        table.insert(self.options, "Hide")
+                    end
+                elseif unit.name == "Submarine" then
+                    table.insert(self.options, "Rise")
+                else
+                    table.insert(self.options, "Reveal")
+                end
+            end
             for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
                 for _, otherUnit in ipairs(UnitList) do
                     if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and not InTable(self.options, "Attack") then
@@ -74,12 +87,14 @@ function Menu:select()
     -- i have not really used local functions at all in this project and it seems like a massive blunder? oh well lol
     local unit = MenuOpen.unit
     local selected = MenuOpen.options[MenuOpen.cursor]
-    if selected == "Wait" then
+    if unit then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             unit.x = Cursor.x
             unit.y = Cursor.y
             unit.fuel = unit.fuel - Cursor.fuel
         end
+    end
+    if selected == "Wait" then
         unit.ready, unit.selected, Selection = false, false, false
         if unit.capture then
             unit.capture = 20
@@ -87,9 +102,6 @@ function Menu:select()
     elseif selected  == "Attack" then
     elseif selected == "Capture" then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
-            unit.x = Cursor.x
-            unit.y = Cursor.y
-            unit.fuel = unit.fuel - Cursor.fuel
             unit.capture = 20
         end
         unit.ready, unit.selected, Selection = false, false, false
@@ -100,9 +112,10 @@ function Menu:select()
         end
     elseif selected == "End Turn" then
         EndTurn()
+        return
     elseif selected == "Load" then
         for _, otherUnit in ipairs(UnitList) do
-            if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y then
+            if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y and otherUnit ~= unit then
                 unit.selected = false
                 unit.fuel = unit.fuelCapacity
                 if unit.ammo then
@@ -115,16 +128,52 @@ function Menu:select()
             end
         end
     elseif selected == "Unload" then
-        unit.x = Cursor.x
-        unit.y = Cursor.y
-        unit.fuel = unit.fuel - Cursor.fuel
         unit.action = Adjacent(unit.y, unit.x)
         unit.actionType = selected
+    elseif selected == "Hide" or selected == "Dive" then
+        Stealth, unit.stealth = true, true
+        unit.ready, unit.selected, Selection = false, false, false
+        unit.revealed = false
+        if selected == "Dive" then
+            unit.spec = "sub"
+        end
+    elseif selected == "Reveal" or selected == "Rise" then
+        unit.stealth = nil
+        Stealth = false
+        for _, otherUnit in ipairs(UnitList) do
+            if otherUnit.stealth then
+                Stealth = true
+                break
+            end
+        end
+        unit.ready, unit.selected, Selection = false, false, false
+        if selected == "Rise" then
+            unit.spec = "ship"
+        end
     else
         -- loads the selection string into a function and calls it if the selection exists
         local func = load(selected .. "()")
         if func then
             func()
+        end
+    end
+    -- by god this is cursed
+    -- i dont wanna run these loops if i dont have to, so i only consider this if there are any stealthed units on the map, denoted by the global "Stealth"
+    -- this is one of the few times i use goto in this whole project, it is the only way to break out of nested loops in lua without returning
+    if Stealth then
+        for _, otherUnit in ipairs(UnitList) do
+            if otherUnit.stealth then
+                for _, otherotherUnit in ipairs(UnitList) do
+                    for _, neighbor in ipairs(Adjacent(otherUnit.y,otherUnit.x)) do
+                        if otherUnit.team ~= otherotherUnit.team and otherotherUnit.y == neighbor[1] and otherotherUnit.x == neighbor[2] then
+                            otherUnit.revealed = true
+                            goto nextUnit
+                        end
+                    end
+                end
+                otherUnit.revealed = nil
+            end
+            ::nextUnit::
         end
     end
 end

@@ -14,3 +14,11 @@ function Submarine:new()
     self.quad = 781 + (self.teamOrder * 6)
     ActivePlayer.money = ActivePlayer.money - Cost.Submarine
 end
+
+function Submarine:draw()
+    Submarine.super.draw(self)
+    if self.stealth then
+        self.iconQuad = 17 + (self.teamOrder * 28)
+        love.graphics.draw(Icons, Icon_quads[self.iconQuad], self.x * Width, self.y * Height + Height / 2)
+    end
+end

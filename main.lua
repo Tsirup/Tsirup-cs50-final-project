@@ -78,7 +78,7 @@ function love.load(args)
     -- map files in maps folder
     -- if you give it a command line argument it will load the map given, otherwise it will give the default debugging map
     if #args ~= 1 or args[1] == "debug" then
-        require("maps/BallIslands")
+        require("maps/EonSprings")
     else
         require("maps/" .. args[1])
     end
@@ -89,7 +89,6 @@ function love.load(args)
 
     Scale = 2
     Camera = {x = 0, y = 0}
-    MouseDown = false
     Ground = {"Infantry", "Mech", "Recon", "Tank", "MediumTank", "NeoTank", "MegaTank", "APC", "Artillery", "Rockets", "AntiAir", "Missles", "PipeRunner"}
     Air = {"Fighter", "Bomber", "BattleCopter", "TransportCopter", "StealthFighter", "BlackBomb"}
     Naval = {"Battleship", "Cruiser", "Lander", "Submarine", "BlackBoat", "AircraftCarrier"}
@@ -99,7 +98,7 @@ function love.load(args)
             BattleCopter = 9000, TransportCopter = 5000, StealthFighter = 24000, BlackBomb = 25000, Battleship = 28000,
             Cruiser = 18000, Lander = 12000, Submarine = 20000, BlackBoat = 7500, AircraftCarrier = 30000}
     Transmap = MapTranslate(Tilemap)
-    Selection = false
+    MouseDown, Selection, Stealth = false, false, false
     Turn = 1
     PlayerGen()
     Cursor = {
@@ -133,7 +132,13 @@ function EndTurn()
                     unit.fuel = unit.fuel - 1
                 elseif unit.spec == "copter" then
                     unit.fuel = unit.fuel - 2
-                elseif unit.spec == "plane" or unit.spec == "sub" then
+                elseif unit.spec == "plane" then
+                    if not unit.stealth then
+                        unit.fuel = unit.fuel - 5
+                    else
+                        unit.fuel = unit.fuel - 8
+                    end
+                elseif unit.spec == "sub" then
                     unit.fuel = unit.fuel - 5
                 end
             end
@@ -421,13 +426,18 @@ function love.draw()
             end
         end
     end
-    for i, unit in ipairs(UnitList) do
-        if not unit.ready then
-            -- arbitrary rgba value for "unready" tint
-            love.graphics.setColor(0.7,0.7,0.7,0.8)
+    -- in a seperate for loop so the other tints appear afterwards, potentially have another loop above here for attacking specifically(?)
+    for _, unit in ipairs(UnitList) do
+        if not unit.stealth or ActivePlayer.color == unit.team or unit.revealed then
+            if not unit.ready then
+                -- arbitrary rgba value for "unready" tint
+                love.graphics.setColor(0.7,0.7,0.7,0.8)
+            end
+            unit:draw()
+            love.graphics.setColor(1,1,1,1)
         end
-        unit:draw()
-        love.graphics.setColor(1,1,1,1)
+    end
+    for _, unit in ipairs(UnitList) do
         if unit.selected then
             if not unit.action then
                 -- arbitrary rgba value for movement tint
