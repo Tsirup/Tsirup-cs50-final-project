@@ -44,11 +44,11 @@ function love.load(args)
         end
     end
 
-    Units = love.graphics.newImage("graphics/units3bordertransparent.png")
+    Units = love.graphics.newImage("graphics/units4bordertransparent.png")
     image_width = Units:getWidth()
     image_height = Units:getHeight()
 
-    for i=0,32 do
+    for i=0,33 do
         for j=0,29 do
             table.insert(Unit_quads,
                 love.graphics.newQuad(
@@ -385,8 +385,75 @@ function EndGame()
     love.graphics.setColor(1,1,1,1)
 end
 
-function ArrowDraw()
-    --statements
+function Arrow(path)
+    -- this is really ugly and terrible
+    -- why is this so much harder and uglier than what i did before with the tilemaps?
+    -- because for the tilemaps the "arrows" for roads for instance were already drawn out on a grid
+    -- here, we could totally complete this function by having a grid and fill it out with 1s and 0s depending on if theres a path-point there
+    -- that would make the code much less ugly and we could use a translation method we've already done before
+    -- however that would just be slower, i hope i dont have to explain why filling a big 2d grid out, where most of the spaces will be empty
+    -- and then iterating through the whole grid is much slower than just having a few if-checks per point in the path,
+    -- and because this is supposed to run every time the player moves their cursor, we just cant have it be slow
+    -- im sure there is some super-brilliant algorithm that im forgetting about or dont know about, oh well
+    local arrow = path
+    for i, point in ipairs(path) do
+        if i == 1 then
+            if path[i+1][1] > point[1] then
+                table.insert(arrow[i],991)
+            elseif path[i+1][1] < point[1] then
+                table.insert(arrow[i],996)
+            elseif path[i+1][2] < point[2] then
+                table.insert(arrow[i],998)
+            else
+                table.insert(arrow[i],1002)
+            end
+        elseif i ~= #path then
+            if path[i+1][1] > point[1] then
+                if point[1] > path[i-1][1] then
+                    table.insert(arrow[i],995)
+                elseif point[2] > path[i-1][2] then
+                    table.insert(arrow[i],994)
+                else
+                    table.insert(arrow[i],993)
+                end
+            elseif path[i+1][1] < point[1] then
+                if point[1] < path[i-1][1] then
+                    table.insert(arrow[i],995)
+                elseif point[2] < path[i-1][2] then
+                    table.insert(arrow[i],999)
+                else
+                    table.insert(arrow[i],1000)
+                end
+            elseif path[i+1][2] < point[2] then
+                if point[2] < path[i-1][2] then
+                    table.insert(arrow[i],1003)
+                elseif point[1] < path[i-1][1] then
+                    table.insert(arrow[i],994)
+                else
+                    table.insert(arrow[i],1000)
+                end
+            elseif path[i+1][2] > point[2] then
+                if point[2] > path[i-1][2] then
+                    table.insert(arrow[i],1003)
+                elseif point[1] > path[i-1][1] then
+                    table.insert(arrow[i],999)
+                else
+                    table.insert(arrow[i],993)
+                end
+            end
+        else
+            if point[1] > path[i-1][1] then
+                table.insert(arrow[i],1001)
+            elseif point[1] < path[i-1][1] then
+                table.insert(arrow[i],992)
+            elseif point[2] < path[i-1][2] then
+                table.insert(arrow[i],997)
+            else
+                table.insert(arrow[i],1004)
+            end
+        end
+    end
+    return arrow
 end
 
 function love.update(dt)
@@ -447,6 +514,11 @@ function love.draw()
                 love.graphics.setColor(0.5,0.8,0.9,0.7)
                 for _, validTile in ipairs(unit.movement) do
                     love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
+                    if validTile[1] == Cursor.y and validTile[2] == Cursor.x and not (unit.x == Cursor.x and unit.y == Cursor.y) then
+                        for _, part in ipairs(Arrow(validTile[4])) do
+                            love.graphics.draw(Units, Unit_quads[part[3]], part[2] * Width, part[1] * Height)
+                        end
+                    end
                 end
             else
                 -- arbitrary rgba value for action tint
