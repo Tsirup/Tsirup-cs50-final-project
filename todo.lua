@@ -1,5 +1,4 @@
 -- TODO:
--- show duration of capture remaining
 -- implement trapping
 -- port 5 pre-deployed maps
 -- implement supplying (black boat and apc)

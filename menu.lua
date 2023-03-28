@@ -45,7 +45,11 @@ function Menu:new(unit)
                 end
             end
             if unit.capture and InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(ActivePlayer.props, Tilemap[Cursor.y][Cursor.x]) then
-                table.insert(self.options, "Capture")
+                local remaining = 20 - unit.capture + math.ceil(unit.health / 10)
+                if remaining > 20 then
+                    remaining = 20
+                end
+                table.insert(self.options, string.format("Capture - %d/20", remaining))
             end
             if unit.carry then
                 if #unit.cargo > 0 then
@@ -100,7 +104,7 @@ function Menu:select()
             unit.capture = 20
         end
     elseif selected  == "Attack" then
-    elseif selected == "Capture" then
+    elseif string.find(selected, "Capture") then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             unit.capture = 20
         end
