@@ -2,10 +2,12 @@
 -- this was extremely headache-inducing but i learned a lot about pathfinding alogrithms
 -- the alogrithm of choice is Breadth-first alogrithm since we need to look at ALL possible tiles to create the selection of valid tiles
 -- if we wanted to only consider one "goal" tile, we should instead use A* alogrithm since its faster on giving us the best possible route to that one tile
--- many older games like Fire Emblem 1 on the NES use this since looking at all possible tiles at once is just too much for the 8-bit system to handle
+-- we end up doing this afterwards for more user-friendly visual queues and to properly work around fog and invisible units
+-- many older games like Fire Emblem 1 on the NES can't use either of these since they simply overpower the old 8-bit processors
 -- that is why that game has no visible grid when you are moving your characters
 -- so you are forced to just move the cursor around to discover your range of movement yourself
--- we have modern technology so we don't have to worry about this
+-- when you move the cursor in that game it is tile-by-tile doing pathfinding based on your d-pad movement which is incredibly optimized and simply awesome and i wish i could figure out how to do it
+-- we have modern technology so we don't have to worry about this i guess, at least this Breadth-first + A* configuration that I hodge-podged together looks nice
 function Movement(unit)
     local validTiles = FindPaths(unit)
     local highlighted = {}
@@ -13,6 +15,12 @@ function Movement(unit)
         local highlight = Unconcatenate(key,", ")
         table.insert(highlight,value)
         table.insert(highlighted,highlight)
+    end
+    -- i want to attach the totalPath to each tile so we can visualize that path in an arrow
+    -- this is what makes it a hybrid Breath-first + A* pathfinding algorithm
+    -- for optimization we can get rid of the first and last element in totalPath because that is always the start and goal tiles which we already know
+    for _, goalTile in ipairs(highlighted) do
+        table.insert(goalTile, Astar(unit,{goalTile[1],goalTile[2]}))
     end
     return highlighted
 end
@@ -95,14 +103,13 @@ function FindPath(cameFrom, current)
     return totalPath
 end
 
-function Astar(unit)
+function Astar(unit, goal)
     -- feels wrong to have a function that is so similar to the FindPaths above, i strained my brain so hard trying to find a way to implement this inside of that
     -- but for now I guess I will have to run it twice
     -- this function is required for dealing with stealthed units, fog, and displaying the arrow of motion
     -- heuristic is manhattan distance
     -- root and goal should be 2 tables of format {y,x}
     local root = {unit.y, unit.x}
-    local goal = {Cursor.y, Cursor.x}
     local function heuristic(a, b)
         return math.abs(a[1] - b[1]) + math.abs(a[2] - b[2])
     end

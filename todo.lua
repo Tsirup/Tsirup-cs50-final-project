@@ -1,4 +1,5 @@
 -- TODO:
+-- implement movement arrow
 -- implement trapping
 -- port 5 pre-deployed maps
 -- implement supplying (black boat and apc)

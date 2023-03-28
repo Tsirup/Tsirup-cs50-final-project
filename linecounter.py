@@ -1,16 +1,35 @@
+# this is just a script to help me keep track of my progress
+# note that it only cares about files that I myself have written and also aren't throwaway files like test files or todo files
 import os
 
-folder_path = input("Enter the path to the folder to count lines of code: ")
-total_count = 0
+def count_lines(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return len(f.readlines())
 
-for dirpath, dirnames, filenames in os.walk(folder_path):
-    for filename in filenames:
-        file_path = os.path.join(dirpath, filename)
-        with open(file_path, 'r') as file:
-            count = 0
-            for line in file:
-                count += 1
-            total_count += count
-            print(f"Found {count} lines of code in file: {file_path}")
+def count_lines_in_files(files):
+    total_lines = 0
+    for file in files:
+        total_lines += count_lines(file)
+    return total_lines
 
-print(f"\nTotal lines of code found in {folder_path}: {total_count}")
+def count_lines_in_directory(directory):
+    total_lines = 0
+    for filename in os.listdir(directory):
+        if "test" not in filename:
+            filepath = os.path.join(directory, filename)
+            total_lines += count_lines(filepath)
+    return total_lines
+
+def count_lines_in_files_and_directories(paths):
+    total_lines = 0
+    for path in paths:
+        if os.path.isfile(path):
+            total_lines += count_lines(path)
+        elif os.path.isdir(path):
+            total_lines += count_lines_in_directory(path)
+    return total_lines
+
+# Example usage
+paths = ["maps","units","border.py","indexer.py","keys.txt","linecounter.py","main.lua","mapgen.lua","menu.lua","movement.lua","priorityqueue.lua", "transparent.py"]
+total_lines = count_lines_in_files_and_directories(paths)
+print(f'Total lines of code: {total_lines}')

@@ -201,7 +201,6 @@ function love.keypressed(key)
 
     local x = Cursor.x
     local y = Cursor.y
-
     if key == "left" then
         x = x - 1
     elseif key == "right" then
@@ -384,6 +383,10 @@ function EndGame()
     love.graphics.print(string.format("%s is the winner!", ActivePlayer.color), mWidth * (5/16), mHeight * (5/16))
     love.graphics.print("Press Esc to exit.", mWidth * (5/16), mHeight * (9/16))
     love.graphics.setColor(1,1,1,1)
+end
+
+function ArrowDraw()
+    --statements
 end
 
 function love.update(dt)

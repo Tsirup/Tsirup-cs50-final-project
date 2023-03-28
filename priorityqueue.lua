@@ -1,4 +1,4 @@
--- the following code is borrowed
+-- some elements of the following code are borrowed
 local PriorityQueue = {}
 
 function PriorityQueue:new()
