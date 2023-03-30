@@ -136,7 +136,7 @@ function MatrixTranslate(matrix,classification)
     -- not on their relationship to eachother, so past around 15 it gets a little random how they are classified
     -- also because about half of the tiles are urban land tiles with shadows, listing what tiles AREN'T these things seems a bit easier
     local notLand = {00, 15, 20, 47, 48}
-    local notShadow = {00, 01, 05, 15, 20, 26, 27, 47}
+    local notShadow = {00, 01, 05, 15, 20, 26, 27, 47, 48}
     local notUrban = {00, 01, 02, 04, 20, 26, 27, 28}
     matrix.type = classification
     if matrix.type == "sea" then

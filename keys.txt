@@ -47,3 +47,4 @@ TILEMAP KEYS:
 45 = Black Port
 46 = Black Lab
 47 = Bridge
+48 = River
