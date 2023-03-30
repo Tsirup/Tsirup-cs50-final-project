@@ -79,6 +79,7 @@ function FindPaths(unit)
                 for _, otherUnit in ipairs(UnitList) do
                     if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit.team ~= ActivePlayer.color and (not otherUnit.stealth or otherUnit.revealed) then
                         cost = cost + 99
+                        break
                     end
                 end
                 -- we accept a new tile if it would not exceed our range and we have not accepted it before
@@ -94,11 +95,13 @@ function FindPaths(unit)
     return explored
 end
 
-function FindPath(cameFrom, current)
-    local totalPath = {current}
+function FindPath(cameFrom, current, unit)
+    local cost = 0
+    local totalPath = {{current[1],current[2],cost}}
     while KeyInTable(cameFrom, table.concat(current, ", ")) do
         current = cameFrom[table.concat(current, ", ")]
-        table.insert(totalPath, 1, current)
+        cost = cost + Movecost[unit.moveType][Tilemap[current[1]][current[2]] + 1]
+        table.insert(totalPath, 1, {current[1],current[2],cost})
     end
     return totalPath
 end
@@ -124,11 +127,20 @@ function Astar(unit, goal)
     while frontier.size > 0 do
         local current = frontier:peek()
         if current[1] == goal[1] and current[2] == goal[2] then
-            return FindPath(cameFrom, current)
+            return FindPath(cameFrom, current, unit)
         end
         current = frontier:pop()
         for _, neighbor in ipairs(Adjacent(current[1], current[2])) do
             local tentative_gScore = gScore[table.concat(current, ", ")] + Movecost[unit.moveType][Tilemap[neighbor[1]][neighbor[2]] + 1]
+            -- again i really hate having this in here
+            -- i really need to find a replacement for this at some point
+            -- its purpose is forcing the path to go arround a unit thats blocking it
+            for _, otherUnit in ipairs(UnitList) do
+                if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit.team ~= ActivePlayer.color and (not otherUnit.stealth or otherUnit.revealed) then
+                    tentative_gScore = tentative_gScore + 99
+                    break
+                end
+            end
             if not gScore[table.concat(neighbor, ", ")] then
                 gScore[table.concat(neighbor, ", ")] = math.huge
             end

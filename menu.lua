@@ -95,9 +95,12 @@ function Menu:select()
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             for i, point in ipairs(UnitPath) do
                 for _, otherUnit in ipairs(UnitList) do
-                    if otherUnit.y == point[1] and otherUnit.x == point[2] then
+                    if unit.team ~= otherUnit.team and otherUnit.y == point[1] and otherUnit.x == point[2] then
                         unit.y = UnitPath[i-1][1]
                         unit.x = UnitPath[i-1][2]
+                        unit.fuel = unit.fuel - UnitPath[i-1][3]
+                        selected = "Wait"
+                        goto trapped
                     end
                 end
             end
@@ -106,6 +109,7 @@ function Menu:select()
             unit.fuel = unit.fuel - Cursor.fuel
         end
     end
+    ::trapped::
     if selected == "Wait" then
         unit.ready, unit.selected, Selection = false, false, false
         if unit.capture then

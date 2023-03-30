@@ -522,7 +522,7 @@ function love.draw()
                     for _, validTile in ipairs(unit.movement) do
                         if validTile[1] == Cursor.y and validTile[2] == Cursor.x and not (unit.x == Cursor.x and unit.y == Cursor.y) then
                             for _, part in ipairs(Arrow(validTile[4])) do
-                                love.graphics.draw(Units, Unit_quads[part[3]], part[2] * Width, part[1] * Height)
+                                love.graphics.draw(Units, Unit_quads[part[4]], part[2] * Width, part[1] * Height)
                             end
                         end
                     end
