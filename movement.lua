@@ -77,7 +77,7 @@ function FindPaths(unit)
                 -- look here if further optimization is needed, the best solution would be have a seperate tilemap which only denotes if there is a unit on a particular space 
                 -- then you would only add one extra check per neighbor rather than #UnitList times many more checks
                 for _, otherUnit in ipairs(UnitList) do
-                    if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit.team ~= ActivePlayer.color then
+                    if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit.team ~= ActivePlayer.color and (not otherUnit.stealth or otherUnit.revealed) then
                         cost = cost + 99
                     end
                 end

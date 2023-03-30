@@ -396,6 +396,7 @@ function Arrow(path)
     -- and because this is supposed to run every time the player moves their cursor, we just cant have it be slow
     -- im sure there is some super-brilliant algorithm that im forgetting about or dont know about, oh well
     local arrow = path
+    UnitPath = path
     for i, point in ipairs(path) do
         if i == 1 then
             if path[i+1][1] > point[1] then
@@ -470,16 +471,18 @@ end
 function love.draw()
     -- to avoid bleeding upon scale, i wrote another python script which changes the borders of a spritemap to be the same color as the "actual border"
     -- check it out at border.py
-
     -- to properly layer the appropriate quads on top of one another, i wrote another python scipt which makes a particular RGBA value transparent
     -- check it out at transparent.py
 
     -- temporary scale for dev purposes
     love.graphics.scale(Scale,Scale)
     love.graphics.translate(Camera.x, Camera.y)
+    -- note that this configuration of drawing is just barely light enough for me not to have an ordering table where i store all the sprites, order them correctly, and then draw the whole table
+    -- if i add any more hypothetical layers, of which right now I have something like 4 or 5, then it would then become worth it to refactor this code for that
+    -- as of now however, im not exactly convinced that that method is more optimized
     for i, row in ipairs(Transmap) do
         for j, tile in ipairs(row) do
-            -- the > 0 check just prevents it from crashing, you can remove this when not debugging
+            -- the > 0 check just prevents it from crashing when you have to have a "blank" tile, you can remove this when not debugging
             if tile > 0 then
                 if tile < 2001 then
                     if tile > 462 and tile < 506 then
@@ -496,38 +499,44 @@ function love.draw()
             end
         end
     end
-    -- in a seperate for loop so the other tints appear afterwards, potentially have another loop above here for attacking specifically(?)
     for _, unit in ipairs(UnitList) do
-        if not unit.stealth or ActivePlayer.color == unit.team or unit.revealed then
+        if (not unit.stealth or ActivePlayer.color == unit.team or unit.revealed) and not unit.selected then
             if not unit.ready then
                 -- arbitrary rgba value for "unready" tint
                 love.graphics.setColor(0.7,0.7,0.7,0.8)
             end
             unit:draw()
-            love.graphics.setColor(1,1,1,1)
         end
+        love.graphics.setColor(1,1,1,1)
     end
-    for _, unit in ipairs(UnitList) do
-        if unit.selected then
-            if not unit.action then
-                -- arbitrary rgba value for movement tint
-                love.graphics.setColor(0.5,0.8,0.9,0.7)
-                for _, validTile in ipairs(unit.movement) do
-                    love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
-                    if validTile[1] == Cursor.y and validTile[2] == Cursor.x and not (unit.x == Cursor.x and unit.y == Cursor.y) then
-                        for _, part in ipairs(Arrow(validTile[4])) do
-                            love.graphics.draw(Units, Unit_quads[part[3]], part[2] * Width, part[1] * Height)
+    if Selection then
+        for _, unit in ipairs(UnitList) do
+            if unit.selected then
+                if not unit.action then
+                    -- arbitrary rgba value for movement tint
+                    love.graphics.setColor(0.5,0.8,0.9,0.7)
+                    for _, validTile in ipairs(unit.movement) do
+                        love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
+                    end
+                    love.graphics.setColor(1,1,1,1)
+                    for _, validTile in ipairs(unit.movement) do
+                        if validTile[1] == Cursor.y and validTile[2] == Cursor.x and not (unit.x == Cursor.x and unit.y == Cursor.y) then
+                            for _, part in ipairs(Arrow(validTile[4])) do
+                                love.graphics.draw(Units, Unit_quads[part[3]], part[2] * Width, part[1] * Height)
+                            end
                         end
                     end
+                else
+                    -- arbitrary rgba value for action tint
+                    love.graphics.setColor(1,0.8,0.8,0.7)
+                    for _, validTile in ipairs(unit.action) do
+                        love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
+                    end
                 end
-            else
-                -- arbitrary rgba value for action tint
-                love.graphics.setColor(1,0.8,0.8,0.7)
-                for _, validTile in ipairs(unit.action) do
-                    love.graphics.rectangle("fill", validTile[2] * Width, validTile[1] * Height, Width, Height)
-                end
-            end
             love.graphics.setColor(1,1,1,1)
+            unit:draw()
+            break
+            end
         end
     end
     if MenuOpen then

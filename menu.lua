@@ -93,6 +93,14 @@ function Menu:select()
     local selected = MenuOpen.options[MenuOpen.cursor]
     if unit then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
+            for i, point in ipairs(UnitPath) do
+                for _, otherUnit in ipairs(UnitList) do
+                    if otherUnit.y == point[1] and otherUnit.x == point[2] then
+                        unit.y = UnitPath[i-1][1]
+                        unit.x = UnitPath[i-1][2]
+                    end
+                end
+            end
             unit.x = Cursor.x
             unit.y = Cursor.y
             unit.fuel = unit.fuel - Cursor.fuel

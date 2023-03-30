@@ -1,5 +1,4 @@
 -- TODO:
--- fix layering, it should be in this order (bottom to top) [map -> other units -> tint -> arrow -> moving unit]
 -- implement trapping
 -- port 5 pre-deployed maps
 -- implement supplying (black boat and apc)
