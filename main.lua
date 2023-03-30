@@ -128,6 +128,8 @@ function EndTurn()
     end
     ActivePlayer = Players[active]
     ActivePlayer.money = ActivePlayer.money + ActivePlayer.income
+    -- we have 3 very similar if statements here because we have to follow the proper procedure order of:
+    -- decrement fuel from units -> resupply units -> destroy units
     for i, unit in ipairs(UnitList) do
         if unit.team == ActivePlayer.color then
             unit.movement = Movement(unit)
@@ -146,8 +148,12 @@ function EndTurn()
                     unit.fuel = unit.fuel - 5
                 end
             end
+        end
+    end
+    for i, unit in ipairs(UnitList) do
+        if unit.team == ActivePlayer.color then
             -- this should be okay??? definitely doesnt look okay i'll admit
-            if unit.name == "APC" then
+            if unit.name == "APC" or unit.name == "BlackBoat" then
                 for _, neighbor in ipairs(Adjacent(unit.y, unit.x)) do
                     for _, otherUnit in ipairs(UnitList) do
                         if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
@@ -159,6 +165,10 @@ function EndTurn()
                     end
                 end
             end
+        end
+    end
+    for i, unit in ipairs(UnitList) do
+        if unit.team == ActivePlayer.color then
             if unit.spec ~= "infantry" and unit.spec ~= "vehicle" then
                 if unit.fuel <= 0 then
                     table.remove(UnitList, i)

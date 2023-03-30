@@ -36,14 +36,19 @@ function Menu:new(unit)
                     table.insert(self.options, "Reveal")
                 end
             end
+            -- change this to check if a unit is IN range before you let it attack
             for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
                 for _, otherUnit in ipairs(UnitList) do
-                    if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and not InTable(self.options, "Attack") then
+                    if otherUnit.team ~= ActivePlayer.color and unit.range and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
                         table.insert(self.options, "Attack")
-                        break
+                        goto rangeBreak
+                    elseif (unit.name == "APC" or unit.name == "BlackBoat") and otherUnit.team == ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
+                        table.insert(self.options, "Supply")
+                        goto rangeBreak
                     end
                 end
             end
+            ::rangeBreak::
             if unit.capture and InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(ActivePlayer.props, Tilemap[Cursor.y][Cursor.x]) then
                 local remaining = 20 - unit.capture + math.ceil(unit.health / 10)
                 if remaining > 20 then
@@ -146,6 +151,15 @@ function Menu:select()
     elseif selected == "Unload" then
         unit.action = Adjacent(unit.y, unit.x)
         unit.actionType = selected
+    elseif selected == "Supply" then
+        unit.ready, unit.selected, Selection = false, false, false
+        for _, neighbor in ipairs(Adjacent(unit.y, unit.x)) do
+            for _, otherUnit in ipairs(UnitList) do
+                if unit.team == otherUnit.team and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
+                    otherUnit.fuel = otherUnit.fuelCapacity
+                end
+            end
+        end
     elseif selected == "Hide" or selected == "Dive" then
         Stealth, unit.stealth = true, true
         unit.ready, unit.selected, Selection = false, false, false

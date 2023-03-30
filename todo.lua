@@ -1,5 +1,4 @@
 -- TODO:
--- implement supplying (black boat and apc)
 -- port 5 3-player maps
 -- implement healing (black boat and properties)
 -- port 5 4-player maps
