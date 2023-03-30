@@ -74,6 +74,8 @@ function love.load(args)
         end
     end
 
+    Unitmap = nil
+
     -- tilemap keys in keys.txt
     -- map files in maps folder
     -- if you give it a command line argument it will load the map given, otherwise it will give the default debugging map
@@ -106,6 +108,15 @@ function love.load(args)
         x = 1,
         y = 1
     }
+    -- look up documentation on load on something
+    if Unitmap then
+        for _, unit in ipairs(Unitmap) do
+            local func = load(unit[1] .. ":predeployed(" .. unit[2] .. unit[3] .. unit[4] .. ")")
+            if func then
+                func()
+            end
+        end
+    end
 end
 
 function EndTurn()

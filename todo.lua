@@ -1,5 +1,4 @@
 -- TODO:
--- implement trapping
 -- port 5 pre-deployed maps
 -- implement supplying (black boat and apc)
 -- port 5 3-player maps

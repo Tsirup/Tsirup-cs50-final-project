@@ -15,6 +15,21 @@ function Unit:new()
     table.insert(UnitList, self)
 end
 
+function Unit:predeployed(y,x,team)
+    self.x = x
+    self.y = y
+    self.team = Players[team].color
+    self.teamOrder = team - 1
+    self.ready = true
+    self.health = 100
+    self.selected = false
+    self.fuelCapacity = self.fuel
+    if self.ammo then
+        self.ammoCapacity = self.ammo
+    end
+    table.insert(UnitList, self)
+end
+
 function Unit:draw()
     love.graphics.draw(Units, Unit_quads[self.quad], self.x * Width, self.y * Height)
     if self.fuel <= self.fuelCapacity / 3 then
