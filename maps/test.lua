@@ -10,4 +10,4 @@ Tilemap = {
     {00,10,26,01,00},
     {00,00,00,00,00}}
 
-Unitmap = {{"Infantry",9,2,0}, {"Tank",9,4,1}}
+Unitmap = {{Infantry,9,2,1}, {Tank,9,4,2}, {BattleCopter,7,2,3}}

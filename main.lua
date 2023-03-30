@@ -12,12 +12,12 @@ function love.load(args)
     Unit_quads = {}
     Icon_quads = {}
     UnitList = {}
+    Unitmap = nil
 
     -- I modified these tilemaps with microsoft paint from the great templates at spriters-resource.com
     Overworld = love.graphics.newImage("graphics/overworld3bordertransparent.png")
     local image_width = Overworld:getWidth()
     local image_height = Overworld:getHeight()
-
     for i=0,57 do
         for j=0,21 do
             table.insert(World_quads,
@@ -32,7 +32,6 @@ function love.load(args)
     Properties = love.graphics.newImage("graphics/properties2bordertransparent.png")
     image_width = Properties:getWidth()
     image_height = Properties:getHeight()
-
     for i=0,5 do
         for j=0,17 do
             table.insert(Prop_quads,
@@ -47,7 +46,6 @@ function love.load(args)
     Units = love.graphics.newImage("graphics/units4bordertransparent.png")
     image_width = Units:getWidth()
     image_height = Units:getHeight()
-
     for i=0,33 do
         for j=0,29 do
             table.insert(Unit_quads,
@@ -62,7 +60,6 @@ function love.load(args)
     Icons = love.graphics.newImage("graphics/icons2bordertransparent.png")
     image_width = Icons:getWidth()
     image_height = Icons:getHeight()
-
     for i=0,4 do
         for j=0,27 do
             table.insert(Icon_quads,
@@ -74,21 +71,18 @@ function love.load(args)
         end
     end
 
-    Unitmap = nil
-
-    -- tilemap keys in keys.txt
-    -- map files in maps folder
-    -- if you give it a command line argument it will load the map given, otherwise it will give the default debugging map
-    if #args ~= 1 or args[1] == "debug" then
-        require("maps/EonSprings")
-    else
-        require("maps/" .. args[1])
-    end
     require("mapgen")
     require("units")
     require("movement")
     require("menu")
-
+    -- tilemap keys in keys.txt
+    -- map files in maps folder
+    -- if you give it a command line argument it will load the map given, otherwise it will give the default debugging map
+    if #args ~= 1 or args[1] == "debug" then
+        require("maps/test")
+    else
+        require("maps/" .. args[1])
+    end
     Scale = 2
     Camera = {x = 0, y = 0}
     Ground = {"Infantry", "Mech", "Recon", "Tank", "MediumTank", "NeoTank", "MegaTank", "APC", "Artillery", "Rockets", "AntiAir", "Missles", "PipeRunner"}
@@ -108,14 +102,13 @@ function love.load(args)
         x = 1,
         y = 1
     }
-    -- look up documentation on load on something
     if Unitmap then
         for _, unit in ipairs(Unitmap) do
-            local func = load(unit[1] .. ":predeployed(" .. unit[2] .. unit[3] .. unit[4] .. ")")
-            if func then
-                func()
-            end
+            Deploy = unit
+            Deploy[1]()
         end
+        ActivePlayer.money = ActivePlayer.income
+        Deploy = nil
     end
 end
 

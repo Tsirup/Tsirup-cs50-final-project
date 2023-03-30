@@ -1,26 +1,20 @@
 Unit = Object:extend()
 
 function Unit:new()
-    self.x = Cursor.x
-    self.y = Cursor.y
-    self.team = ActivePlayer.color
-    self.teamOrder = ActivePlayer.order
-    self.ready = false
-    self.health = 100
-    self.selected = false
-    self.fuelCapacity = self.fuel
-    if self.ammo then
-        self.ammoCapacity = self.ammo
+    if not Deploy then
+        self.x = Cursor.x
+        self.y = Cursor.y
+        self.team = ActivePlayer.color
+        self.teamOrder = ActivePlayer.order - 1
+        self.ready = false
+    else
+        self.x = Deploy[3]
+        self.y = Deploy[2]
+        self.team = Players[Deploy[4]].color
+        self.teamOrder = Deploy[4] - 1
+        self.ready = true
+        self.movement = Movement(self)
     end
-    table.insert(UnitList, self)
-end
-
-function Unit:predeployed(y,x,team)
-    self.x = x
-    self.y = y
-    self.team = Players[team].color
-    self.teamOrder = team - 1
-    self.ready = true
     self.health = 100
     self.selected = false
     self.fuelCapacity = self.fuel
