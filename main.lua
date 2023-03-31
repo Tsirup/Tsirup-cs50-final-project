@@ -4,6 +4,7 @@ if arg[2] == "debug" then
 end
 function love.load(args)
     PriorityQueue = require("priorityqueue")
+    -- my only borrowed library for this project
     Object = require "libraries/classic"
     Width = 16
     Height = 16
