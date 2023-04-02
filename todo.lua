@@ -1,5 +1,4 @@
 -- TODO:
--- implement healing (black boat and properties)
 -- port 5 4-player maps
 -- implement exploding (black bomb) (range,i,j,{1,2,3})
 -- implement exploding (silo) (range,i,j,{1,2})

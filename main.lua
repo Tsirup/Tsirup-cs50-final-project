@@ -157,7 +157,7 @@ function EndTurn()
             if unit.name == "APC" or unit.name == "BlackBoat" then
                 for _, neighbor in ipairs(Adjacent(unit.y, unit.x)) do
                     for _, otherUnit in ipairs(UnitList) do
-                        if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
+                        if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and unit.team == otherUnit.team then
                             otherUnit.fuel = otherUnit.fuelCapacity
                             if otherUnit.ammo then
                                 otherUnit.ammo = otherUnit.ammoCapacity
@@ -174,8 +174,44 @@ function EndTurn()
                 if unit.fuel <= 0 then
                     table.remove(UnitList, i)
                 end
+                if unit.spec == "copter" or unit.spec == "plane" then
+                    if Tilemap[unit.y][unit.x] == ActivePlayer.props[4] then
+                        Heal(unit,20)
+                    end
+                else
+                    if Tilemap[unit.y][unit.x] == ActivePlayer.props[5] then
+                        Heal(unit,20)
+                    end
+                end
+            elseif InTable({ActivePlayer.props[1], ActivePlayer.props[2], ActivePlayer.props[3], ActivePlayer.props[6]}, Tilemap[unit.y][unit.x]) then
+                Heal(unit,20)
+            end
+            if unit.name == "BlackBoat" then
+                for _, neighbor in ipairs(Adjacent(unit.y, unit.x)) do
+                    for _, otherUnit in ipairs(UnitList) do
+                        if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and unit.team == otherUnit.team then
+                            Heal(otherUnit,10)
+                        end
+                    end
+                end
             end
         end
+    end
+end
+
+function Heal(unit,default)
+    local repairCost = math.floor(Cost[unit.name] * (default / 100))
+    if (ActivePlayer.money / repairCost) < 1 then
+        default = math.floor(default * (ActivePlayer.money / repairCost))
+        ActivePlayer.money = 0
+    else
+        ActivePlayer.money = ActivePlayer.money - repairCost
+    end
+    unit.health = unit.health + default
+    if unit.health > 100 then
+        local surplus = unit.health - 100
+        unit.health = 100
+        ActivePlayer.money = math.floor(ActivePlayer.money + Cost[unit.name] * (surplus / 100))
     end
 end
 
