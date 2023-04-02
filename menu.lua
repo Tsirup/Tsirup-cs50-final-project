@@ -36,6 +36,9 @@ function Menu:new(unit)
                     table.insert(self.options, "Reveal")
                 end
             end
+            if unit.name == "BlackBomb" then
+                table.insert(self.options, "Explode")
+            end
             -- change this to check if a unit is IN range before you let it attack
             for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
                 for _, otherUnit in ipairs(UnitList) do
@@ -49,12 +52,16 @@ function Menu:new(unit)
                 end
             end
             ::rangeBreak::
-            if unit.capture and InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(ActivePlayer.props, Tilemap[Cursor.y][Cursor.x]) then
-                local remaining = 20 - unit.capture + math.ceil(unit.health / 10)
-                if remaining > 20 then
-                    remaining = 20
+            if unit.capture then
+                if InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(ActivePlayer.props, Tilemap[Cursor.y][Cursor.x]) then
+                    local remaining = 20 - unit.capture + math.ceil(unit.health / 10)
+                    if remaining > 20 then
+                        remaining = 20
+                    end
+                    table.insert(self.options, string.format("Capture - %d/20", remaining))
+                elseif Tilemap[Cursor.y][Cursor.x] == 21 then
+                    table.insert(self.options, "Launch")
                 end
-                table.insert(self.options, string.format("Capture - %d/20", remaining))
             end
             if unit.carry then
                 if #unit.cargo > 0 then
@@ -180,6 +187,10 @@ function Menu:select()
         if selected == "Rise" then
             unit.spec = "ship"
         end
+    elseif selected == "Explode" then
+        unit.action = Range(unit.y, unit.x, {0,1,2,3})
+        unit.actionType = selected
+    elseif selected == "Launch" then
     else
         -- loads the selection string into a function and calls it if the selection exists
         local func = load(selected .. "()")
@@ -232,6 +243,18 @@ function Action(unit,actionType)
         unit.cargo[validCargo].ready = false
         table.insert(UnitList, unit.cargo[validCargo])
         table.remove(unit.cargo, validCargo)
+    elseif actionType == "Explode" then
+        for _, dangerZone in ipairs(unit.action) do
+            for _, otherUnit in ipairs(UnitList) do
+                if dangerZone[1] == otherUnit.y and dangerZone[2] == otherUnit.x then
+                    otherUnit.health = otherUnit.health - 50
+                    if otherUnit.health <= 0 then
+                        otherUnit.health = 1
+                    end
+                end
+            end
+        end
+        table.remove(UnitList, Index(UnitList, unit))
     end
     unit.action, unit.actionType = nil, nil
     unit.ready, unit.selected, Selection = false, false, false

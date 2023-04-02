@@ -335,7 +335,7 @@ function MapTranslate(unmap)
                     else
                         transmap[i][j] = 139
                     end
-                elseif matrix[1][2] ~= 1 and matrix[2][1] ~= 1 and matrix[3][2] ~= 1 and matrix[2][3] then
+                elseif matrix[1][2] ~= 1 and matrix[2][1] ~= 1 and matrix[3][2] ~= 1 and matrix[2][3] ~= 0 then
                     if matrix[1][1] ~= 1 and matrix[3][1] ~= 1 then
                         if matrix[2][3] == 2 then
                             transmap[i][j] = 1108
@@ -349,7 +349,7 @@ function MapTranslate(unmap)
                     else
                         transmap[i][j] = 140
                     end
-                elseif matrix[1][2] ~= 1 and matrix[2][1] ~= 1 and matrix[2][3] ~= 1 then
+                elseif matrix[1][2] ~= 1 and matrix[2][1] ~= 1 and matrix[2][3] ~= 1 and matrix[3][2] ~= 0 then
                     if matrix[1][1] ~= 1 and matrix[1][3] ~= 1 then
                         if matrix[3][2] == 2 then
                             transmap[i][j] = 910

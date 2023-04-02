@@ -211,11 +211,13 @@ function Range(i,j,range)
     -- I think I need as much optimization for that part as possible, however for other parts like combat where this function is only called once,
     -- not directly returning a table is just fine, it is certain less ugly thats for sure!
     local solutions = {}
-    for y = -range, range do
-        for x = -range, range do
-            if math.abs(y) + math.abs(x) == range then
-                if i+y >= 1 and i+y <= #Tilemap and j+x >= 1 and j+x <= #(Tilemap[1]) then
-                    table.insert(solutions, {i+y,j+x})
+    for _, distance in ipairs(range) do
+        for y = -distance, distance do
+            for x = -distance, distance do
+                if math.abs(y) + math.abs(x) == distance then
+                    if i+y >= 1 and i+y <= #Tilemap and j+x >= 1 and j+x <= #(Tilemap[1]) then
+                        table.insert(solutions, {i+y,j+x})
+                    end
                 end
             end
         end

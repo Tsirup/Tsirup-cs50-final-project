@@ -1,6 +1,4 @@
 -- TODO:
--- port 5 4-player maps
--- implement exploding (black bomb) (range,i,j,{1,2,3})
 -- implement exploding (silo) (range,i,j,{1,2})
 -- port 5 war-room maps
 -- add combat (use range(i,j,range))
