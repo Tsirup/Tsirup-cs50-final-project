@@ -131,7 +131,7 @@ function EndTurn()
     ActivePlayer.money = ActivePlayer.money + ActivePlayer.income
     -- we have 3 very similar if statements here because we have to follow the proper procedure order of:
     -- decrement fuel from units -> resupply units -> destroy units
-    for i, unit in ipairs(UnitList) do
+    for _, unit in ipairs(UnitList) do
         if unit.team == ActivePlayer.color then
             unit.movement = Movement(unit)
             if unit.spec ~= "infantry" and unit.spec ~= "vehicle" then
