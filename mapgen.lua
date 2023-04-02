@@ -811,26 +811,29 @@ function ForestCombine(uncmap)
                 elseif matrix.square == false then
                     uncmap[i][j] = 3
                 elseif matrix.big_square == true then
-                    uncmap[i+1][j+1] = 69
-                    uncmap[i][j+1] = 47
-                    uncmap[i-1][j+1] = 25
-                    uncmap[i+1][j] = 68
-                    uncmap[i][j] = 46
-                    uncmap[i-1][j] = 24
-                    if uncmap[i+1][j-1] == 3 then
-                        uncmap[i+1][j-1] = 70
-                    else 
-                        uncmap[i+1][j-1] = 67
-                    end
-                    if uncmap[i][j-1] == 3 then
-                        uncmap[i][j-1] = 48
-                    else
-                        uncmap[i][j-1] = 45
-                    end
-                    if uncmap[i-1][j-1] == 3 then
-                        uncmap[i-1][j-1] = 26
-                    else
-                        uncmap[i-1][j-1] = 23
+                    local big_square_neighbors = {uncmap[i-1][j-1], uncmap[i-1][j], uncmap[i-1][j+1], uncmap[i][j-1], uncmap[i][j+1], uncmap[i+1][j-1], uncmap[i+1][j], uncmap[i+1][j+1]}
+                    if AllInTable(forest,big_square_neighbors) then
+                        uncmap[i+1][j+1] = 69
+                        uncmap[i][j+1] = 47
+                        uncmap[i-1][j+1] = 25
+                        uncmap[i+1][j] = 68
+                        uncmap[i][j] = 46
+                        uncmap[i-1][j] = 24
+                        if uncmap[i+1][j-1] == 3 then
+                            uncmap[i+1][j-1] = 70
+                        else
+                            uncmap[i+1][j-1] = 67
+                        end
+                        if uncmap[i][j-1] == 3 then
+                            uncmap[i][j-1] = 48
+                        else
+                            uncmap[i][j-1] = 45
+                        end
+                        if uncmap[i-1][j-1] == 3 then
+                            uncmap[i-1][j-1] = 26
+                        else
+                            uncmap[i-1][j-1] = 23
+                        end
                     end
                 elseif matrix.square == true then
                     local square_neighbors = {uncmap[i-1][j], uncmap[i][j-1], uncmap[i-1][j-1]}

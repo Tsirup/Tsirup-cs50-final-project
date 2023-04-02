@@ -1,5 +1,4 @@
 -- TODO:
--- implement exploding (silo) (range,i,j,{1,2})
 -- port 5 war-room maps
 -- add combat (use range(i,j,range))
 -- add destroying pipe seams
