@@ -307,58 +307,58 @@ function MapTranslate(unmap)
                     else
                         transmap[i][j] = 166
                     end
-                elseif matrix[2][1] == 0 and matrix[2][3] == 0 and matrix[3][2] == 0 then
-                    if matrix[3][1] == 0 and matrix[3][3] == 0 then
+                elseif matrix[2][1] ~= 1 and matrix[2][3] ~= 1 and matrix[3][2] ~= 1 and matrix[1][2] ~= 0 then
+                    if matrix[3][1] ~= 1 and matrix[3][3] ~= 1 then
                         if matrix[1][2] == 2 then
                             transmap[i][j] = 1109
                         else
                             transmap[i][j] = 112
                         end
-                    elseif matrix[3][3] == 0 then
+                    elseif matrix[3][3] ~= 1 then
                         transmap[i][j] = 165
-                    elseif matrix[3][1] == 0 then
+                    elseif matrix[3][1] ~= 1 then
                         transmap[i][j] = 163
                     else
                         transmap[i][j] = 164
                     end
-                elseif matrix[1][2] == 0 and matrix[2][3] == 0 and matrix[3][2] == 0 then
-                    if matrix[1][3] == 0 and matrix[3][3] == 0 then
+                elseif matrix[1][2] ~= 1 and matrix[2][3] ~= 1 and matrix[3][2] ~= 1 and matrix[2][1] ~= 0 then
+                    if matrix[1][3] ~= 1 and matrix[3][3] ~= 1 then
                         if matrix[2][1] == 2 then
                             transmap[i][j] = 911
                         else
                             transmap[i][j] = 133
                         end
-                    elseif matrix[3][3] == 0 then
+                    elseif matrix[3][3] ~= 1 then
                         transmap[i][j] = 161
-                    elseif matrix[1][3] == 0 then
+                    elseif matrix[1][3] ~= 1 then
                         transmap[i][j] = 117
                     else
                         transmap[i][j] = 139
                     end
-                elseif matrix[1][2] == 0 and matrix[2][1] == 0 and matrix[3][2] == 0 then
-                    if matrix[1][1] == 0 and matrix[3][1] == 0 then
+                elseif matrix[1][2] ~= 1 and matrix[2][1] ~= 1 and matrix[3][2] ~= 1 and matrix[2][3] then
+                    if matrix[1][1] ~= 1 and matrix[3][1] ~= 1 then
                         if matrix[2][3] == 2 then
                             transmap[i][j] = 1108
                         else
                             transmap[i][j] = 135
                         end
-                    elseif matrix[3][1] == 0 then
+                    elseif matrix[3][1] ~= 1 then
                         transmap[i][j] = 162
-                    elseif matrix[1][1] == 0 then
+                    elseif matrix[1][1] ~= 1 then
                         transmap[i][j] = 118
                     else
                         transmap[i][j] = 140
                     end
-                elseif matrix[1][2] == 0 and matrix[2][1] == 0 and matrix[2][3] == 0 then
-                    if matrix[1][1] == 0 and matrix[1][3] == 0 then
+                elseif matrix[1][2] ~= 1 and matrix[2][1] ~= 1 and matrix[2][3] ~= 1 then
+                    if matrix[1][1] ~= 1 and matrix[1][3] ~= 1 then
                         if matrix[3][2] == 2 then
                             transmap[i][j] = 910
                         else
                             transmap[i][j] = 156
                         end
-                    elseif matrix[1][3] == 0 then
+                    elseif matrix[1][3] ~= 1 then
                         transmap[i][j] = 187
-                    elseif matrix[1][1] == 0 then
+                    elseif matrix[1][1] ~= 1 then
                         transmap[i][j] = 185
                     else
                         transmap[i][j] = 186
