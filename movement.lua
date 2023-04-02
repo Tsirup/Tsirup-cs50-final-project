@@ -225,6 +225,16 @@ function Range(i,j,range)
     return solutions
 end
 
+function FullMap()
+    local fullMap = {}
+    for i, row in ipairs(Tilemap) do
+        for j, _ in ipairs(row) do
+            table.insert(fullMap,{i,j})
+        end
+    end
+    return fullMap
+end
+
 function Unconcatenate(str, delimiter)
     local function isNumeric(substr)
       return tonumber(substr) ~= nil

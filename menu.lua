@@ -135,7 +135,7 @@ function Menu:select()
         unit.ready, unit.selected, Selection = false, false, false
         unit.capture = MenuOpen.unit.capture - math.ceil(unit.health / 10)
         if unit.capture <= 0 then
-            MapUpdate(unit.x, unit.y)
+            MapUpdate(unit.y, unit.x)
             unit.capture = 20
         end
     elseif selected == "End Turn" then
@@ -191,6 +191,8 @@ function Menu:select()
         unit.action = Range(unit.y, unit.x, {0,1,2,3})
         unit.actionType = selected
     elseif selected == "Launch" then
+        unit.action = FullMap()
+        unit.actionType = selected
     else
         -- loads the selection string into a function and calls it if the selection exists
         local func = load(selected .. "()")
@@ -255,6 +257,22 @@ function Action(unit,actionType)
             end
         end
         table.remove(UnitList, Index(UnitList, unit))
+    elseif actionType == "Launch" then
+        unit.action = Range(Cursor.y, Cursor.x, {0,1,2})
+        unit.actionType = "Fire"
+        return
+    elseif actionType == "Fire" then
+        for _, dangerZone in ipairs(unit.action) do
+            for _, otherUnit in ipairs(UnitList) do
+                if dangerZone[1] == otherUnit.y and dangerZone[2] == otherUnit.x then
+                    otherUnit.health = otherUnit.health - 30
+                    if otherUnit.health <= 0 then
+                        otherUnit.health = 1
+                    end
+                end
+            end
+        end
+        MapUpdate(unit.y,unit.x)
     end
     unit.action, unit.actionType = nil, nil
     unit.ready, unit.selected, Selection = false, false, false

@@ -369,60 +369,80 @@ function TileTranslate(tile, i, j)
         transmap[i][j] = 2008
     elseif tile == 19 then
         transmap[i][j] = 2026
+    elseif tile == 22 then
+        transmap[i][j] = 2102
     elseif tile == 24 then
         transmap[i][j] = 2109
     elseif tile == 25 then
         transmap[i][j] = 2027
+    elseif tile == 28 then
+        local matrix = MatrixTranslate(Neighbors(i,j), "pipe")
+        if matrix[2][1] == 1 and matrix[2][3] == 1 then
+            transmap[i][j] = 52
+        elseif matrix[1][2] == 1 and matrix[3][2] == 1 then
+            transmap[i][j] = 53
+        else
+            transmap[i][j] = 52
+        end
     end
     Transmap = transmap
 end
 
-function MapUpdate(x,y)
+function MapUpdate(y,x)
     local loser, winner = nil, nil
     winner = ActivePlayer
     for _, player in ipairs(Players) do
         if InTable(player.props, Tilemap[y][x]) then
             loser = player
         end
-    end 
-    if InTable(City, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.props[1]
-    elseif InTable(Base, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.props[2]
-    elseif InTable(HQ, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.props[1]
-        for i = #Players, 1, -1 do
-            if loser == Players[i] then
-                -- delete all of the loser's units
-                for j = #UnitList, 1, -1 do
-                    if UnitList[j].team == loser.color then
-                        table.remove(UnitList, j)
-                    end
-                end
-                -- transfer over all of the loser's properties
-                for i, row in ipairs(Tilemap) do
-                    for j, tile in ipairs(row) do
-                        if InTable(loser.props, tile) then
-                            MapUpdate(j,i)
+    end
+    if loser then
+        if InTable(City, Tilemap[y][x]) then
+            Tilemap[y][x] = winner.props[1]
+        elseif InTable(Base, Tilemap[y][x]) then
+            Tilemap[y][x] = winner.props[2]
+        elseif InTable(HQ, Tilemap[y][x]) then
+            Tilemap[y][x] = winner.props[1]
+            for i = #Players, 1, -1 do
+                if loser == Players[i] then
+                    -- delete all of the loser's units
+                    for j = #UnitList, 1, -1 do
+                        if UnitList[j].team == loser.color then
+                            table.remove(UnitList, j)
                         end
                     end
+                    -- transfer over all of the loser's properties
+                    for i, row in ipairs(Tilemap) do
+                        for j, tile in ipairs(row) do
+                            if InTable(loser.props, tile) then
+                                MapUpdate(j,i)
+                            end
+                        end
+                    end
+                    -- remove the loser
+                    table.remove(Players, i)
                 end
-                -- remove the loser
-                table.remove(Players, i)
             end
+        elseif InTable(Airport, Tilemap[y][x]) then
+            Tilemap[y][x] = winner.props[4]
+        elseif InTable(Port, Tilemap[y][x]) then
+            Tilemap[y][x] = winner.props[5]
+        elseif InTable(Lab, Tilemap[y][x]) then
+            Tilemap[y][x] = winner.props[6]
         end
-    elseif InTable(Airport, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.props[4]
-    elseif InTable(Port, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.props[5]
-    elseif InTable(Lab, Tilemap[y][x]) then
-        Tilemap[y][x] = winner.props[6]
+        winner.income = winner.income + 1000
+        if loser then
+            loser.income = loser.income - 1000
+        end
+    else
+        if Tilemap[y][x] == 21 then
+            Tilemap[y][x] = 22
+        -- implies that the tile was a pipe seam
+        else
+            Tilemap[y][x] = 28
+        end
     end
     TileTranslate(Tilemap[y][x], y, x)
-    winner.income = winner.income + 1000
-    if loser then
-        loser.income = loser.income - 1000
-    end
 end
 
 function EndGame()
