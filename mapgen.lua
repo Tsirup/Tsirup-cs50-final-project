@@ -769,7 +769,7 @@ function MapTranslate(unmap)
                 elseif matrix[2][1] ~= 1 and matrix[2][3] ~= 1 then
                     transmap[i][j] = 507
                 elseif matrix[2][3] ~= 1 and matrix[3][2] ~= 1 then
-                    transmap[i][j] = 1104
+                    transmap[i][j] = 1114
                 elseif matrix[2][1] ~= 1 and matrix[3][2] ~= 1 then
                     -- the bad corner tile mentioned above, i am sending it up instead of right arbitrarily, they both look bad
                     transmap[i][j] = 709
@@ -781,8 +781,9 @@ function MapTranslate(unmap)
                     transmap[i][j] = 1112
                 elseif matrix[2][3] ~= 1 then
                     transmap[i][j] = 913
+                    -- this one is facing the wrong way on purpose because the one for the other direction just looks bad, no idea why
                 elseif matrix[2][1] ~= 1 then
-                    transmap[i][j] = 712
+                    transmap[i][j] = 907
                 elseif matrix[1][2] ~= 1 then
                     transmap[i][j] = 917
                 else
