@@ -1,5 +1,4 @@
 -- TODO:
--- port 5 war-room maps
 -- add combat (use range(i,j,range))
 -- add destroying pipe seams
 -- move the UI off the map

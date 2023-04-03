@@ -45,7 +45,7 @@ function Menu:new(unit)
                     if otherUnit.team ~= ActivePlayer.color and unit.range and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
                         table.insert(self.options, "Attack")
                         goto rangeBreak
-                    elseif (unit.name == "APC" or unit.name == "BlackBoat") and otherUnit.team == ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
+                    elseif (unit.name == "APC" or unit.name == "BlackBoat") and otherUnit.team == ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit ~= unit then
                         table.insert(self.options, "Supply")
                         goto rangeBreak
                     end

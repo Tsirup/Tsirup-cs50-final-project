@@ -11,4 +11,4 @@ Tilemap = {
     {00,00,00,00,00}}
 
 Unitmap = {
-    {Infantry,7,3,1}, {Fighter,6,2,2}, {BlackBomb,7,2,3}}
+    {Infantry,7,3,1}, {Fighter,6,2,2}, {BlackBomb,7,2,3}, {BlackBoat,6,3,1}}
