@@ -40,14 +40,31 @@ function Menu:new(unit)
                 table.insert(self.options, "Explode")
             end
             -- change this to check if a unit is IN range before you let it attack
-            for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
-                for _, otherUnit in ipairs(UnitList) do
-                    if otherUnit.team ~= ActivePlayer.color and unit.range and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
-                        table.insert(self.options, "Attack")
-                        goto rangeBreak
-                    elseif (unit.name == "APC" or unit.name == "BlackBoat") and otherUnit.team == ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit ~= unit then
-                        table.insert(self.options, "Supply")
-                        goto rangeBreak
+            if unit.range == {1} then
+                for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
+                    for _, otherUnit in ipairs(UnitList) do
+                        if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
+                            table.insert(self.options, "Attack")
+                            goto rangeBreak
+                        end
+                    end
+                end
+            elseif unit.range and unit.x == Cursor.x and unit.y == Cursor.y then
+                for _, dangerZone in ipairs(Range(unit.y, unit.x, unit.range)) do
+                    for _, otherUnit in ipairs(UnitList) do
+                        if otherUnit.team ~= ActivePlayer.color and otherUnit.y == dangerZone[1] and otherUnit.x == dangerZone[2] then
+                            table.insert(self.options, "Attack")
+                            goto rangeBreak
+                        end
+                    end
+                end
+            else
+                for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
+                    for _, otherUnit in ipairs(UnitList) do
+                        if (unit.name == "APC" or unit.name == "BlackBoat") and otherUnit.team == ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and otherUnit ~= unit then
+                            table.insert(self.options, "Supply")
+                            goto rangeBreak
+                        end
                     end
                 end
             end
@@ -128,6 +145,8 @@ function Menu:select()
             unit.capture = 20
         end
     elseif selected  == "Attack" then
+        unit.action = Range(Cursor.y,Cursor.x, unit.range)
+        unit.actionType = selected
     elseif string.find(selected, "Capture") then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             unit.capture = 20

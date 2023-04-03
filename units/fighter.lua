@@ -8,6 +8,7 @@ function Fighter:new()
     self.vision = 2
     self.fuel = 99
     self.range = {1}
+    self.damage = {nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,55,100,100,100,85,120,nil,nil,nil,nil,nil,nil}
     self.ammo = 9
     Fighter.super.new(self)
     self.quad = 571 + (self.teamOrder * 6)

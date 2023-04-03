@@ -9,6 +9,7 @@ function Submarine:new()
     self.vision = 5
     self.fuel = 60
     self.range = {1}
+    self.damage = {nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,55,25,95,55,95,75}
     self.ammo = 6
     Submarine.super.new(self)
     self.quad = 781 + (self.teamOrder * 6)

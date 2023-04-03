@@ -1,9 +1,0 @@
--- TODO:
--- add combat (use range(i,j,range))
--- add destroying pipe seams
--- move the UI off the map
--- flip the unit sprites of every other team (1 flipped, 2 not, 3 flipped, etc.)
--- add music
--- add mouse support
--- fix camera
--- implement fog, including minus icon and fuel cost for fog checking

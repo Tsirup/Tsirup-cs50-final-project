@@ -8,6 +8,7 @@ function AircraftCarrier:new()
     self.vision = 4
     self.fuel = 99
     self.range = {3,4,5,6,7,8}
+    self.damage = {nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,100,100,115,115,100,120,nil,nil,nil,nil,nil,nil}
     self.ammo = 9
     self.carry = {"copter", "plane"}
     self.cargo = {}

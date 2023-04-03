@@ -8,6 +8,7 @@ function Infantry:new()
     self.vision = 2
     self.fuel = 99
     self.range = {1}
+    self.damage = {55,45,12,5,1,1,1,14,15,25,5,26,5,nil,nil,7,30,nil,nil,nil,nil,nil,nil,nil,nil}
     self.capture = 20
     Infantry.super.new(self)
     self.quad = 1 + (self.teamOrder * 6)

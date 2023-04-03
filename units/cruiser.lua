@@ -8,6 +8,7 @@ function Cruiser:new()
     self.vision = 3
     self.fuel = 99
     self.range = {1}
+    self.damage = {nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,55,65,115,115,100,120,nil,nil,nil,90,25,5}
     self.ammo = 9
     self.carry = {"copter"}
     self.cargo = {}

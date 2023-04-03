@@ -8,6 +8,7 @@ function StealthFighter:new()
     self.vision = 4
     self.fuel = 60
     self.range = {1}
+    self.damage = {90,90,85,75,70,15,60,85,75,85,50,85,80,45,70,85,95,55,120,45,35,65,55,65,45}
     self.ammo = 6
     StealthFighter.super.new(self)
     self.quad = 901 + (self.teamOrder * 6)
