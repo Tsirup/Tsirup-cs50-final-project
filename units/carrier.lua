@@ -16,7 +16,6 @@ function AircraftCarrier:new()
     self.capacity = 2
     AircraftCarrier.super.new(self)
     self.quad = 961 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.AircraftCarrier
 end
 
 function AircraftCarrier:draw()

@@ -88,7 +88,7 @@ function Menu:new(unit)
                 end
             end
             table.insert(self.options, "Wait")
-        elseif unit == "Build" then
+        else
             if ActivePlayer.production[1] == Tilemap[Cursor.y][Cursor.x] then
                 for _, groundUnit in ipairs(Ground) do
                     if Cost[groundUnit] <= ActivePlayer.money then

@@ -13,5 +13,4 @@ function Missles:new()
     self.ammo = 6
     Missles.super.new(self)
     self.quad = 541 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Missles
 end

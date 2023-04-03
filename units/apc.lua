@@ -13,7 +13,6 @@ function APC:new()
     self.capacity = 1
     APC.super.new(self)
     self.quad = 421 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.APC
 end
 
 function APC:draw()

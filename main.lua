@@ -304,7 +304,7 @@ function love.keypressed(key)
                     return
                 end
             end
-            Menu("build")
+            Menu("Build")
             return
         end
         Menu()

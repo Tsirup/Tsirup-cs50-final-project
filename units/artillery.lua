@@ -13,5 +13,4 @@ function Artillery:new()
     self.ammo = 9
     Artillery.super.new(self)
     self.quad = 481 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Artillery
 end

@@ -13,7 +13,6 @@ function Lander:new()
     self.capacity = 2
     Lander.super.new(self)
     self.quad = 751 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Lander
 end
 
 function Lander:draw()

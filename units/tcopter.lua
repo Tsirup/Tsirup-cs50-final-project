@@ -13,7 +13,6 @@ function TransportCopter:new()
     self.capacity = 1
     TransportCopter.super.new(self)
     self.quad = 661 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.TransportCopter
 end
 
 function TransportCopter:draw()

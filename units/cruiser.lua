@@ -16,7 +16,6 @@ function Cruiser:new()
     self.capacity = 2
     Cruiser.super.new(self)
     self.quad = 721 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Cruiser
 end
 
 function Cruiser:draw()

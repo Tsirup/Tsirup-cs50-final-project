@@ -13,7 +13,6 @@ function Submarine:new()
     self.ammo = 6
     Submarine.super.new(self)
     self.quad = 781 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Submarine
 end
 
 function Submarine:draw()

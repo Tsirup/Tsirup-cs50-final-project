@@ -14,7 +14,6 @@ function Mech:new()
     self.capture = 20
     Mech.super.new(self)
     self.quad = 151 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Mech
 end
 
 function Mech:draw()

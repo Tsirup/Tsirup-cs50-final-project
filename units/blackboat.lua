@@ -13,7 +13,6 @@ function BlackBoat:new()
     self.capacity = 2
     BlackBoat.super.new(self)
     self.quad = 931 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.BlackBoat
 end
 
 function BlackBoat:draw()

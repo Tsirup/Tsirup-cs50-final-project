@@ -13,7 +13,6 @@ function Infantry:new()
     self.capture = 20
     Infantry.super.new(self)
     self.quad = 1 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Infantry
 end
 
 function Infantry:draw()

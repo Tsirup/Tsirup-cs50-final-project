@@ -13,5 +13,4 @@ function Tank:new()
     self.ammo = 9
     Tank.super.new(self)
     self.quad = 331 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Tank
 end

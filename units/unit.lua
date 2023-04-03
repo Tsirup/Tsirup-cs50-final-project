@@ -21,6 +21,7 @@ function Unit:new()
     if self.ammo then
         self.ammoCapacity = self.ammo
     end
+    ActivePlayer.money = ActivePlayer.money - Cost[self.name]
     table.insert(UnitList, self)
 end
 

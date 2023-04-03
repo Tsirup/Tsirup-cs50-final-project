@@ -13,5 +13,4 @@ function Bomber:new()
     self.ammo = 9
     Bomber.super.new(self)
     self.quad = 601 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Bomber
 end

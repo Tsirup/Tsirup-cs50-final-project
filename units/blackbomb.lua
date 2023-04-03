@@ -10,5 +10,4 @@ function BlackBomb:new()
     self.fuel = 45
     BlackBomb.super.new(self)
     self.quad = 871 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.BlackBomb
 end

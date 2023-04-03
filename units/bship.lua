@@ -13,5 +13,4 @@ function Battleship:new()
     self.ammo = 9
     Battleship.super.new(self)
     self.quad = 691 + (self.teamOrder * 6)
-    ActivePlayer.money = ActivePlayer.money - Cost.Battleship
 end
