@@ -44,15 +44,17 @@ function Menu:new(unit)
                 for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
                     for _, otherUnit in ipairs(UnitList) do
                         if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and unit.damage[otherUnit.order] then
+                            if not otherUnit.stealth or (otherUnit.name == "Submarine" and (unit.name == "Submarine" or unit.name == "Cruiser")) or (otherUnit.name == "Stealth" and (unit.name == "Stealth" or unit.name == "Fighter")) then
                                 table.insert(self.options, "Attack")
-                            goto rangeBreak
+                                goto rangeBreak
+                            end
                         end
                     end
                 end
             elseif unit.range and unit.x == Cursor.x and unit.y == Cursor.y then
                 for _, dangerZone in ipairs(Range(unit.y, unit.x, unit.range)) do
                     for _, otherUnit in ipairs(UnitList) do
-                        if otherUnit.team ~= ActivePlayer.color and otherUnit.y == dangerZone[1] and otherUnit.x == dangerZone[2] and unit.damage[otherUnit.order] then
+                        if otherUnit.team ~= ActivePlayer.color and otherUnit.y == dangerZone[1] and otherUnit.x == dangerZone[2] and unit.damage[otherUnit.order] and not otherUnit.stealth then
                             table.insert(self.options, "Attack")
                             goto rangeBreak
                         end
@@ -86,22 +88,24 @@ function Menu:new(unit)
                 end
             end
             table.insert(self.options, "Wait")
-        elseif ActivePlayer.production[1] == Tilemap[Cursor.y][Cursor.x] then
-            for _, groundUnit in ipairs(Ground) do
-                if Cost[groundUnit] <= ActivePlayer.money then
-                    table.insert(self.options, groundUnit)
+        elseif unit == "Build" then
+            if ActivePlayer.production[1] == Tilemap[Cursor.y][Cursor.x] then
+                for _, groundUnit in ipairs(Ground) do
+                    if Cost[groundUnit] <= ActivePlayer.money then
+                        table.insert(self.options, groundUnit)
+                    end
                 end
-            end
-        elseif ActivePlayer.production[2] == Tilemap[Cursor.y][Cursor.x] then
-            for _, airUnit in ipairs(Air) do
-                if Cost[airUnit] <= ActivePlayer.money then
-                    table.insert(self.options, airUnit)
+            elseif ActivePlayer.production[2] == Tilemap[Cursor.y][Cursor.x] then
+                for _, airUnit in ipairs(Air) do
+                    if Cost[airUnit] <= ActivePlayer.money then
+                        table.insert(self.options, airUnit)
+                    end
                 end
-            end
-        elseif ActivePlayer.production[3] == Tilemap[Cursor.y][Cursor.x] then
-            for _, navalUnit in ipairs(Naval) do
-                if Cost[navalUnit] <= ActivePlayer.money then
-                    table.insert(self.options, navalUnit)
+            elseif ActivePlayer.production[3] == Tilemap[Cursor.y][Cursor.x] then
+                for _, navalUnit in ipairs(Naval) do
+                    if Cost[navalUnit] <= ActivePlayer.money then
+                        table.insert(self.options, navalUnit)
+                    end
                 end
             end
         end
@@ -144,7 +148,7 @@ function Menu:select()
         if unit.capture then
             unit.capture = 20
         end
-    elseif selected  == "Attack" then
+    elseif selected == "Attack" then
         unit.action = Range(Cursor.y, Cursor.x, unit.range)
         unit.actionType = selected
     elseif string.find(selected, "Capture") then
