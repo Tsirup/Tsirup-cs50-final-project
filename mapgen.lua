@@ -912,3 +912,14 @@ function PlayerGen()
     ActivePlayer = Players[1]
     ActivePlayer.money = income
 end
+
+-- i have no idea if this will work or not, but as of right now, I have no maps with pipe seams and i dont intend to add any for the foreseeable future
+function Interactive()
+    for i, row in ipairs(Tilemap) do
+        for j, tile in ipairs(row) do
+            if tile == 27 then
+                PipeSeam(i,j)
+            end
+        end
+    end
+end

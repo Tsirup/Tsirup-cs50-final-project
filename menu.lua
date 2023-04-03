@@ -3,11 +3,28 @@
 -- so because of that I really had to take everything I've learned up to this point and utilize it to my upmost capability
 Menu = Object:extend()
 
-function Menu:new(unit)
+function Menu:new(unit, arg)
     self.options = {}
     if unit then
         if type(unit) ~= "string" then
             self.unit = unit
+            if arg then
+                for _, otherUnit in ipairs(UnitList) do
+                    if otherUnit.y == Cursor.y and otherUnit.x == Cursor.x and unit.damage[otherUnit.order] then
+                        local b = unit.damage[otherUnit.order]
+                        local hpa = math.floor(unit.health/10)
+                        local dtr = TerrainStars[Tilemap[otherUnit.y][otherUnit.x] + 1]
+                        local hpd = math.floor(otherUnit.health/10)
+                        local totalDamage = math.floor(math.ceil(((b) * (hpa / 10) * ((100 - dtr * hpd) / 100)) * 20) / 20)
+                        table.insert(self.options, string.format("Damage - %d%%", totalDamage))
+                        self.cursor = 1
+                        self.cursorimage = love.graphics.newImage("graphics/menucursortransparent.png")
+                        MenuOpen = self
+                        return
+                    end
+                end
+                return
+            end
             -- we must avoid overlapping units
             for _, otherUnit in ipairs(UnitList) do
                 if otherUnit.x == Cursor.x and otherUnit.y == Cursor.y and otherUnit ~= unit then
@@ -121,9 +138,38 @@ end
 function Menu:select()
     -- I thought it would be better to turn all these if statements into local functions in here so that func() could load them, 
     -- it should work perfectly fine and avoid some if checks but it seems that the lua debugger doesn't like it so i guess ill leave it as is...
-    -- i have not really used local functions at all in this project and it seems like a massive blunder? oh well lol
+    -- i have not really used local functions at all in this project and it seems like a massive blunder?
     local unit = MenuOpen.unit
     local selected = MenuOpen.options[MenuOpen.cursor]
+    if string.find(selected, "Damage") then
+        for _, otherUnit in ipairs(UnitList) do
+            if otherUnit.y == Cursor.y and otherUnit.x == Cursor.x then
+                local b = unit.damage[otherUnit.order]
+                local l = math.random(0,9)
+                local hpa = math.floor(unit.health/10)
+                local dtr = TerrainStars[Tilemap[otherUnit.y][otherUnit.x] + 1]
+                local hpd = math.floor(otherUnit.health/10)
+                local totalDamage = math.floor(math.ceil(((b + l) * (hpa / 10) * ((100 - dtr * hpd) / 100)) * 20) / 20)
+                otherUnit.health = otherUnit.health - totalDamage
+                if otherUnit.range and otherUnit.health > 0 and (not unit.range[1] == 1 or not otherUnit.range[1] == 1) then
+                    local cb = otherUnit.damage[unit.order]
+                    local atr = TerrainStars[Tilemap[unit.y][unit.x] + 1]
+                    l = math.random(0,9)
+                    hpd = math.floor(otherUnit.health/10)
+                    local counter = math.floor(math.ceil(((cb + l) * (hpd / 10) * ((100 - atr * hpa) / 100)) * 20) / 20)
+                    unit.health = unit.health - counter
+                end
+                if unit.health < 0 then
+                    table.remove(UnitList, Index(UnitList, unit))
+                elseif otherUnit.health < 0 then
+                    table.remove(UnitList, Index(UnitList, otherUnit))
+                end
+            end
+        end
+        unit.action, unit.actionType = nil, nil
+        unit.ready, unit.selected, Selection = false, false, false
+        return
+    end
     if unit then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
             for i, point in ipairs(UnitPath) do
@@ -137,6 +183,9 @@ function Menu:select()
                     end
                 end
             end
+            unit.previousX = unit.x
+            unit.previousY = unit.y
+            unit.previousFuel = unit.fuel
             unit.x = Cursor.x
             unit.y = Cursor.y
             unit.fuel = unit.fuel - Cursor.fuel
@@ -246,31 +295,8 @@ end
 
 function Action(unit,actionType)
     if actionType == "Attack" then
-        -- there is a complicated damage formula that why this part looks crazy
-        for _, otherUnit in ipairs(UnitList) do
-            if otherUnit.y == Cursor.y and otherUnit.x == Cursor.x then
-                local b = unit.damage[otherUnit.order]
-                local cb = otherUnit.damage[unit.order]
-                local l = math.random(0,9)
-                local hpa = math.floor(unit.health/10)
-                local atr = TerrainStars[Tilemap[unit.y][unit.x] + 1]
-                local dtr = TerrainStars[Tilemap[otherUnit.y][otherUnit.x] + 1]
-                local hpd = math.floor(otherUnit.health/10)
-                local totalDamage = math.floor(math.ceil(((b + l) * (hpa / 10) * ((100 - dtr * hpd) / 100)) * 20) / 20)
-                otherUnit.health = otherUnit.health - totalDamage
-                if cb and otherUnit.health > 0 then
-                    l = math.random(0,9)
-                    hpd = math.floor(otherUnit.health/10)
-                    local counter = math.floor(math.ceil(((cb + l) * (hpd / 10) * ((100 - atr * hpa) / 100)) * 20) / 20)
-                    unit.health = unit.health - counter
-                end
-                if unit.health < 0 then
-                    table.remove(UnitList, Index(UnitList, unit))
-                elseif otherUnit.health < 0 then
-                    table.remove(UnitList, Index(UnitList, otherUnit))
-                end
-            end
-        end
+        Menu(unit, "Attack")
+        return
     elseif actionType == "Unload" then
         local validCargo
         for _, otherUnit in ipairs(UnitList) do

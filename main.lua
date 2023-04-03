@@ -117,6 +117,7 @@ end
 function EndTurn()
     -- potentially move this into the next for loop for optimization? but make sure it does this for the previous player then
     for _, unit in ipairs(UnitList) do
+        unit.previousX, unit.previousY, unit.previousFuel = nil, nil, nil
         if unit.team == ActivePlayer.color then
             unit.ready = true
             unit.selected = false
@@ -176,21 +177,21 @@ function EndTurn()
                     table.remove(UnitList, i)
                 end
                 if unit.spec == "copter" or unit.spec == "plane" then
-                    if Tilemap[unit.y][unit.x] == ActivePlayer.props[4] then
+                    if Tilemap[unit.y][unit.x] == ActivePlayer.props[4] and unit.health < 100 then
                         Heal(unit,20)
                     end
                 else
-                    if Tilemap[unit.y][unit.x] == ActivePlayer.props[5] then
+                    if Tilemap[unit.y][unit.x] == ActivePlayer.props[5] and unit.health < 100 then
                         Heal(unit,20)
                     end
                 end
-            elseif InTable({ActivePlayer.props[1], ActivePlayer.props[2], ActivePlayer.props[3], ActivePlayer.props[6]}, Tilemap[unit.y][unit.x]) then
+            elseif InTable({ActivePlayer.props[1], ActivePlayer.props[2], ActivePlayer.props[3], ActivePlayer.props[6]}, Tilemap[unit.y][unit.x]) and unit.health < 100 then
                 Heal(unit,20)
             end
             if unit.name == "BlackBoat" then
                 for _, neighbor in ipairs(Adjacent(unit.y, unit.x)) do
                     for _, otherUnit in ipairs(UnitList) do
-                        if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and unit.team == otherUnit.team then
+                        if otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and unit.team == otherUnit.team and unit.health < 100 then
                             Heal(otherUnit,10)
                         end
                     end
@@ -313,7 +314,11 @@ function love.keypressed(key)
             for _, unit in ipairs(UnitList) do
                 if unit.action then
                     unit.action, unit.actionType = nil, nil
-                    unit.ready = false
+                    if unit.previousFuel then
+                        unit.x = unit.previousX
+                        unit.y = unit.previousY
+                        unit.fuel = unit.previousFuel
+                    end
                 end
                 unit.selected, Selection = false, false
             end
