@@ -44,7 +44,7 @@ function love.load(args)
         end
     end
 
-    Units = love.graphics.newImage("graphics/units4bordertransparent.png")
+    Units = love.graphics.newImage("graphics/units5bordertransparent.png")
     image_width = Units:getWidth()
     image_height = Units:getHeight()
     for i=0,33 do
@@ -578,13 +578,8 @@ function love.draw()
     end
     for _, unit in ipairs(UnitList) do
         if (not unit.stealth or ActivePlayer.color == unit.team or unit.revealed) and not unit.selected then
-            if not unit.ready then
-                -- arbitrary rgba value for "unready" tint
-                love.graphics.setColor(0.7,0.7,0.7,0.8)
-            end
             unit:draw()
         end
-        love.graphics.setColor(1,1,1,1)
     end
     if Selection then
         for _, unit in ipairs(UnitList) do
@@ -620,10 +615,8 @@ function love.draw()
         Menu:draw()
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
-    love.graphics.setColor(0,0,0,1)
-    love.graphics.print("Player: " .. ActivePlayer.color, 20, 20)
-    love.graphics.print("Money: " .. ActivePlayer.money, 20, 40)
-    love.graphics.setColor(1,1,1,1)
+    love.graphics.print("Player: " .. ActivePlayer.color, 20, #Tilemap * Height + 20)
+    love.graphics.print("Money: " .. ActivePlayer.money, 100, #Tilemap * Height + 20)
     -- check for victory
     if #Players == 1 then
         EndGame()

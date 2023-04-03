@@ -26,7 +26,11 @@ function Unit:new()
 end
 
 function Unit:draw()
-    love.graphics.draw(Units, Unit_quads[self.quad], self.x * Width, self.y * Height)
+    if self.ready then
+        love.graphics.draw(Units, Unit_quads[self.quad], self.x * Width, self.y * Height)
+    else
+        love.graphics.draw(Units, Unit_quads[self.quad + 3], self.x * Width, self.y * Height)
+    end
     local digit = math.ceil(self.health/10)
     if digit < 10 then
         love.graphics.draw(Icons, Icon_quads[18 + digit], self.x * Width + Width / 2, self.y * Height + Height / 2)

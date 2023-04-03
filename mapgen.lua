@@ -875,31 +875,31 @@ function PlayerGen()
         props = {6, 8, 10, 13, 18, 24}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {order = 1, color = "red", money = 0, income = income, props = props, production = {08,13,18}})
+        table.insert(Players, {order = 1, color = "Red", money = 0, income = income, props = props, production = {08,13,18}})
     end
     if InTable(csvmap, 11) or InTable(csvmap, 25) then
         props = {7, 9, 11, 14, 19, 25}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {order = 2, color = "blue", money = 0, income = income, props = props, production = {09,14,19}})
+        table.insert(Players, {order = 2, color = "Blue", money = 0, income = income, props = props, production = {09,14,19}})
     end
     if InTable(csvmap, 31) or InTable(csvmap, 34) then
         props = {29, 30, 31, 32, 33, 34}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {order = 3, color = "yellow", money = 0, income = income, props = props, production = {30,32,33}})
+        table.insert(Players, {order = 3, color = "Yellow", money = 0, income = income, props = props, production = {30,32,33}})
     end
     if InTable(csvmap, 37) or InTable(csvmap, 40) then
         props = {35, 36, 37, 38, 39, 40}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {order = 4, color = "green", money = 0, income = income, props = props, production = {36,38,39}})
+        table.insert(Players, {order = 4, color = "Green", money = 0, income = income, props = props, production = {36,38,39}})
     end
     if InTable(csvmap, 43) or InTable(csvmap, 46) then
         props = {41, 42, 43, 44, 45, 46}
         CombineTable(Property, props)
         income = CountInTable(csvmap, props) * 1000
-        table.insert(Players, {order = 5, color = "black", money = 0, income = income, props = props, production = {42,44,45}})
+        table.insert(Players, {order = 5, color = "Black", money = 0, income = income, props = props, production = {42,44,45}})
     end
     for _, player in ipairs(Players) do
         table.insert(City, player.props[1])
