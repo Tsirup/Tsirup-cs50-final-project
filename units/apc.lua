@@ -2,6 +2,7 @@ APC = Unit:extend()
 
 function APC:new()
     self.name = "APC"
+    self.order = 8
     self.spec = "vehicle"
     self.move = 6
     self.moveType = "tread"

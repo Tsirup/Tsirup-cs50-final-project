@@ -2,6 +2,7 @@ Battleship = Unit:extend()
 
 function Battleship:new()
     self.name = "Battleship"
+    self.order = 20
     self.spec = "ship"
     self.move = 5
     self.moveType = "ship"

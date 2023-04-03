@@ -2,6 +2,7 @@ AircraftCarrier = Unit:extend()
 
 function AircraftCarrier:new()
     self.name = "AircraftCarrier"
+    self.order = 25
     self.spec = "ship"
     self.move = 5
     self.moveType = "ship"

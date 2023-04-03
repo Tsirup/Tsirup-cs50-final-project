@@ -2,6 +2,7 @@ NeoTank = Unit:extend()
 
 function NeoTank:new()
     self.name = "NeoTank"
+    self.order = 6
     self.spec = "vehicle"
     self.move = 6
     self.moveType = "tread"

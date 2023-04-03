@@ -2,6 +2,7 @@ Artillery = Unit:extend()
 
 function Artillery:new()
     self.name = "Artillery"
+    self.order = 9
     self.spec = "vehicle"
     self.move = 5
     self.moveType = "tread"

@@ -2,6 +2,7 @@ Fighter = Unit:extend()
 
 function Fighter:new()
     self.name = "Fighter"
+    self.order = 14
     self.spec = "plane"
     self.move = 9
     self.moveType = "air"

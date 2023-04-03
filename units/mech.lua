@@ -2,6 +2,7 @@ Mech = Unit:extend()
 
 function Mech:new()
     self.name = "Mech"
+    self.order = 2
     self.spec = "infantry"
     self.move = 2
     self.moveType = "mech"

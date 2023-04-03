@@ -2,6 +2,7 @@ PipeRunner = Unit:extend()
 
 function PipeRunner:new()
     self.name = "PipeRunner"
+    self.order = 13
     self.spec = "vehicle"
     self.move = 9
     self.moveType = "pipe"

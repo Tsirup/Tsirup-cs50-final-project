@@ -2,7 +2,7 @@ Submarine = Unit:extend()
 
 function Submarine:new()
     self.name = "Submarine"
-    -- have it start as a ship and turn into a sub when it dives
+    self.order = 23
     self.spec = "ship"
     self.move = 5
     self.moveType = "ship"

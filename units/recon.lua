@@ -2,6 +2,7 @@ Recon = Unit:extend()
 
 function Recon:new()
     self.name = "Recon"
+    self.order = 3
     self.spec = "vehicle"
     self.move = 8
     self.moveType = "tire"

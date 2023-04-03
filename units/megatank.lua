@@ -2,6 +2,7 @@ MegaTank = Unit:extend()
 
 function MegaTank:new()
     self.name = "MegaTank"
+    self.order = 7
     self.spec = "vehicle"
     self.move = 4
     self.moveType = "tread"

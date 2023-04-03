@@ -2,6 +2,7 @@ Cruiser = Unit:extend()
 
 function Cruiser:new()
     self.name = "Cruiser"
+    self.order = 21
     self.spec = "ship"
     self.move = 6
     self.moveType = "ship"

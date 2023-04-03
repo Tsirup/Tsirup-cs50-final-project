@@ -2,6 +2,7 @@ TransportCopter = Unit:extend()
 
 function TransportCopter:new()
     self.name = "TransportCopter"
+    self.order = 17
     self.spec = "copter"
     self.move = 6
     self.moveType = "air"

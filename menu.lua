@@ -40,11 +40,11 @@ function Menu:new(unit)
                 table.insert(self.options, "Explode")
             end
             -- change this to check if a unit is IN range before you let it attack
-            if unit.range == {1} then
+            if unit.range and unit.range[1] == 1 then
                 for _, neighbor in ipairs(Adjacent(Cursor.y, Cursor.x)) do
                     for _, otherUnit in ipairs(UnitList) do
-                        if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
-                            table.insert(self.options, "Attack")
+                        if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and unit.damage[otherUnit.order] then
+                                table.insert(self.options, "Attack")
                             goto rangeBreak
                         end
                     end
@@ -52,7 +52,7 @@ function Menu:new(unit)
             elseif unit.range and unit.x == Cursor.x and unit.y == Cursor.y then
                 for _, dangerZone in ipairs(Range(unit.y, unit.x, unit.range)) do
                     for _, otherUnit in ipairs(UnitList) do
-                        if otherUnit.team ~= ActivePlayer.color and otherUnit.y == dangerZone[1] and otherUnit.x == dangerZone[2] then
+                        if otherUnit.team ~= ActivePlayer.color and otherUnit.y == dangerZone[1] and otherUnit.x == dangerZone[2] and unit.damage[otherUnit.order] then
                             table.insert(self.options, "Attack")
                             goto rangeBreak
                         end
@@ -145,7 +145,7 @@ function Menu:select()
             unit.capture = 20
         end
     elseif selected  == "Attack" then
-        unit.action = Range(Cursor.y,Cursor.x, unit.range)
+        unit.action = Range(Cursor.y, Cursor.x, unit.range)
         unit.actionType = selected
     elseif string.find(selected, "Capture") then
         if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
@@ -242,6 +242,31 @@ end
 
 function Action(unit,actionType)
     if actionType == "Attack" then
+        -- there is a complicated damage formula that why this part looks crazy
+        for _, otherUnit in ipairs(UnitList) do
+            if otherUnit.y == Cursor.y and otherUnit.x == Cursor.x then
+                local b = unit.damage[otherUnit.order]
+                local cb = otherUnit.damage[unit.order]
+                local l = math.random(0,9)
+                local hpa = math.floor(unit.health/10)
+                local atr = TerrainStars[Tilemap[unit.y][unit.x] + 1]
+                local dtr = TerrainStars[Tilemap[otherUnit.y][otherUnit.x] + 1]
+                local hpd = math.floor(otherUnit.health/10)
+                local totalDamage = math.floor(math.ceil(((b + l) * (hpa / 10) * ((100 - dtr * hpd) / 100)) * 20) / 20)
+                otherUnit.health = otherUnit.health - totalDamage
+                if cb and otherUnit.health > 0 then
+                    l = math.random(0,9)
+                    hpd = math.floor(otherUnit.health/10)
+                    local counter = math.floor(math.ceil(((cb + l) * (hpd / 10) * ((100 - atr * hpa) / 100)) * 20) / 20)
+                    unit.health = unit.health - counter
+                end
+                if unit.health < 0 then
+                    table.remove(UnitList, Index(UnitList, unit))
+                elseif otherUnit.health < 0 then
+                    table.remove(UnitList, Index(UnitList, otherUnit))
+                end
+            end
+        end
     elseif actionType == "Unload" then
         local validCargo
         for _, otherUnit in ipairs(UnitList) do

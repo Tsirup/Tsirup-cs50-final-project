@@ -89,6 +89,7 @@ function love.load(args)
     Ground = {"Infantry", "Mech", "Recon", "Tank", "MediumTank", "NeoTank", "MegaTank", "APC", "Artillery", "Rockets", "AntiAir", "Missles", "PipeRunner"}
     Air = {"Fighter", "Bomber", "BattleCopter", "TransportCopter", "StealthFighter", "BlackBomb"}
     Naval = {"Battleship", "Cruiser", "Lander", "Submarine", "BlackBoat", "AircraftCarrier"}
+    -- we have this because we need some way to get the cost of a unit before it is built to show whether or not we can build it
     Cost = {Infantry = 1000, Mech = 3000, Recon = 4000, Tank = 7000, MediumTank = 16000,
             NeoTank = 22000, MegaTank = 28000, APC = 5000, Artillery = 6000, Rockets = 15000,
             AntiAir = 8000, Missles = 12000, PipeRunner = 20000, Fighter = 20000, Bomber = 22000,

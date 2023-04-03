@@ -2,6 +2,7 @@ BlackBoat = Unit:extend()
 
 function BlackBoat:new()
     self.name = "BlackBoat"
+    self.order = 24
     self.spec = "ship"
     self.move = 7
     self.moveType = "transport"
