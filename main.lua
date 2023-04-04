@@ -80,7 +80,7 @@ function love.load(args)
     -- map files in maps folder
     -- if you give it a command line argument it will load the map given, otherwise it will give the default debugging map
     if #args ~= 1 or args[1] == "debug" then
-        require("maps/test")
+        require("maps/BeanIsland")
     else
         require("maps/" .. args[1])
     end

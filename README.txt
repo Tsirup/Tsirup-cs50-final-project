@@ -1,3 +1,10 @@
+To launch the game:
+love . <map-name>
+Examples:
+love . FourCorners
+love . KeyholeCave
+love . TweenIsle
+
 Controls:
 Arrow keys to move the cursor
 Z to give commands
