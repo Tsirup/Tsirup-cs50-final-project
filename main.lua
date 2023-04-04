@@ -400,6 +400,42 @@ function TileTranslate(tile, i, j)
         else
             transmap[i][j] = 52
         end
+    elseif tile == 29 then
+        transmap[i][j] = 2042
+    elseif tile == 30 then
+        transmap[i][j] = 467
+    elseif tile == 31 then
+        transmap[i][j] = 2039
+    elseif tile == 32 then
+        transmap[i][j] = 2043
+    elseif tile == 33 then
+        transmap[i][j] = 2044
+    elseif tile == 34 then
+        transmap[i][j] = 2045
+    elseif tile == 35 then
+        transmap[i][j] = 2060
+    elseif tile == 36 then
+        transmap[i][j] = 469
+    elseif tile == 37 then
+        transmap[i][j] = 2058
+    elseif tile == 38 then
+        transmap[i][j] = 2061
+    elseif tile == 39 then
+        transmap[i][j] = 2062
+    elseif tile == 40 then
+        transmap[i][j] = 2063
+    elseif tile == 41 then
+        transmap[i][j] = 2078
+    elseif tile == 42 then
+        transmap[i][j] = 471
+    elseif tile == 43 then
+        transmap[i][j] = 2077
+    elseif tile == 44 then
+        transmap[i][j] = 2079
+    elseif tile == 45 then
+        transmap[i][j] = 2080
+    elseif tile == 46 then
+        transmap[i][j] = 2081
     end
     Transmap = transmap
 end
