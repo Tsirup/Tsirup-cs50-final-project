@@ -90,7 +90,12 @@ function Menu:new(unit, arg)
             ::rangeBreak::
             if unit.capture then
                 if InTable(Property, Tilemap[Cursor.y][Cursor.x]) and not InTable(ActivePlayer.props, Tilemap[Cursor.y][Cursor.x]) then
-                    local remaining = 20 - unit.capture + math.ceil(unit.health / 10)
+                    local remaining
+                    if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
+                        remaining = math.ceil(unit.health / 10)
+                    else
+                        remaining = 20 - unit.capture + math.ceil(unit.health / 10)
+                    end
                     if remaining > 20 then
                         remaining = 20
                     end
@@ -151,7 +156,7 @@ function Menu:select()
                 local hpd = math.floor(otherUnit.health/10)
                 local totalDamage = math.floor(math.ceil(((b + l) * (hpa / 10) * ((100 - dtr * hpd) / 100)) * 20) / 20)
                 otherUnit.health = otherUnit.health - totalDamage
-                if otherUnit.range and otherUnit.health > 0 and (not unit.range[1] == 1 or not otherUnit.range[1] == 1) then
+                if otherUnit.range and otherUnit.health > 0 and (unit.range[1] == 1 and otherUnit.range[1] == 1) then
                     local cb = otherUnit.damage[unit.order]
                     local atr = TerrainStars[Tilemap[unit.y][unit.x] + 1]
                     l = math.random(0,9)
@@ -189,21 +194,18 @@ function Menu:select()
             unit.x = Cursor.x
             unit.y = Cursor.y
             unit.fuel = unit.fuel - Cursor.fuel
+            if unit.capture then
+                unit.capture = 20
+            end
         end
     end
     ::trapped::
     if selected == "Wait" then
         unit.ready, unit.selected, Selection = false, false, false
-        if unit.capture then
-            unit.capture = 20
-        end
     elseif selected == "Attack" then
         unit.action = Range(Cursor.y, Cursor.x, unit.range)
         unit.actionType = selected
     elseif string.find(selected, "Capture") then
-        if unit.x ~= Cursor.x or unit.y ~= Cursor.y then
-            unit.capture = 20
-        end
         unit.ready, unit.selected, Selection = false, false, false
         unit.capture = MenuOpen.unit.capture - math.ceil(unit.health / 10)
         if unit.capture <= 0 then

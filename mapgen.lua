@@ -880,7 +880,7 @@ function PlayerGen()
         else
             hq = nil
         end
-        table.insert(Players, {order = 1, color = "Red", money = 0, income = income, props = props, production = {08,13,18}, HQ = hq})
+        table.insert(Players, {order = 1, color = "Red", money = 0, income = income, props = props, production = {08,13,18}, cursor = hq})
     end
     if InTable(csvmap, 11) or InTable(csvmap, 25) then
         props = {7, 9, 11, 14, 19, 25}
@@ -891,7 +891,7 @@ function PlayerGen()
         else
             hq = nil
         end
-        table.insert(Players, {order = 2, color = "Blue", money = 0, income = income, props = props, production = {09,14,19}, HQ = hq})
+        table.insert(Players, {order = 2, color = "Blue", money = 0, income = income, props = props, production = {09,14,19}, cursor = hq})
     end
     if InTable(csvmap, 31) or InTable(csvmap, 34) then
         props = {29, 30, 31, 32, 33, 34}
@@ -902,7 +902,7 @@ function PlayerGen()
         else
             hq = nil
         end
-        table.insert(Players, {order = 3, color = "Yellow", money = 0, income = income, props = props, production = {30,32,33}, HQ = hq})
+        table.insert(Players, {order = 3, color = "Yellow", money = 0, income = income, props = props, production = {30,32,33}, cursor = hq})
     end
     if InTable(csvmap, 37) or InTable(csvmap, 40) then
         props = {35, 36, 37, 38, 39, 40}
@@ -913,7 +913,7 @@ function PlayerGen()
         else
             hq = nil
         end
-        table.insert(Players, {order = 4, color = "Green", money = 0, income = income, props = props, production = {36,38,39}, HQ = hq})
+        table.insert(Players, {order = 4, color = "Green", money = 0, income = income, props = props, production = {36,38,39}, cursor = hq})
     end
     if InTable(csvmap, 43) or InTable(csvmap, 46) then
         props = {41, 42, 43, 44, 45, 46}
@@ -924,7 +924,7 @@ function PlayerGen()
         else
             hq = nil
         end
-        table.insert(Players, {order = 5, color = "Black", money = 0, income = income, props = props, production = {42,44,45}, HQ = hq})
+        table.insert(Players, {order = 5, color = "Black", money = 0, income = income, props = props, production = {42,44,45}, cursor = hq})
     end
     for _, player in ipairs(Players) do
         table.insert(City, player.props[1])
@@ -933,11 +933,11 @@ function PlayerGen()
         table.insert(Airport, player.props[4])
         table.insert(Port, player.props[5])
         table.insert(Lab, player.props[6])
-        if player.HQ then
+        if player.cursor then
             for i, row in ipairs(Tilemap) do
                 for j, tile in ipairs(row) do
-                    if tile == player.HQ then
-                        player.HQ = {i,j}
+                    if tile == player.cursor then
+                        player.cursor = {i,j}
                         goto nextPlayer
                     end
                 end

@@ -13,7 +13,7 @@ function Mech:new()
     self.ammo = 3
     self.capture = 20
     Mech.super.new(self)
-    self.quad = 151 + (self.teamOrder * 6)
+    self.quad = 151 + (self.teamOrder * 36)
 end
 
 function Mech:draw()

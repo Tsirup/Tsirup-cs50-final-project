@@ -104,9 +104,9 @@ function love.load(args)
         y = 1,
         x = 1
     }
-    if ActivePlayer.HQ then
-        Cursor.y = ActivePlayer.HQ[1]
-        Cursor.x = ActivePlayer.HQ[2]
+    if ActivePlayer.cursor then
+        Cursor.y = ActivePlayer.cursor[1]
+        Cursor.x = ActivePlayer.cursor[2]
     end
     if Unitmap then
         for _, unit in ipairs(Unitmap) do
@@ -133,11 +133,13 @@ function EndTurn()
     while active > #Players do
         active = active - #Players
     end
+    ActivePlayer.cursor[1] = Cursor.y
+    ActivePlayer.cursor[2] = Cursor.x
     ActivePlayer = Players[active]
     ActivePlayer.money = ActivePlayer.money + ActivePlayer.income
-    if ActivePlayer.HQ then
-        Cursor.y = ActivePlayer.HQ[1]
-        Cursor.x = ActivePlayer.HQ[2]
+    if ActivePlayer.cursor then
+        Cursor.y = ActivePlayer.cursor[1]
+        Cursor.x = ActivePlayer.cursor[2]
     end
     -- we have 3 very similar if statements here because we have to follow the proper procedure order of:
     -- decrement fuel from units -> resupply units -> destroy units
@@ -403,12 +405,15 @@ function TileTranslate(tile, i, j)
 end
 
 function MapUpdate(y,x)
-    local loser, winner = nil, nil
+    local loser, winner
     winner = ActivePlayer
     for _, player in ipairs(Players) do
         if InTable(player.props, Tilemap[y][x]) then
             loser = player
         end
+    end
+    if InTable({3,12,16,17,23}, Tilemap[y][x]) then
+        loser = "neutral"
     end
     if loser then
         if InTable(City, Tilemap[y][x]) then
@@ -426,10 +431,10 @@ function MapUpdate(y,x)
                         end
                     end
                     -- transfer over all of the loser's properties
-                    for i, row in ipairs(Tilemap) do
-                        for j, tile in ipairs(row) do
+                    for ti, row in ipairs(Tilemap) do
+                        for tj, tile in ipairs(row) do
                             if InTable(loser.props, tile) then
-                                MapUpdate(j,i)
+                                MapUpdate(ti,tj)
                             end
                         end
                     end
@@ -445,7 +450,7 @@ function MapUpdate(y,x)
             Tilemap[y][x] = winner.props[6]
         end
         winner.income = winner.income + 1000
-        if loser then
+        if type(loser) ~= "string" then
             loser.income = loser.income - 1000
         end
     else
