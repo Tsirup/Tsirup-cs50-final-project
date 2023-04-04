@@ -7,6 +7,9 @@ There is unfortunately no online mode or AI.<br>
 I would've loved to add them but this project was lengthy enough at it is.<br>
 
 To launch the game:<br>
+Take the .love file from the "game" branch and run it!<br>
+Alternatively, rename the .love file to .zip and extract the contents to your environment with LOVE2D installed.<br>
+Enter the following command to launch:<br>
 love . map-name<br>
 Examples:<br>
 love . FourCorners<br>
