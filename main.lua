@@ -101,9 +101,13 @@ function love.load(args)
     PlayerGen()
     Cursor = {
         image = love.graphics.newImage("graphics/cursortransparent.png"),
-        x = 1,
-        y = 1
+        y = 1,
+        x = 1
     }
+    if ActivePlayer.HQ then
+        Cursor.y = ActivePlayer.HQ[1]
+        Cursor.x = ActivePlayer.HQ[2]
+    end
     if Unitmap then
         for _, unit in ipairs(Unitmap) do
             Deploy = unit
@@ -131,6 +135,10 @@ function EndTurn()
     end
     ActivePlayer = Players[active]
     ActivePlayer.money = ActivePlayer.money + ActivePlayer.income
+    if ActivePlayer.HQ then
+        Cursor.y = ActivePlayer.HQ[1]
+        Cursor.x = ActivePlayer.HQ[2]
+    end
     -- we have 3 very similar if statements here because we have to follow the proper procedure order of:
     -- decrement fuel from units -> resupply units -> destroy units
     for _, unit in ipairs(UnitList) do
@@ -616,7 +624,7 @@ function love.draw()
     end
     love.graphics.draw(Cursor.image, Cursor.x * Width, Cursor.y * Height)
     love.graphics.print("Player: " .. ActivePlayer.color, 20, #Tilemap * Height + 20)
-    love.graphics.print("Money: " .. ActivePlayer.money, 100, #Tilemap * Height + 20)
+    love.graphics.print("Money: " .. ActivePlayer.money, 20, #Tilemap * Height + 40)
     -- check for victory
     if #Players == 1 then
         EndGame()
