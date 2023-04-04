@@ -1,4 +1,5 @@
 TODO:
+change controls so you control the cursor with the mouse and the camera with the arrow keys
+add fog
 add music
-add mouse support
-fix camera
+add COs
