@@ -62,8 +62,10 @@ function Menu:new(unit, arg)
                     for _, otherUnit in ipairs(UnitList) do
                         if otherUnit.team ~= ActivePlayer.color and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] and unit.damage[otherUnit.order] then
                             if not otherUnit.stealth or (otherUnit.name == "Submarine" and (unit.name == "Submarine" or unit.name == "Cruiser")) or (otherUnit.name == "Stealth" and (unit.name == "Stealth" or unit.name == "Fighter")) then
-                                table.insert(self.options, "Attack")
-                                goto rangeBreak
+                                if not unit.ammo or unit.ammo ~= 0 then
+                                    table.insert(self.options, "Attack")
+                                    goto rangeBreak
+                                end
                             end
                         end
                     end
@@ -72,8 +74,10 @@ function Menu:new(unit, arg)
                 for _, dangerZone in ipairs(Range(unit.y, unit.x, unit.range)) do
                     for _, otherUnit in ipairs(UnitList) do
                         if otherUnit.team ~= ActivePlayer.color and otherUnit.y == dangerZone[1] and otherUnit.x == dangerZone[2] and unit.damage[otherUnit.order] and not otherUnit.stealth then
-                            table.insert(self.options, "Attack")
-                            goto rangeBreak
+                            if not unit.ammo or unit.ammo ~= 0 then
+                                table.insert(self.options, "Attack")
+                                goto rangeBreak
+                            end
                         end
                     end
                 end
@@ -156,13 +160,21 @@ function Menu:select()
                 local hpd = math.floor(otherUnit.health/10)
                 local totalDamage = math.floor(math.ceil(((b + l) * (hpa / 10) * ((100 - dtr * hpd) / 100)) * 20) / 20)
                 otherUnit.health = otherUnit.health - totalDamage
+                if unit.ammo then
+                    unit.ammo = unit.ammo - 1
+                end
                 if otherUnit.range and otherUnit.health > 0 and (unit.range[1] == 1 and otherUnit.range[1] == 1) then
-                    local cb = otherUnit.damage[unit.order]
-                    local atr = TerrainStars[Tilemap[unit.y][unit.x] + 1]
-                    l = math.random(0,9)
-                    hpd = math.floor(otherUnit.health/10)
-                    local counter = math.floor(math.ceil(((cb + l) * (hpd / 10) * ((100 - atr * hpa) / 100)) * 20) / 20)
-                    unit.health = unit.health - counter
+                    if not otherUnit.ammo or otherUnit.ammo ~= 0 then
+                        local cb = otherUnit.damage[unit.order]
+                        local atr = TerrainStars[Tilemap[unit.y][unit.x] + 1]
+                        l = math.random(0,9)
+                        hpd = math.floor(otherUnit.health/10)
+                        local counter = math.floor(math.ceil(((cb + l) * (hpd / 10) * ((100 - atr * hpa) / 100)) * 20) / 20)
+                        unit.health = unit.health - counter
+                        if otherUnit.ammo then
+                            otherUnit.ammo = otherUnit.ammo - 1
+                        end
+                    end
                 end
                 if unit.health < 0 then
                     table.remove(UnitList, Index(UnitList, unit))
@@ -238,6 +250,9 @@ function Menu:select()
             for _, otherUnit in ipairs(UnitList) do
                 if unit.team == otherUnit.team and otherUnit.y == neighbor[1] and otherUnit.x == neighbor[2] then
                     otherUnit.fuel = otherUnit.fuelCapacity
+                    if otherUnit.ammo then
+                        otherUnit.ammo = otherUnit.ammoCapacity
+                    end
                 end
             end
         end

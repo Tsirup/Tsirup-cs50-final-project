@@ -38,4 +38,9 @@ function Unit:draw()
     if self.fuel <= self.fuelCapacity / 3 then
         love.graphics.draw(Icons, Icon_quads[47], self.x * Width + Width / 2, self.y * Height)
     end
+    if self.ammo then
+        if self.ammo <= self.ammoCapacity / 3 then
+            love.graphics.draw(Icons, Icon_quads[75], self.x * Width, self.y * Height + Height / 2)
+        end
+    end
 end
