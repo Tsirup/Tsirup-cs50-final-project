@@ -30,6 +30,6 @@ def count_lines_in_files_and_directories(paths):
     return total_lines
 
 # Example usage
-paths = ["maps","units","border.py","indexer.py","keys.txt","linecounter.py","main.lua","mapgen.lua","menu.lua","movement.lua","priorityqueue.lua", "transparent.py"]
+paths = ["maps","units","border.py","indexer.py","keys.txt","linecounter.py","main.lua","mapgen.lua","menu.lua","movement.lua","priorityqueue.lua", "transparent.py", "README.md"]
 total_lines = count_lines_in_files_and_directories(paths)
 print(f'Total lines of code: {total_lines}')
